@@ -87,7 +87,7 @@
         
   
     <h1 itemprop="name">
-      <a class="p-name article-title" href="/2026/03/15/2026%E8%BD%AF%E4%BB%B6%E7%B3%BB%E7%BB%9F%E5%AE%89%E5%85%A8%E8%B5%9BMISC-%E4%B8%AA%E4%BA%BAWP/">2026软件系统安全赛MISC个人WP</a>
+      <a class="p-name article-title" href="/2026/03/15/2026%E8%BD%AF%E4%BB%B6%E7%B3%BB%E7%BB%9F%E5%AE%89%E5%85%A8%E8%B5%9BMISC-%E4%B8%AA%E4%BA%BAWP/">2026软件系统安全赛初赛 MISC个人WP</a>
     </h1>
   
 
@@ -96,9 +96,10 @@
     <div class="e-content article-entry" itemprop="articleBody">
       
         <h2 id="题目信息"><a href="#题目信息" class="headerlink" title="题目信息"></a>题目信息</h2><ul>
-<li>比赛：2026软件系统安全赛</li>
+<li>比赛：2026软件系统安全赛初赛</li>
 <li>类型：Misc - 图片隐写</li>
 <li>附件：无后缀文件</li>
+<li>题目名：steganography</li>
 </ul>
 <h2 id="解题过程"><a href="#解题过程" class="headerlink" title="解题过程"></a>解题过程</h2><h3 id="1-文件修复"><a href="#1-文件修复" class="headerlink" title="1. 文件修复"></a>1. 文件修复</h3><p>下载附件得到一个无后缀文件，使用 010 Editor 打开，发现文件头部有干扰字符，删除后得到一张正常的 PNG 图片（不是你没加载上来，这图就长这样）。</p>
 <p><img src="/images/step1.png" alt="010editor删除干扰字符"></p>
@@ -110,13 +111,14 @@
 <h3 id="4-分析压缩包结构并爆破"><a href="#4-分析压缩包结构并爆破" class="headerlink" title="4. 分析压缩包结构并爆破"></a>4. 分析压缩包结构并爆破</h3><p>  查看 6 个 pass*.zip 的内容：<br>  zsteg -E “b1,rgb,lsb,xy” 2.png &gt; flag.zip</p>
 <p>发现 6 个 pass*.zip 中的 txt 文件都是四字节，利用 ZIP 压缩包会明文暴露文件大小和 CRC32 校验值的特性，编写 Python 脚本挨个爆破它们：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> binascii</span><br><span class="line"><span class="keyword">import</span> itertools</span><br><span class="line"><span class="keyword">import</span> string</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"></span><br><span class="line">crc_dict = &#123;</span><br><span class="line">    <span class="string">&#x27;ce70d424&#x27;</span>: <span class="string">&#x27;pass1&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;f90c8a70&#x27;</span>: <span class="string">&#x27;pass2&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;ff3fe4bb&#x27;</span>: <span class="string">&#x27;pass3&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;242a5387&#x27;</span>: <span class="string">&#x27;pass4&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;9a27098e&#x27;</span>: <span class="string">&#x27;pass5&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;d3f6df9f&#x27;</span>: <span class="string">&#x27;pass6&#x27;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">targets = &#123;<span class="built_in">int</span>(k, <span class="number">16</span>): v <span class="keyword">for</span> k, v <span class="keyword">in</span> crc_dict.items()&#125;</span><br><span class="line">chars = <span class="string">&quot; &quot;</span>.join(<span class="built_in">chr</span>(i) <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">32</span>,<span class="number">127</span>))</span><br><span class="line">results = &#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;开始爆破&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> p <span class="keyword">in</span> itertools.product(chars, repeat=<span class="number">4</span>):</span><br><span class="line">    s = <span class="string">&quot;&quot;</span>.join(p)</span><br><span class="line">    crc = binascii.crc32(s.encode()) &amp; <span class="number">0xffffffff</span></span><br><span class="line">    <span class="keyword">if</span> crc <span class="keyword">in</span> targets:</span><br><span class="line">        name = targets[crc]</span><br><span class="line">        results[name] = s</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&quot;[*] <span class="subst">&#123;name&#125;</span> 破解成功: <span class="subst">&#123;s&#125;</span>&quot;</span>)</span><br><span class="line">        <span class="keyword">del</span> targets[crc]</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> targets:</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;\n === 结果 ===&quot;</span>)</span><br><span class="line"><span class="keyword">if</span> <span class="built_in">len</span>(results) == <span class="number">6</span>:</span><br><span class="line">    pwd = <span class="string">&quot;&quot;</span>.join([results[<span class="string">f&#x27;pass<span class="subst">&#123;i&#125;</span>&#x27;</span>] <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="number">7</span>)])</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;inner.zip 的最终密码是: <span class="subst">&#123;pwd&#125;</span>&quot;</span>)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;莫得结果&quot;</span>)</span><br></pre></td></tr></table></figure>
+
 <p>依次拼合六个密码，得到：<br>flag is c1!xxtLf%fXYPkaA<br>用它打开”inner.zip”得到”flag.txt”，发现只有孤零零一行。<br><img src="/images/step5.png" alt="零宽字符隐写"></p>
 <h3 id="5-零宽字符解码"><a href="#5-零宽字符解码" class="headerlink" title="5.零宽字符解码"></a>5.零宽字符解码</h3><p>还在套娃？不过很显然是零宽字符隐写，解码得到 flag：<br>dart{bf4100d9-cc8d-48f6-a095-54cbfad189e1}</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2026/03/15/2026%E8%BD%AF%E4%BB%B6%E7%B3%BB%E7%BB%9F%E5%AE%89%E5%85%A8%E8%B5%9BMISC-%E4%B8%AA%E4%BA%BAWP/" data-id="cuid0zUwwweFSBO9ZII1PWn6s" data-title="2026软件系统安全赛MISC个人WP" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      <a data-url="http://example.com/2026/03/15/2026%E8%BD%AF%E4%BB%B6%E7%B3%BB%E7%BB%9F%E5%AE%89%E5%85%A8%E8%B5%9BMISC-%E4%B8%AA%E4%BA%BAWP/" data-id="cuidvpMy46W1dli4Ap5XhNg3_" data-title="2026软件系统安全赛初赛 MISC个人WP" class="article-share-link"><span class="fa fa-share">分享</span></a>
       
       
       
@@ -175,7 +177,7 @@
       <ul>
         
           <li>
-            <a href="/2026/03/15/2026%E8%BD%AF%E4%BB%B6%E7%B3%BB%E7%BB%9F%E5%AE%89%E5%85%A8%E8%B5%9BMISC-%E4%B8%AA%E4%BA%BAWP/">2026软件系统安全赛MISC个人WP</a>
+            <a href="/2026/03/15/2026%E8%BD%AF%E4%BB%B6%E7%B3%BB%E7%BB%9F%E5%AE%89%E5%85%A8%E8%B5%9BMISC-%E4%B8%AA%E4%BA%BAWP/">2026软件系统安全赛初赛 MISC个人WP</a>
           </li>
         
       </ul>
