@@ -1,231 +1,172 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  
-  
-  <title>Colin的个人博客</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="记录小登的CTF打怪升级之路">
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Colin - Colin的秘密空间</title><meta name="author" content="Colin"><meta name="copyright" content="Colin"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="欢迎见证小登的CTF打怪升级之路">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Colin的个人博客">
+<meta property="og:title" content="Colin">
 <meta property="og:url" content="http://example.com/index.html">
-<meta property="og:site_name" content="Colin的个人博客">
-<meta property="og:description" content="记录小登的CTF打怪升级之路">
+<meta property="og:site_name" content="Colin">
+<meta property="og:description" content="欢迎见证小登的CTF打怪升级之路">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://avatars.githubusercontent.com/u/256901064?s=400&u=57ab83cada0314c38a33d0615d653723b26b68d3&v=4">
 <meta property="article:author" content="Colin">
 <meta name="twitter:card" content="summary">
-  
-    <link rel="alternate" href="/atom.xml" title="Colin的个人博客" type="application/atom+xml">
-  
-  
-    <link rel="shortcut icon" href="/favicon.png">
-  
-  
-  
-<link rel="stylesheet" href="/css/style.css">
+<meta name="twitter:image" content="https://avatars.githubusercontent.com/u/256901064?s=400&u=57ab83cada0314c38a33d0615d653723b26b68d3&v=4"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Colin",
+  "alternateName": [
+    "Colin的秘密空间",
+    "example.com"
+  ],
+  "url": "http://example.com/"
+}</script><link rel="shortcut icon" href="https://avatars.githubusercontent.com/u/256901064?s=400&u=57ab83cada0314c38a33d0615d653723b26b68d3&v=4"><link rel="canonical" href="http://example.com/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.4"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
 
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
   
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
     
-<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
-
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
   
-  
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
-
-<meta name="generator" content="Hexo 8.1.1"></head>
-
-<body>
-  <div id="container">
-    <div id="wrap">
-      <header id="header">
-  <div id="banner"></div>
-  <div id="header-outer" class="outer">
-    <div id="header-title" class="inner">
-      <h1 id="logo-wrap">
-        <a href="/" id="logo">Colin的个人博客</a>
-      </h1>
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Colin',
+  isHighlightShrink: false,
+  isToc: false,
+  pageType: 'home'
+}</script><meta name="generator" content="Hexo 8.1.1"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="https://avatars.githubusercontent.com/u/256901064?s=400&amp;u=57ab83cada0314c38a33d0615d653723b26b68d3&amp;v=4" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">1</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 追忆</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="page" id="body-wrap"><header class="full_page" id="page-header" style="background-image: url(https://w.wallhaven.cc/full/po/wallhaven-pow7mm.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><img class="site-icon" src="https://w.wallhaven.cc/full/po/wallhaven-pow7mm.jpg" alt="Logo"><span class="site-name">Colin</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 追忆</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="site-info"><h1 id="site-title">Colin</h1><div id="site_social_icons"><a class="social-icon" href="https://github.com/C01in-0" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="/C01in@qq.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div id="scroll-down"><i class="fas fa-angle-down scroll-down-effects"></i></div></header><main class="layout" id="content-inner"><div class="recent-posts nc" id="recent-posts"><div class="recent-post-items"><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2026/03/15/2026%E8%BD%AF%E4%BB%B6%E7%B3%BB%E7%BB%9F%E5%AE%89%E5%85%A8%E8%B5%9BMISC-%E4%B8%AA%E4%BA%BAWP/" title="2026软件系统安全赛初赛 MISC个人WP">2026软件系统安全赛初赛 MISC个人WP</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-03-15T14:00:00.000Z" title="发表于 2026-03-15 22:00:00">2026-03-15</time></span></div><div class="content">题目信息 比赛：2026软件系统安全赛初赛 类型：Misc - 图片隐写 附件：无后缀文件 题目名：steganography  解题过程1. 文件修复下载附件得到一个无后缀文件，使用 010 Editor 打开，发现文件头部有干扰字符，删除后得到一张正常的 PNG 图片（不是你没加载上来，这图就长这样）。  2. LSB隐写分析使用 Kali 的 zsteg 功能扫描，发现文件里藏了一个名为”flag.zip”的压缩包。并且在第 118 行之后会报错，说明它身高造假，在 010 Editor 中对其进行修复（把第二个 00 00 04 00 改为 00 00 00 76）  3. 提取隐藏数据使用指令提取压缩包： 1zsteg -E &quot;b1,rgb,lsb,xy&quot; 2.png &gt; flag.zip 对压缩包进行剥离，发现里面还嵌套了六个小压缩包。“inner.zip”压缩包是需要密码的，毋庸置疑，密码应该分布在六个”pass*.zip”中。 4. 分析压缩包结构并爆破  查看 6 个 pass*.zip 的内容：  zsteg -E “b1,rgb,l...</div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="https://avatars.githubusercontent.com/u/256901064?s=400&amp;u=57ab83cada0314c38a33d0615d653723b26b68d3&amp;v=4" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Colin</div><div class="author-info-description">欢迎见证小登的CTF打怪升级之路</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">1</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/C01in-0" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="/C01in@qq.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/03/15/2026%E8%BD%AF%E4%BB%B6%E7%B3%BB%E7%BB%9F%E5%AE%89%E5%85%A8%E8%B5%9BMISC-%E4%B8%AA%E4%BA%BAWP/" title="2026软件系统安全赛初赛 MISC个人WP">2026软件系统安全赛初赛 MISC个人WP</a><time datetime="2026-03-15T14:00:00.000Z" title="发表于 2026-03-15 22:00:00">2026-03-15</time></div></div></div></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/%E9%9B%B6%E5%AE%BD%E5%AD%97%E7%AC%A6/" style="font-size: 1.1em; color: #999">零宽字符</a> <a href="/tags/%E9%9A%90%E5%86%99/" style="font-size: 1.1em; color: #999">隐写</a> <a href="/tags/ZIP/" style="font-size: 1.1em; color: #999">ZIP</a> <a href="/tags/Misc/" style="font-size: 1.1em; color: #999">Misc</a> <a href="/tags/PNG/" style="font-size: 1.1em; color: #999">PNG</a> <a href="/tags/CRC32/" style="font-size: 1.1em; color: #999">CRC32</a></div></div><div class="card-widget card-archives">
+    <div class="item-headline">
+      <i class="fas fa-archive"></i>
+      <span>归档</span>
       
     </div>
-    <div id="header-inner" class="inner">
-      <nav id="main-nav">
-        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
-        
-          <a class="main-nav-link" href="/">Home</a>
-        
-          <a class="main-nav-link" href="/archives">Archives</a>
-        
-      </nav>
-      <nav id="sub-nav">
-        
-        
-          <a class="nav-icon" href="/atom.xml" title="RSS 订阅"><span class="fa fa-rss"></span></a>
-        
-        <a class="nav-icon nav-search-btn" title="搜索"><span class="fa fa-search"></span></a>
-      </nav>
-      <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="搜索"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
-      </div>
-    </div>
-  </div>
-</header>
-
-      <div class="outer">
-        <section id="main">
   
-    <article id="post-2026软件系统安全赛MISC-个人WP" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2026/03/15/2026%E8%BD%AF%E4%BB%B6%E7%B3%BB%E7%BB%9F%E5%AE%89%E5%85%A8%E8%B5%9BMISC-%E4%B8%AA%E4%BA%BAWP/" class="article-date">
-  <time class="dt-published" datetime="2026-03-15T14:00:00.000Z" itemprop="datePublished">2026-03-15</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2026/03/15/2026%E8%BD%AF%E4%BB%B6%E7%B3%BB%E7%BB%9F%E5%AE%89%E5%85%A8%E8%B5%9BMISC-%E4%B8%AA%E4%BA%BAWP/">2026软件系统安全赛初赛 MISC个人WP</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
+    <ul class="card-archive-list">
       
-        <h2 id="题目信息"><a href="#题目信息" class="headerlink" title="题目信息"></a>题目信息</h2><ul>
-<li>比赛：2026软件系统安全赛初赛</li>
-<li>类型：Misc - 图片隐写</li>
-<li>附件：无后缀文件</li>
-<li>题目名：steganography</li>
-</ul>
-<h2 id="解题过程"><a href="#解题过程" class="headerlink" title="解题过程"></a>解题过程</h2><h3 id="1-文件修复"><a href="#1-文件修复" class="headerlink" title="1. 文件修复"></a>1. 文件修复</h3><p>下载附件得到一个无后缀文件，使用 010 Editor 打开，发现文件头部有干扰字符，删除后得到一张正常的 PNG 图片（不是你没加载上来，这图就长这样）。</p>
-<p><img src="/images/step1.png" alt="010editor删除干扰字符"></p>
-<h3 id="2-LSB隐写分析"><a href="#2-LSB隐写分析" class="headerlink" title="2. LSB隐写分析"></a>2. LSB隐写分析</h3><p>使用 Kali 的 zsteg 功能扫描，发现文件里藏了一个名为”flag.zip”的压缩包。<br><img src="/images/step2.png" alt="zsteg扫描结果"><br>并且在第 118 行之后会报错，说明它身高造假，在 010 Editor 中对其进行修复（把第二个 00 00 04 00 改为 00 00 00 76）</p>
-<p><img src="/images/step3.png" alt="修改PNG高度"></p>
-<h3 id="3-提取隐藏数据"><a href="#3-提取隐藏数据" class="headerlink" title="3. 提取隐藏数据"></a>3. 提取隐藏数据</h3><p>使用指令提取压缩包：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">zsteg -E <span class="string">&quot;b1,rgb,lsb,xy&quot;</span> 2.png &gt; flag.zip</span><br></pre></td></tr></table></figure>
-<p>对压缩包进行剥离，发现里面还嵌套了六个小压缩包。<br><img src="/images/step4.png" alt="压缩包结构"><br>“inner.zip”压缩包是需要密码的，毋庸置疑，密码应该分布在六个”pass*.zip”中。</p>
-<h3 id="4-分析压缩包结构并爆破"><a href="#4-分析压缩包结构并爆破" class="headerlink" title="4. 分析压缩包结构并爆破"></a>4. 分析压缩包结构并爆破</h3><p>  查看 6 个 pass*.zip 的内容：<br>  zsteg -E “b1,rgb,lsb,xy” 2.png &gt; flag.zip</p>
-<p>发现 6 个 pass*.zip 中的 txt 文件都是四字节，利用 ZIP 压缩包会明文暴露文件大小和 CRC32 校验值的特性，编写 Python 脚本挨个爆破它们：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> binascii</span><br><span class="line"><span class="keyword">import</span> itertools</span><br><span class="line"><span class="keyword">import</span> string</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"></span><br><span class="line">crc_dict = &#123;</span><br><span class="line">    <span class="string">&#x27;ce70d424&#x27;</span>: <span class="string">&#x27;pass1&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;f90c8a70&#x27;</span>: <span class="string">&#x27;pass2&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;ff3fe4bb&#x27;</span>: <span class="string">&#x27;pass3&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;242a5387&#x27;</span>: <span class="string">&#x27;pass4&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;9a27098e&#x27;</span>: <span class="string">&#x27;pass5&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;d3f6df9f&#x27;</span>: <span class="string">&#x27;pass6&#x27;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">targets = &#123;<span class="built_in">int</span>(k, <span class="number">16</span>): v <span class="keyword">for</span> k, v <span class="keyword">in</span> crc_dict.items()&#125;</span><br><span class="line">chars = <span class="string">&quot; &quot;</span>.join(<span class="built_in">chr</span>(i) <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">32</span>,<span class="number">127</span>))</span><br><span class="line">results = &#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;开始爆破&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> p <span class="keyword">in</span> itertools.product(chars, repeat=<span class="number">4</span>):</span><br><span class="line">    s = <span class="string">&quot;&quot;</span>.join(p)</span><br><span class="line">    crc = binascii.crc32(s.encode()) &amp; <span class="number">0xffffffff</span></span><br><span class="line">    <span class="keyword">if</span> crc <span class="keyword">in</span> targets:</span><br><span class="line">        name = targets[crc]</span><br><span class="line">        results[name] = s</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&quot;[*] <span class="subst">&#123;name&#125;</span> 破解成功: <span class="subst">&#123;s&#125;</span>&quot;</span>)</span><br><span class="line">        <span class="keyword">del</span> targets[crc]</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> targets:</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;\n === 结果 ===&quot;</span>)</span><br><span class="line"><span class="keyword">if</span> <span class="built_in">len</span>(results) == <span class="number">6</span>:</span><br><span class="line">    pwd = <span class="string">&quot;&quot;</span>.join([results[<span class="string">f&#x27;pass<span class="subst">&#123;i&#125;</span>&#x27;</span>] <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="number">7</span>)])</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;inner.zip 的最终密码是: <span class="subst">&#123;pwd&#125;</span>&quot;</span>)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;莫得结果&quot;</span>)</span><br></pre></td></tr></table></figure>
-
-<p>依次拼合六个密码，得到：<br>flag is c1!xxtLf%fXYPkaA<br>用它打开”inner.zip”得到”flag.txt”，发现只有孤零零一行。<br><img src="/images/step5.png" alt="零宽字符隐写"></p>
-<h3 id="5-零宽字符解码"><a href="#5-零宽字符解码" class="headerlink" title="5.零宽字符解码"></a>5.零宽字符解码</h3><p>还在套娃？不过很显然是零宽字符隐写，解码得到 flag：<br>dart{bf4100d9-cc8d-48f6-a095-54cbfad189e1}</p>
-
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/03/">
+            <span class="card-archive-list-date">
+              三月 2026
+            </span>
+            <span class="card-archive-list-count">1</span>
+          </a>
+        </li>
       
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2026/03/15/2026%E8%BD%AF%E4%BB%B6%E7%B3%BB%E7%BB%9F%E5%AE%89%E5%85%A8%E8%B5%9BMISC-%E4%B8%AA%E4%BA%BAWP/" data-id="cuidvpMy46W1dli4Ap5XhNg3_" data-title="2026软件系统安全赛初赛 MISC个人WP" class="article-share-link"><span class="fa fa-share">分享</span></a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CRC32/" rel="tag">CRC32</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Misc/" rel="tag">Misc</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PNG/" rel="tag">PNG</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ZIP/" rel="tag">ZIP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E9%9A%90%E5%86%99/" rel="tag">隐写</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E9%9B%B6%E5%AE%BD%E5%AD%97%E7%AC%A6/" rel="tag">零宽字符</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-
-
-</section>
-        
-          <aside id="sidebar">
-  
-    
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">标签</h3>
-    <div class="widget">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/CRC32/" rel="tag">CRC32</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Misc/" rel="tag">Misc</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PNG/" rel="tag">PNG</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ZIP/" rel="tag">ZIP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9A%90%E5%86%99/" rel="tag">隐写</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9B%B6%E5%AE%BD%E5%AD%97%E7%AC%A6/" rel="tag">零宽字符</a></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">标签云</h3>
-    <div class="widget tagcloud">
-      <a href="/tags/CRC32/" style="font-size: 10px;">CRC32</a> <a href="/tags/Misc/" style="font-size: 10px;">Misc</a> <a href="/tags/PNG/" style="font-size: 10px;">PNG</a> <a href="/tags/ZIP/" style="font-size: 10px;">ZIP</a> <a href="/tags/%E9%9A%90%E5%86%99/" style="font-size: 10px;">隐写</a> <a href="/tags/%E9%9B%B6%E5%AE%BD%E5%AD%97%E7%AC%A6/" style="font-size: 10px;">零宽字符</a>
-    </div>
-  </div>
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">归档</h3>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/03/">三月 2026</a></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">最新文章</h3>
-    <div class="widget">
-      <ul>
-        
-          <li>
-            <a href="/2026/03/15/2026%E8%BD%AF%E4%BB%B6%E7%B3%BB%E7%BB%9F%E5%AE%89%E5%85%A8%E8%B5%9BMISC-%E4%B8%AA%E4%BA%BAWP/">2026软件系统安全赛初赛 MISC个人WP</a>
-          </li>
-        
-      </ul>
-    </div>
-  </div>
-
-  
-</aside>
-        
-      </div>
-      <footer id="footer">
-  
-  <div class="outer">
-    <div id="footer-info" class="inner">
-      
-      &copy; 2026 Colin<br>
-      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
-    </div>
-  </div>
-</footer>
-
-    </div>
-    <nav id="mobile-nav">
-  
-    <a href="/" class="mobile-nav-link">Home</a>
-  
-    <a href="/archives" class="mobile-nav-link">Archives</a>
-  
-</nav>
-    
-
-
-<script src="/js/jquery-3.6.4.min.js"></script>
-
-
-
-  
-<script src="/fancybox/jquery.fancybox.min.js"></script>
-
-
-
-
-<script src="/js/script.js"></script>
-
-
-
-
-
-  </div>
-</body>
-</html>
+    </ul>
+  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站信息</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">1</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站总浏览量 :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2026-03-15T16:06:06.725Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(https://w.wallhaven.cc/full/po/wallhaven-pow7mm.jpg);"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By Colin</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.1</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.4</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.4"></script><script src="/js/main.js?v=5.5.4"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
