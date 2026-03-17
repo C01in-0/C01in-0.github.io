@@ -1,0 +1,15 @@
+/* 1. 精准锁定左上角 Logo 图标 */
+#nav #blog-info .site-icon {
+  height: 32px !important; /* 你可以根据喜好调成 36px 或 32px */
+  width: auto !important;
+  image-rendering: pixelated !important; /* 保持像素风清晰 */
+  transition: transform 0.3s ease-in-out !important;
+  display: inline-block !important;
+  vertical-align: middle !important;
+}
+
+/* 2. 悬停放大效果 */
+#nav #blog-info a:hover .site-icon {
+  transform: scale(1.2) !important;
+  cursor: pointer !important;
+}
