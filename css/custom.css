@@ -27,3 +27,106 @@
     /* 增加字间距，让句子看起来更有呼吸感和诗意 */
     letter-spacing: 2px !important; 
 }
+
+
+/* =========================================
+   1. 全局毛玻璃底座 & 悬停微交互
+   ========================================= */
+#post,
+#page,
+#archive,
+#tag,
+#category,
+.card-widget,
+.recent-post-item {
+    background: rgba(255, 255, 255, 0.65) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.5) !important;
+    box-shadow: 0 8px 16px -4px rgba(0, 0, 0, 0.05) !important;
+    /* 新增：让接下来的悬停动作变得丝滑（0.3秒过渡动画） */
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important; 
+}
+
+/* 【新增】鼠标悬停时的“呼吸浮现”特效 */
+/* 【修改后】只让主页的文章小卡片和侧边栏小卡片悬停浮动，大底板保持安静 */
+.card-widget:hover,
+.recent-post-item:hover {
+    transform: translateY(-5px); 
+    background: rgba(255, 255, 255, 0.85) !important; 
+    box-shadow: 0 15px 25px -5px rgba(0, 0, 0, 0.1) !important; 
+    border: 1px solid rgba(255, 255, 255, 0.9) !important; 
+}
+
+/* 强行扒掉博文卡片内部的实色“内衣” */
+.recent-post-info {
+    background: transparent !important;
+}
+
+/* =========================================
+   2. 待办页（note标签）重构：独立微质感卡片与专属交互
+   ========================================= */
+
+/* 基础状态：极淡的次级玻璃容器，划定物理边界 */
+.note {
+    background: rgba(255, 255, 255, 0.25) !important; /* 极淡的白色底，提供容器感 */
+    border: 1px solid rgba(255, 255, 255, 0.4) !important; /* 极细的微光边框 */
+    border-radius: 8px !important; /* 圆角，契合苹果风的高级感 */
+    box-shadow: 0 4px 6px -2px rgba(0, 0, 0, 0.02) !important; /* 几乎察觉不到的基础阴影 */
+    color: #333 !important; 
+    padding: 18px 20px !important; /* 让文字呼吸空间更大 */
+    margin-bottom: 24px !important; /* 把三个块的上下间距拉开，互不拥挤 */
+    
+    /* 赋予独立动效的灵魂 */
+    transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1) !important; 
+}
+
+/* 左侧彩色指示条：融入容器边缘 */
+.note.blue { border-left: 5px solid rgba(73, 177, 245, 0.85) !important; }
+.note.green { border-left: 5px solid rgba(66, 185, 131, 0.85) !important; }
+.note.red { border-left: 5px solid rgba(245, 108, 108, 0.85) !important; }
+
+/* 【核心新增】鼠标悬停：各自独立的交互与提亮 */
+.note:hover {
+    transform: translateY(-4px) !important; /* 当前卡片单独向上轻浮 4px */
+    background: rgba(255, 255, 255, 0.5) !important; /* 当前卡片亮度提升，聚焦视觉 */
+    border: 1px solid rgba(255, 255, 255, 0.8) !important; /* 边框高光变强 */
+    box-shadow: 0 12px 20px -5px rgba(0, 0, 0, 0.08) !important; /* 拖出高级感的柔和阴影 */
+}
+
+/* =========================================
+   3. 细节美化：让 Markdown 的复选框变高级
+   ========================================= */
+input[type="checkbox"] {
+    -webkit-appearance: none; /* 隐藏原生丑陋样式 */
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.7); /* 半透明白色边框 */
+    border-radius: 4px; /* 极客风的微圆角 */
+    background: rgba(255, 255, 255, 0.2); /* 内部玻璃感 */
+    position: relative;
+    vertical-align: middle;
+    margin-right: 6px;
+    margin-top: -2px;
+    transition: all 0.2s;
+}
+
+/* 打钩状态下的绝美样式 */
+input[type="checkbox"]:checked {
+    background: #49b1f5; /* 变成晶莹的蓝色 */
+    border-color: #49b1f5;
+}
+
+/* 手搓一个纯白色的精致小勾勾 */
+input[type="checkbox"]:checked::after {
+    content: '';
+    position: absolute;
+    top: 1px;
+    left: 4px;
+    width: 4px;
+    height: 8px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
