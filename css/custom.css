@@ -13,3 +13,17 @@
   transform: scale(1.2) !important;
   cursor: pointer !important;
 }
+/* 1. 安全引入 Google 免费开源艺术字库：思源宋体 */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500&display=swap');
+
+/* 2. 精准微调首页打字机副标题 */
+#subtitle {
+    /* 将字体替换为艺术字，如果加载失败则退回到系统默认的衬线体，保证安全 */
+    font-family: 'Noto Serif SC', serif !important; 
+    
+    /* 字号改小（默认大约是 2rem，我们缩小到 1.4rem，不抢 Colin 主标题的风头） */
+    font-size: 1.4rem !important; 
+    
+    /* 增加字间距，让句子看起来更有呼吸感和诗意 */
+    letter-spacing: 2px !important; 
+}
