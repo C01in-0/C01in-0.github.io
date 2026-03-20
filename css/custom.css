@@ -1,132 +1,190 @@
-/* 1. 精准锁定左上角 Logo 图标 */
-#nav #blog-info .site-icon {
-  height: 32px !important; /* 你可以根据喜好调成 36px 或 32px */
-  width: auto !important;
-  image-rendering: pixelated !important; /* 保持像素风清晰 */
-  transition: transform 0.3s ease-in-out !important;
-  display: inline-block !important;
-  vertical-align: middle !important;
-}
-
-/* 2. 悬停放大效果 */
-#nav #blog-info a:hover .site-icon {
-  transform: scale(1.2) !important;
-  cursor: pointer !important;
-}
-/* 1. 安全引入 Google 免费开源艺术字库：思源宋体 */
-@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500&display=swap');
-
-/* 2. 精准微调首页打字机副标题 */
-#subtitle {
-    /* 将字体替换为艺术字，如果加载失败则退回到系统默认的衬线体，保证安全 */
-    font-family: 'Noto Serif SC', serif !important; 
-    
-    /* 字号改小（默认大约是 2rem，我们缩小到 1.4rem，不抢 Colin 主标题的风头） */
-    font-size: 1.4rem !important; 
-    
-    /* 增加字间距，让句子看起来更有呼吸感和诗意 */
-    letter-spacing: 2px !important; 
-}
-
-
 /* =========================================
-   1. 全局毛玻璃底座 & 悬停微交互
+   【 Colin's Blog 】完全体 100% 健壮级极客 UI
    ========================================= */
-#post,
-#page,
-#archive,
-#tag,
-#category,
-.card-widget,
-.recent-post-item {
+
+/* -----------------------------------------
+   0. 个性化设定：Logo、字体与代码块
+   ----------------------------------------- */
+#nav #blog-info .site-icon {
+  height: 32px !important; width: auto !important; image-rendering: pixelated !important;
+  transition: transform 0.3s ease-in-out !important; display: inline-block !important; vertical-align: middle !important;
+}
+#nav #blog-info a:hover .site-icon { transform: scale(1.2) !important; cursor: pointer !important; }
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap');
+
+#subtitle {
+    font-family: 'Noto Serif SC', serif !important; font-size: 1.4rem !important; letter-spacing: 2px !important; 
+    opacity: 0; 
+}
+
+
+/* -----------------------------------------
+   1. 性能优化与浏览器渲染统一 (修复火狐发虚)
+   ----------------------------------------- */
+body { 
+    background-color: #2c3e50 !important; 
+    /* 强制开启抗锯齿，让 Edge 和 Firefox 渲染保持一致的饱满与平滑 */
+    -webkit-font-smoothing: antialiased !important;
+    -moz-osx-font-smoothing: grayscale !important;
+}
+#nav, #web_bg, .post-content img { will-change: transform, opacity, background; }
+
+
+/* -----------------------------------------
+   2. 视差底座与电影级调色
+   ----------------------------------------- */
+#web_bg {
+    background-color: #2c3e50 !important; background-attachment: fixed !important;
+    background-position: center center !important; background-size: cover !important;
+    filter: brightness(0.85) contrast(1.05) saturate(1.05) !important;
+}
+#page {
+    background: linear-gradient(180deg, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.6) 100%) !important;
+    box-shadow: 0 -10px 20px -10px rgba(0,0,0,0.05) !important;
+}
+[data-theme="dark"] #page {
+    background: linear-gradient(180deg, rgba(20,20,20,0.7) 0%, rgba(20,20,20,0.6) 100%) !important;
+    box-shadow: 0 -10px 20px -10px rgba(0,0,0,0.2) !important;
+}
+
+#page-header { background: transparent !important; }
+#page-header::before {
+    display: block !important;
+    background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.05) 50%, rgba(0,0,0,0.35) 100%) !important;
+}
+#site-title, #site-subtitle, #post-info, .page-title {
+    text-shadow: 0 4px 15px rgba(0, 0, 0, 0.6), 0 0 40px rgba(0,0,0,0.3) !important;
+}
+
+
+/* -----------------------------------------
+   3. 导航栏：回归官方原生体验 + 玻璃化质感
+   ----------------------------------------- */
+/* 初始状态（最顶端）：绝对的隐形，不干扰官方动作 */
+#nav {
+    background: transparent !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
+    border: none !important; box-shadow: none !important; z-index: 90 !important; 
+}
+
+/* 锁定文字颜色，防止被主题 JS 刷成灰色 */
+#nav #site-name, #nav .menus_items a, #nav #toggle-menu { 
+    color: #eee !important; text-shadow: 0 2px 5px rgba(0,0,0,0.4) !important; 
+}
+[data-theme="dark"] #nav #site-name, [data-theme="dark"] #nav .menus_items a, [data-theme="dark"] #nav #toggle-menu { 
+    color: #eee !important; text-shadow: 0 0 8px rgba(255,255,255,0.4) !important; 
+}
+
+/* 呼出状态：只在此刻披上毛玻璃外衣，动效全部交还给主题原生 JS */
+#nav.show {
+    background: rgba(255, 255, 255, 0.15) !important; 
+    backdrop-filter: blur(12px) !important; -webkit-backdrop-filter: blur(12px) !important;
+    box-shadow: 0 4px 15px -5px rgba(0, 0, 0, 0.1) !important;
+}
+[data-theme="dark"] #nav.show { background: rgba(20, 20, 20, 0.4) !important; }
+
+#nav .menus_items .menus_item .menus_item_child {
     background: rgba(255, 255, 255, 0.65) !important;
-    backdrop-filter: blur(12px) !important;
-    -webkit-backdrop-filter: blur(12px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.5) !important;
-    box-shadow: 0 8px 16px -4px rgba(0, 0, 0, 0.05) !important;
-    /* 新增：让接下来的悬停动作变得丝滑（0.3秒过渡动画） */
+    backdrop-filter: blur(10px) !important; -webkit-backdrop-filter: blur(10px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.5) !important; border-radius: 8px !important; box-shadow: 0 8px 16px -4px rgba(0,0,0,0.1) !important;
+}
+[data-theme="dark"] #nav .menus_items .menus_item .menus_item_child {
+    background: rgba(20, 20, 20, 0.8) !important; border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+
+/* -----------------------------------------
+   4. 全局毛玻璃底座与悬浮微交互
+   ----------------------------------------- */
+#post, #archive, #tag, #category, .card-widget, .recent-post-item {
+    background: rgba(255, 255, 255, 0.65) !important;
+    backdrop-filter: blur(12px) !important; -webkit-backdrop-filter: blur(12px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.5) !important; box-shadow: 0 8px 16px -4px rgba(0, 0, 0, 0.05) !important;
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important; 
 }
-
-/* 【新增】鼠标悬停时的“呼吸浮现”特效 */
-/* 【修改后】只让主页的文章小卡片和侧边栏小卡片悬停浮动，大底板保持安静 */
-.card-widget:hover,
-.recent-post-item:hover {
-    transform: translateY(-5px); 
-    background: rgba(255, 255, 255, 0.85) !important; 
-    box-shadow: 0 15px 25px -5px rgba(0, 0, 0, 0.1) !important; 
-    border: 1px solid rgba(255, 255, 255, 0.9) !important; 
+[data-theme="dark"] #post, [data-theme="dark"] #archive, [data-theme="dark"] #tag, [data-theme="dark"] #category, [data-theme="dark"] .card-widget, [data-theme="dark"] .recent-post-item {
+    background: rgba(20, 20, 20, 0.6) !important; border: 1px solid rgba(255, 255, 255, 0.08) !important; box-shadow: 0 8px 16px -4px rgba(0, 0, 0, 0.5) !important;
 }
-
-/* 强行扒掉博文卡片内部的实色“内衣” */
-.recent-post-info {
-    background: transparent !important;
+.card-widget:hover, .recent-post-item:hover {
+    transform: translateY(-5px); background: rgba(255, 255, 255, 0.85) !important; 
+    box-shadow: 0 15px 25px -5px rgba(0, 0, 0, 0.1) !important; border: 1px solid rgba(255, 255, 255, 0.9) !important; 
 }
+[data-theme="dark"] .card-widget:hover, [data-theme="dark"] .recent-post-item:hover {
+    background: rgba(45, 45, 45, 0.7) !important; border: 1px solid rgba(255, 255, 255, 0.15) !important; 
+}
+.recent-post-info { background: transparent !important; }
 
-/* =========================================
-   2. 待办页（note标签）重构：独立微质感卡片与专属交互
-   ========================================= */
 
-/* 基础状态：极淡的次级玻璃容器，划定物理边界 */
+/* -----------------------------------------
+   5. 待办清单 (Note) 极客卡片
+   ----------------------------------------- */
 .note {
-    background: rgba(255, 255, 255, 0.25) !important; /* 极淡的白色底，提供容器感 */
-    border: 1px solid rgba(255, 255, 255, 0.4) !important; /* 极细的微光边框 */
-    border-radius: 8px !important; /* 圆角，契合苹果风的高级感 */
-    box-shadow: 0 4px 6px -2px rgba(0, 0, 0, 0.02) !important; /* 几乎察觉不到的基础阴影 */
-    color: #333 !important; 
-    padding: 18px 20px !important; /* 让文字呼吸空间更大 */
-    margin-bottom: 24px !important; /* 把三个块的上下间距拉开，互不拥挤 */
-    
-    /* 赋予独立动效的灵魂 */
+    background: rgba(255, 255, 255, 0.25) !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
+    border: 1px solid rgba(255, 255, 255, 0.4) !important; border-radius: 8px !important; box-shadow: 0 4px 6px -2px rgba(0, 0, 0, 0.02) !important;
+    color: #333 !important; padding: 18px 20px !important; margin-bottom: 24px !important;
     transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1) !important; 
 }
-
-/* 左侧彩色指示条：融入容器边缘 */
+[data-theme="dark"] .note { background: rgba(0, 0, 0, 0.3) !important; border: 1px solid rgba(255, 255, 255, 0.05) !important; color: #eee !important; }
 .note.blue { border-left: 5px solid rgba(73, 177, 245, 0.85) !important; }
 .note.green { border-left: 5px solid rgba(66, 185, 131, 0.85) !important; }
 .note.red { border-left: 5px solid rgba(245, 108, 108, 0.85) !important; }
-
-/* 【核心新增】鼠标悬停：各自独立的交互与提亮 */
 .note:hover {
-    transform: translateY(-4px) !important; /* 当前卡片单独向上轻浮 4px */
-    background: rgba(255, 255, 255, 0.5) !important; /* 当前卡片亮度提升，聚焦视觉 */
-    border: 1px solid rgba(255, 255, 255, 0.8) !important; /* 边框高光变强 */
-    box-shadow: 0 12px 20px -5px rgba(0, 0, 0, 0.08) !important; /* 拖出高级感的柔和阴影 */
+    transform: translateY(-4px) !important; background: rgba(255, 255, 255, 0.5) !important;
+    border: 1px solid rgba(255, 255, 255, 0.8) !important; box-shadow: 0 12px 20px -5px rgba(0, 0, 0, 0.08) !important; 
 }
+[data-theme="dark"] .note:hover { background: rgba(30, 30, 30, 0.5) !important; border: 1px solid rgba(255, 255, 255, 0.1) !important; }
 
-/* =========================================
-   3. 细节美化：让 Markdown 的复选框变高级
-   ========================================= */
+
+/* -----------------------------------------
+   6. 细节体验与阅读排版优化
+   ----------------------------------------- */
 input[type="checkbox"] {
-    -webkit-appearance: none; /* 隐藏原生丑陋样式 */
-    appearance: none;
-    width: 16px;
-    height: 16px;
-    border: 2px solid rgba(255, 255, 255, 0.7); /* 半透明白色边框 */
-    border-radius: 4px; /* 极客风的微圆角 */
-    background: rgba(255, 255, 255, 0.2); /* 内部玻璃感 */
-    position: relative;
-    vertical-align: middle;
-    margin-right: 6px;
-    margin-top: -2px;
-    transition: all 0.2s;
+    -webkit-appearance: none; appearance: none; width: 16px; height: 16px; border: 2px solid rgba(255, 255, 255, 0.7); border-radius: 4px;
+    background: rgba(255, 255, 255, 0.2); position: relative; vertical-align: middle; margin-right: 6px; margin-top: -2px; transition: all 0.2s;
 }
-
-/* 打钩状态下的绝美样式 */
-input[type="checkbox"]:checked {
-    background: #49b1f5; /* 变成晶莹的蓝色 */
-    border-color: #49b1f5;
-}
-
-/* 手搓一个纯白色的精致小勾勾 */
+input[type="checkbox"]:checked { background: #49b1f5; border-color: #49b1f5; }
 input[type="checkbox"]:checked::after {
-    content: '';
-    position: absolute;
-    top: 1px;
-    left: 4px;
-    width: 4px;
-    height: 8px;
-    border: solid white;
-    border-width: 0 2px 2px 0;
-    transform: rotate(45deg);
+    content: ''; position: absolute; top: 1px; left: 4px; width: 4px; height: 8px; border: solid white; border-width: 0 2px 2px 0; transform: rotate(45deg);
+}
+::selection { background: #49b1f5 !important; color: #fff !important; }
+[data-theme="dark"] ::selection { background: rgba(255, 255, 255, 0.8) !important; color: #1a1a1a !important; }
+
+/* 代码字体圆润化：降级字重为 400，依靠全局抗锯齿实现圆润感 */
+code, pre, .line, .hljs { 
+    font-family: 'Fira Code', 'JetBrains Mono', Consolas, monospace !important; 
+    font-weight: 400 !important; 
+    font-size: 0.95rem; color: #3c4f62 !important; 
+}
+[data-theme="dark"] code, [data-theme="dark"] pre, [data-theme="dark"] .line, [data-theme="dark"] .hljs { color: #eee !important; }
+
+/* 提升正文文本可读性：放大字号，增加行高，统一浏览器渲染 */
+.post-content, .recent-post-item .article-title + .article-meta + .content { 
+    color: #2c3e50 !important; 
+    font-size: 16px !important; 
+    line-height: 1.8 !important; 
+}
+[data-theme="dark"] .post-content { color: #ccc !important; }
+
+/* 侧边栏与主页标签云优化 */
+.card-tag-cloud a { color: #444 !important; font-weight: 500 !important; text-shadow: none !important; }
+[data-theme="dark"] .card-tag-cloud a { color: #ccc !important; }
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(150, 150, 150, 0.3); border-radius: 10px; transition: all 0.3s; }
+::-webkit-scrollbar-thumb:hover { background: #49b1f5; }
+[data-theme="dark"] ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); }
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.6); }
+
+.post-content img { border-radius: 8px !important; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important; }
+.post-content img:hover { transform: scale(1.02); box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.15) !important; }
+[data-theme="dark"] .post-content img { filter: brightness(0.85); }
+[data-theme="dark"] .post-content img:hover { filter: brightness(1.0); }
+
+@supports not (backdrop-filter: blur(12px)) {
+    #nav.show { background: rgba(255, 255, 255, 0.85) !important; }
+    [data-theme="dark"] #nav.show { background: rgba(20, 20, 20, 0.9) !important; }
+    #post, #archive, #tag, #category, .card-widget, .recent-post-item { background: rgba(255, 255, 255, 0.9) !important; }
+    [data-theme="dark"] #post, [data-theme="dark"] #archive, [data-theme="dark"] #tag, [data-theme="dark"] #category, [data-theme="dark"] .card-widget, [data-theme="dark"] .recent-post-item { background: rgba(20, 20, 20, 0.8) !important; }
 }
