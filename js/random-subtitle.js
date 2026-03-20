@@ -53,3 +53,32 @@
     window.addEventListener('load', function() { triggerRandomSubtitle(0); });
     document.addEventListener('pjax:complete', function() { triggerRandomSubtitle(0); });
 })();
+
+
+/* =========================================
+   【底层修复】解决图片异步加载导致右侧目录 (TOC) 偏移错位的问题
+   ========================================= */
+(function() {
+    'use strict';
+    function fixTocScroll() {
+        // 抓取文章里的所有图片
+        var imgs = document.querySelectorAll('.post-content img');
+        if (imgs.length === 0) return;
+        
+        imgs.forEach(function(img) {
+            // 如果图片瞬间就已经加载完了（比如有缓存），直接跳过
+            if (img.complete) return;
+            
+            // 监听：一旦这张图片加载完毕，撑开了网页
+            img.onload = function() {
+                // 核心魔法：派发一个全局的 Resize（窗口尺寸改变）事件。
+                // 这会骗过 Butterfly 主题的底层 JS，逼迫它重新计算目录的高亮坐标！
+                window.dispatchEvent(new Event('resize'));
+            };
+        });
+    }
+
+    // 绑定事件（兼容首次加载与 Pjax 切页）
+    window.addEventListener('load', fixTocScroll);
+    document.addEventListener('pjax:complete', fixTocScroll);
+})();
