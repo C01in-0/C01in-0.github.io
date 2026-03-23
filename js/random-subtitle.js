@@ -1,60 +1,78 @@
 /* =========================================
-   【Colin's Blog】健壮版副标题劫持脚本 (解决光标竞态问题)
+   【 Colin's Blog 】随机副标题 (容器级绝对强控版)
    ========================================= */
 (function() {
     'use strict'; 
+    var isRebuilding = false; 
 
     function triggerRandomSubtitle(retryCount = 0) {
-        var subtitleEl = document.getElementById('subtitle');
-        var maxRetries = 15; 
+        if (isRebuilding) return; 
 
-        // 1. 安全轮询（增加保护层）
+        var subtitleEl = document.getElementById('subtitle');
+        var subtitleWrap = document.getElementById('site-subtitle'); // 抓取父容器
+        var maxRetries = 40; 
+
         if (!subtitleEl || !window.typed) {
             if (retryCount < maxRetries) {
-                setTimeout(function() { triggerRandomSubtitle(retryCount + 1); }, 100);
+                setTimeout(function() { triggerRandomSubtitle(retryCount + 1); }, 50);
             } else {
-                console.warn("[Colin's Blog] 打字机加载超时，已安全放弃接管。");
+                // 超时兜底：强行解禁父容器
+                if (subtitleWrap) subtitleWrap.classList.add('colin-ready');
             }
             return;
         }
 
-        // 2. 核心执行：强行蒸发初始文本，防光标空移
-        try {
-            subtitleEl.style.opacity = '0';
-            subtitleEl.style.transition = 'none'; 
-            // 【关键击杀】将原本生成的字符内容彻底清空，确保打字机从空串开始
-            subtitleEl.textContent = ""; 
+        isRebuilding = true; 
 
+        try {
+            // 1. 击碎原生引擎
+            if (typeof window.typed.destroy === 'function') {
+                window.typed.destroy();
+            }
+
+            // 2. 清理残骸
+            subtitleEl.innerHTML = '';
+            
+            // 3. 抽卡装弹
             var rand = Math.random();
             var text = "";
-            
-            // 抽卡概率配置
             if (rand < 0.02) text = "恭喜你！这句话出现的概率仅为万分之一，幸运的人啊，愿你天天开心";
             else if (rand < 0.265) text = "余虽不敏，亦望卒有所获";
             else if (rand < 0.510) text = "人生亦不过百岁，何必蹉跎徒伤悲";
             else if (rand < 0.755) text = "别辜负眼前季节";
             else text = "Fly, Fly, Fly To Sky";
             
-            window.typed.strings = [text];
-            window.typed.reset(); 
-            
-            requestAnimationFrame(function() {
-                setTimeout(function() {
-                    subtitleEl.style.transition = 'opacity 0.6s cubic-bezier(0.25, 0.8, 0.25, 1)';
-                    subtitleEl.style.opacity = '1';
-                }, 150);
+            // 4. 重建纯净版打字机
+            window.typed = new Typed('#subtitle', {
+                strings: [text],
+                startDelay: 50,      
+                typeSpeed: 90,       
+                loop: false,         
+                showCursor: true,    
+                cursorChar: '|',
+                onComplete: function() {
+                    isRebuilding = false; 
+                }
             });
+
+            // 5. 【核心交接】打字机建好后，给父容器打上通行证，解除 CSS 黑盒
+            setTimeout(function() {
+                if (subtitleWrap) subtitleWrap.classList.add('colin-ready');
+                else subtitleEl.style.setProperty('opacity', '1', 'important'); // 极限防崩兜底
+            }, 50);
+
         } catch (error) {
-            console.error("[Colin's Blog] 副标题劫持异常，已拦截：", error);
+            console.error("[Colin's Blog] 副标题劫持异常：", error);
+            if (subtitleEl) subtitleEl.innerHTML = "Fly, Fly, Fly To Sky";
+            if (subtitleWrap) subtitleWrap.classList.add('colin-ready');
+            isRebuilding = false; 
         }
     }
 
-    // 绑定事件（兼容首次加载与 Pjax）
+    // 绑定事件
     window.addEventListener('load', function() { triggerRandomSubtitle(0); });
     document.addEventListener('pjax:complete', function() { triggerRandomSubtitle(0); });
 })();
-
-
 /* =========================================
    【底层修复】解决图片异步加载导致右侧目录 (TOC) 偏移错位的问题
    ========================================= */

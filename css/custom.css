@@ -3,7 +3,7 @@
    ========================================= */
 
 /* -----------------------------------------
-   0. 个性化设定：Logo、字体与代码块
+   0. 个性化设定：Logo、字体与副标题防闪烁
    ----------------------------------------- */
 #nav #blog-info .site-icon {
   height: 32px !important; width: auto !important; image-rendering: pixelated !important;
@@ -14,9 +14,24 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap');
 
+/* =========================================
+   副标题艺术字与【容器级绝对强控遮罩】
+   ========================================= */
 #subtitle {
-    font-family: 'Noto Serif SC', serif !important; font-size: 1.4rem !important; letter-spacing: 2px !important; 
-    opacity: 0; 
+    font-family: 'Noto Serif SC', serif !important; 
+    font-size: 1.4rem !important; 
+    letter-spacing: 2px !important; 
+}
+
+/* 核心杀招：直接隐身父容器！连同那个乱跑的幽灵光标一起物理消灭 */
+#site-subtitle {
+    opacity: 0 !important;
+    transition: opacity 0.4s ease-out !important;
+}
+
+/* JS 重构完毕后，赋予放行通行证，整体优雅淡入 */
+#site-subtitle.colin-ready {
+    opacity: 1 !important;
 }
 
 
@@ -139,6 +154,7 @@ body {
 /* -----------------------------------------
    6. 细节体验与阅读排版优化
    ----------------------------------------- */
+/* 复选框美化 */
 input[type="checkbox"] {
     -webkit-appearance: none; appearance: none; width: 16px; height: 16px; border: 2px solid rgba(255, 255, 255, 0.7); border-radius: 4px;
     background: rgba(255, 255, 255, 0.2); position: relative; vertical-align: middle; margin-right: 6px; margin-top: -2px; transition: all 0.2s;
@@ -158,6 +174,20 @@ code, pre, .line, .hljs {
 }
 [data-theme="dark"] code, [data-theme="dark"] pre, [data-theme="dark"] .line, [data-theme="dark"] .hljs { color: #eee !important; }
 
+/* 行内代码块（Inline Code）微光质感 */
+.post-content code:not([class*="language-"]) {
+    background: rgba(73, 177, 245, 0.1) !important;
+    color: #49b1f5 !important;
+    border: 1px solid rgba(73, 177, 245, 0.2) !important;
+    border-radius: 4px !important;
+    padding: 2px 6px !important;
+    margin: 0 3px !important;
+    word-break: break-word;
+}
+[data-theme="dark"] .post-content code:not([class*="language-"]) {
+    background: rgba(255, 255, 255, 0.1) !important; color: #e0e0e0 !important; border: 1px solid rgba(255, 255, 255, 0.15) !important;
+}
+
 /* 提升正文文本可读性：放大字号，增加行高，统一浏览器渲染 */
 .post-content, .recent-post-item .article-title + .article-meta + .content { 
     color: #2c3e50 !important; 
@@ -166,10 +196,24 @@ code, pre, .line, .hljs {
 }
 [data-theme="dark"] .post-content { color: #ccc !important; }
 
+/* 正文超链接悬停“生长”动效 */
+.post-content p a {
+    position: relative; color: #49b1f5 !important; text-decoration: none !important; transition: color 0.3s;
+}
+.post-content p a::after {
+    content: ''; position: absolute; width: 100%; height: 2px; bottom: -2px; left: 0;
+    background-color: #49b1f5; visibility: hidden; transform: scaleX(0); transition: all 0.3s ease-in-out;
+}
+.post-content p a:hover::after { visibility: visible; transform: scaleX(1); }
+
 /* 侧边栏与主页标签云优化 */
 .card-tag-cloud a { color: #444 !important; font-weight: 500 !important; text-shadow: none !important; }
 [data-theme="dark"] .card-tag-cloud a { color: #ccc !important; }
 
+
+/* -----------------------------------------
+   7. 滚动条与图片美化
+   ----------------------------------------- */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: rgba(150, 150, 150, 0.3); border-radius: 10px; transition: all 0.3s; }
@@ -182,6 +226,10 @@ code, pre, .line, .hljs {
 [data-theme="dark"] .post-content img { filter: brightness(0.85); }
 [data-theme="dark"] .post-content img:hover { filter: brightness(1.0); }
 
+
+/* -----------------------------------------
+   8. 硬件兜底 (Fallback)
+   ----------------------------------------- */
 @supports not (backdrop-filter: blur(12px)) {
     #nav.show { background: rgba(255, 255, 255, 0.85) !important; }
     [data-theme="dark"] #nav.show { background: rgba(20, 20, 20, 0.9) !important; }
