@@ -268,7 +268,7 @@ code, pre, .line, .hljs {
 #nav #search-button i,
 #nav.fixed #search-button,
 #nav.show #search-button {
-    color: #fff !important;
+    color: #ffffffd9 !important;
     opacity: 1 !important;
     font-weight: 800 !important;
     text-shadow: 0 0 12px rgba(73, 177, 245, 0.6) !important;
@@ -328,7 +328,7 @@ code, pre, .line, .hljs {
 }
 /* 搜索结果摘要同步加深，但保持柔和 */
 .search-result-list .search-result {
-    color: #333333 !important; 
+    color: #222333 !important; 
     opacity: 0.9 !important;
 }
 /* 搜索结果标题稍微加深 */
