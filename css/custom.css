@@ -176,8 +176,9 @@ code, pre, .line, .hljs {
 
 /* 行内代码块（Inline Code）微光质感 */
 .post-content code:not([class*="language-"]) {
-    background: rgba(73, 177, 245, 0.1) !important;
-    color: #49b1f5 !important;
+    background: rgba(73, 177, 245, 0.08) !important;
+    color: #2b6cb0 !important; 
+    font-weight: 500 !important; 
     border: 1px solid rgba(73, 177, 245, 0.2) !important;
     border-radius: 4px !important;
     padding: 2px 6px !important;
@@ -185,7 +186,9 @@ code, pre, .line, .hljs {
     word-break: break-word;
 }
 [data-theme="dark"] .post-content code:not([class*="language-"]) {
-    background: rgba(255, 255, 255, 0.1) !important; color: #e0e0e0 !important; border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    background: rgba(255, 255, 255, 0.08) !important; 
+    color: #90cdf4 !important; 
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
 }
 
 /* 提升正文文本可读性：放大字号，增加行高，统一浏览器渲染 */
@@ -254,12 +257,27 @@ code, pre, .line, .hljs {
     font-family: 'Noto Serif SC', 'Fira Code', serif !important;
 }
 
-/* 2. 导航栏：保持 8.0 权重，不做变动 */
-#nav #search-button {
+/* 2. 导航栏：拦截滚动时注入的 nav-fixed 状态，物理隔绝 JS 变黑干预 */
+#page-header.nav-fixed #nav #search-button,
+#page-header.nav-fixed #nav #search-button a,
+#page-header.nav-fixed #nav #search-button span,
+#page-header.nav-fixed #nav #search-button i,
+#nav #search-button,
+#nav #search-button a,
+#nav #search-button span,
+#nav #search-button i,
+#nav.fixed #search-button,
+#nav.show #search-button {
     color: #fff !important;
     opacity: 1 !important;
     font-weight: 800 !important;
     text-shadow: 0 0 12px rgba(73, 177, 245, 0.6) !important;
+}
+
+/* 保护悬停状态不被覆盖 */
+#page-header.nav-fixed #nav #search-button a:hover,
+#nav #search-button a:hover {
+    color: #49b1f5 !important;
 }
 
 /* 3. 玻璃底座：保持 8.0 极清参数，不做变动 */
@@ -302,7 +320,6 @@ code, pre, .line, .hljs {
 #local-search-input {
     background: rgba(255, 255, 255, 0.15) !important;
     border: 1px solid rgba(73, 177, 245, 0.5) !important;
-    /* 从 #000 撤回到 #333，呈现深一度的灰色感 */
     color: #080808 !important; 
 }
 /* 占位符同步减淡，避免喧宾夺主 */
