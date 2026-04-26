@@ -34,6 +34,20 @@
     opacity: 1 !important;
 }
 
+/* 🚀 普瑞塞斯彩蛋：底层数据溢出特效 (去赛博朋克化，纯粹的代码剥离感) */
+.glitch-active {
+    animation: colin-glitch-skew 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
+    color: #a0a0a0 !important;
+    letter-spacing: 3px !important;
+}
+
+@keyframes colin-glitch-skew {
+    0% { transform: translateX(0) skew(0deg); opacity: 0.8; }
+    20% { transform: translateX(-1px) skew(-2deg); opacity: 0.5; }
+    40% { transform: translateX(1px) skew(2deg); opacity: 1; }
+    100% { transform: translateX(0) skew(0deg); opacity: 0.8; }
+}
+
 
 /* -----------------------------------------
    1. 性能优化与浏览器渲染统一 (修复火狐发虚)
