@@ -289,8 +289,8 @@
             else if (index === 7) delay += 3000;  
             else if (index === 8) delay += 2000; 
             else if (index === 9) delay += 2000; 
-            else if (index === 10) delay += 2800; 
-            else if (index === 11) delay += 1000; 
+            else if (index === 10) delay += 2500; 
+            else if (index === 11) delay += 500; 
         });
 
         setTimeout(function() {
