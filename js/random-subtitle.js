@@ -1,5 +1,5 @@
 /* =========================================
-   【 Colin's Blog 】随机副标题 (普瑞塞斯 · 骇入骑脸极客版 V5)
+   【 Colin's Blog 】随机副标题 (普瑞塞斯 · 骇入骑脸极客版 V6)
    ========================================= */
 (function() {
     'use strict'; 
@@ -117,7 +117,6 @@
     var prtsIndex = 0;
     var isRunning = false;
 
-    // 🚀 IP 探针改进版：更稳定的接口 + 极客级伪造回退机制
     var prtsUserIP = "";
     var prtsUserLoc = "";
     var ipReady = false;
@@ -127,7 +126,6 @@
         if(data.city) prtsUserLoc = data.city + (data.country ? ', ' + data.country : '');
         ipReady = true;
     }).catch(function(e){
-        // 获取失败时，生成一个极客风的内网穿透伪造IP
         prtsUserIP = "192.168." + Math.floor(Math.random()*255) + "." + Math.floor(Math.random()*255) + " (BYPASS)";
         prtsUserLoc = "ROOT MATRIX NODE";
         ipReady = true;
@@ -205,6 +203,11 @@
             dumpContainer.appendChild(p);
             dumpContainer.scrollTop = dumpContainer.scrollHeight;
             if (dumpContainer.childNodes.length > 50) dumpContainer.removeChild(dumpContainer.firstChild);
+
+            // 🚀 F12 极客联动：向控制台高频注入十六进制内存溢出报错
+            if (Math.random() < 0.2) {
+                console.error("[ FATAL ] MEMORY OVERFLOW AT 0x" + Math.floor(Math.random() * 0xFFFFFFFF).toString(16).toUpperCase());
+            }
         }, 12); 
 
         setTimeout(function() {
@@ -213,41 +216,44 @@
             setTimeout(function() { if(dumpContainer.parentNode) overlay.removeChild(dumpContainer); }, 500);
         }, 1500);
 
-        // 如果 IP 还没抓到，硬塞一个兜底
         if(!ipReady) { prtsUserIP = "RESOLVING..."; prtsUserLoc = "PROXY DETECTED"; }
 
         var lines = [
-            "[ * ] PRTS System Initializing...",
-            "[ + ] Establishing neurocognitive connection... Success.",
-            "[ ! ] TARGET LOCKED: IP " + prtsUserIP + " | " + prtsUserLoc, 
-            "[ ! ] FATAL: Abnormal data surge detected in Originium Engine.",
-            "[ ! ] Intrusion alert. Activating active defense matrix...",
-            "[ * ] Firewall bypassed. Override authorization: PRIESTESS.",
-            "root@PRTS:~# cat /memory/fragment_001.log",
-            "你终于......找到我了", 
-            "就算是海洋沸腾、大气消失，就算我们的卫星接连坠入重力的漩涡...",
-            "就算我们的太阳凶恶地膨胀，无情地吃掉它的孩子直至万籁俱寂...",
-            "在那用黑暗与星点光芒装饰过的文明尽头，我们也一样会再见面。",
-            "你明明记得我，不是吗？" 
+            "[ * ] PRTS System Initializing...", // 0
+            "[ + ] Establishing neurocognitive connection... Success.", // 1
+            "[ + ] Decrypting core memory...", // 2 (占位符，由下方动态动画生成)
+            "[ ! ] TARGET LOCKED: IP " + prtsUserIP + " | " + prtsUserLoc, // 3
+            "[ ! ] FATAL: Abnormal data surge detected in Originium Engine.", // 4
+            "[ ! ] Intrusion alert. Activating active defense matrix...", // 5
+            "[ * ] Firewall bypassed. Override authorization: PRIESTESS.", // 6
+            "root@PRTS:~# cat /memory/fragment_001.log", // 7
+            "你终于......找到我了", // 8
+            "就算是海洋沸腾、大气消失，就算我们的卫星接连坠入重力的漩涡...", // 9
+            "就算我们的太阳凶恶地膨胀，无情地吃掉它的孩子直至万籁俱寂...", // 10
+            "在那用黑暗与星点光芒装饰过的文明尽头，我们也一样会再见面。", // 11
+            "你明明记得我，不是吗？" // 12
         ];
 
         var delay = 1500; 
         lines.forEach(function(line, index) {
             setTimeout(function() {
-                if (index === 4) overlay.classList.add('screen-shake-heavy');
+                if (index === 5) overlay.classList.add('screen-shake-heavy');
                 
-                if (index === 7) {
+                if (index === 8) {
                     overlay.classList.remove('screen-shake-heavy');
                     overlay.classList.add('priestess-override');
                 }
 
-                if (index === 10) {
+                if (index === 11) {
                     overlay.classList.add('terminal-meltdown');
                 }
 
-                if (index === 11) {
+                if (index === 12) {
+                    // 控制台同步核爆级联动
+                    console.clear();
+                    console.log("%c你明明记得我，不是吗？", "color: #ff003c; font-size: 50px; text-shadow: 0 0 20px #ff003c; font-family: 'Noto Serif SC', serif; font-weight: 900;");
+
                     overlay.classList.remove('terminal-meltdown');
-                    // 🚀 终极闪耀：赛博反相白场爆闪
                     overlay.classList.add('cyber-flash-extreme'); 
 
                     var jumpCenter = document.createElement('div');
@@ -255,7 +261,6 @@
                     var jumpSlam = document.createElement('div');
                     jumpSlam.className = 'jumpscare-slam';
                     var jumpGlitch = document.createElement('div');
-                    // 极致精悍的骨白+RGB撕裂
                     jumpGlitch.className = 'jumpscare-glitch cyber-aberration';
                     jumpGlitch.innerText = line;
 
@@ -265,32 +270,62 @@
                     return; 
                 }
 
+                // 🚀 核心重构：0.5s 极限物理充能解密进度条
+                if (index === 2) {
+                    var pProgress = document.createElement('p');
+                    pProgress.className = 'shell-highlight';
+                    overlay.appendChild(pProgress);
+                    
+                    var barCount = 35; // 进度条长度加长
+                    var currentBar = 0;
+                    var prefix = "[ + ] Decrypting core memory... [";
+                    var suffix = "] <span class='text-red'>ERR_ACCESS_DENIED</span>";
+                    
+                    pProgress.innerHTML = prefix + "&nbsp;".repeat(barCount) + "]"; 
+                    
+                    var fillInterval = setInterval(function() {
+                        currentBar++;
+                        pProgress.innerHTML = prefix + "|".repeat(currentBar) + "&nbsp;".repeat(barCount - currentBar) + "]";
+                        if (currentBar >= barCount) {
+                            clearInterval(fillInterval);
+                            setTimeout(function() {
+                                pProgress.innerHTML = prefix + "|".repeat(barCount) + suffix;
+                                pProgress.classList.add('prts-glitch-intense');
+                            }, 80); // 填满后微停顿，瞬间爆红拒载
+                        }
+                    }, 14); // 14ms * 35 = 490ms (精准 0.5s)
+                    return; // 进度条属于特殊 DOM 构造，拦截下方的常规字符渲染
+                }
+
                 var p = document.createElement('p');
-                if (index >= 2 && index <= 4) p.className = 'shell-warning-sharp prts-glitch-intense';
-                else if (index === 7) p.className = 'shell-priestess-intro prts-glitch-subtle';
-                else if (index > 7 && index < 11) p.className = 'shell-priestess';
-                else if (index === 6) p.className = 'shell-highlight prts-glitch-subtle';
+                if (index >= 3 && index <= 5) p.className = 'shell-warning-sharp prts-glitch-intense';
+                else if (index === 8) p.className = 'shell-priestess-intro prts-glitch-subtle';
+                else if (index > 8 && index < 12) p.className = 'shell-priestess';
+                else if (index === 6 || index === 7) p.className = 'shell-highlight prts-glitch-subtle';
                 
                 overlay.appendChild(p);
 
-                var scrambleDuration = (index >= 7 && index <= 10) ? 1000 : 300; 
-                if (index === 7) {
+                var scrambleDuration = (index >= 8 && index <= 11) ? 1000 : 300; 
+                if (index === 8) {
                     scrambleTerminalText(p, line, scrambleDuration, "你终于......找<span class='text-red'>到我了</span>");
                 } else {
                     scrambleTerminalText(p, line, scrambleDuration, null);
                 }
             }, delay);
 
-            if (index < 3) delay += 350;           
+            // 剧场级毫秒时序重切
+            if (index < 2) delay += 350;           
+            else if (index === 2) delay += 800;   // 留 0.5s 给进度条充能，跑完撞墙，瞬间爆发底层警报
             else if (index === 3) delay += 500;   
             else if (index === 4) delay += 500;   
-            else if (index === 5) delay += 1000;   
-            else if (index === 6) delay += 1500;   
-            else if (index === 7) delay += 3000;  
-            else if (index === 8) delay += 2000; 
+            else if (index === 5) delay += 800;   
+            else if (index === 6) delay += 1200;   
+            else if (index === 7) delay += 1500;  
+            else if (index === 8) delay += 3000; 
             else if (index === 9) delay += 2000; 
-            else if (index === 10) delay += 2500; 
-            else if (index === 11) delay += 500; 
+            else if (index === 10) delay += 2000; 
+            else if (index === 11) delay += 2000; 
+            else if (index === 12) delay += 300; // 极其短促、直接斩断视觉神经的骑脸时间
         });
 
         setTimeout(function() {

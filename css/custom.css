@@ -20,7 +20,7 @@
 #site-subtitle { opacity: 0 !important; transition: opacity 0.5s cubic-bezier(0.25, 0.8, 0.25, 1) !important; }
 #site-subtitle.colin-ready { opacity: 1 !important; }
 
-/* 🚀 首页灰色闪烁撕裂感 */
+/* 🚀 首页灰色闪烁撕裂感：已加入最强 !important 权重剥夺主题覆写 */
 #subtitle.glitch-active {
     animation: colin-subtitle-glitch 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite !important;
     color: #a0a0a0 !important;
@@ -140,9 +140,11 @@ code, pre, .line, .hljs { font-family: 'Fira Code', 'JetBrains Mono', Consolas, 
     padding: 60px; box-sizing: border-box;
     font-family: 'Fira Code', 'JetBrains Mono', Consolas, monospace; 
     color: #42b983; font-size: 1.2rem; line-height: 2.2;
-    pointer-events: none; overflow: hidden;
+    overflow: hidden;
     animation: crt-turn-on 0.3s cubic-bezier(0.23, 1, 0.32, 1) forwards;
     transition: background 1.5s ease, box-shadow 1s ease;
+    /* 🚀 物理操控剥夺：强制显示狙击准星 */
+    cursor: crosshair !important; 
 }
 
 #ctf-shell-overlay::after {
@@ -150,6 +152,13 @@ code, pre, .line, .hljs { font-family: 'Fira Code', 'JetBrains Mono', Consolas, 
     top: 0; left: 0; bottom: 0; right: 0;
     background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
     background-size: 100% 4px; z-index: 2; pointer-events: none;
+}
+
+/* 🚀 选中权限剥夺：反向高亮，选中即不可见 */
+#ctf-shell-overlay ::selection {
+    background: #ff003c !important;
+    color: #000000 !important;
+    text-shadow: none !important;
 }
 
 #ctf-shell-overlay p { margin: 0; text-shadow: 0 0 5px rgba(66, 185, 131, 0.4); position: relative; z-index: 3; transition: all 1s ease; }
@@ -167,7 +176,6 @@ code, pre, .line, .hljs { font-family: 'Fira Code', 'JetBrains Mono', Consolas, 
 
 @keyframes fatal-cursor-blink { 0%, 100% { opacity: 1; color: #00f0ff; } 50% { opacity: 0.5; color: #fff; } }
 
-/* 🚀 锋利化极客警报 */
 #ctf-shell-overlay .shell-warning-sharp { 
     font-family: 'Fira Code', 'JetBrains Mono', Consolas, monospace !important;
     color: #ff003c; 
@@ -199,8 +207,12 @@ code, pre, .line, .hljs { font-family: 'Fira Code', 'JetBrains Mono', Consolas, 
 .hex-dump-wash-extreme .fatal-hex-block { color: #ff003c !important; background: rgba(255,0,60,0.2); text-shadow: 0 0 8px #ff003c !important; font-weight: bold; }
 .wash-fade { opacity: 0 !important; }
 
-/* 🚀 系统接管暗场 */
-#ctf-shell-overlay.priestess-override { background: #020202; }
+/* 🚀 系统完全接管暗场 */
+#ctf-shell-overlay.priestess-override { 
+    background: #020202; 
+    /* 彻底剥夺光标 */
+    cursor: none !important; 
+}
 #ctf-shell-overlay.priestess-override p:not(.shell-priestess):not(.shell-priestess-intro) { opacity: 0.05 !important; filter: blur(6px); }
 
 .terminal-meltdown { animation: meltdown-anim 0.15s infinite; }
@@ -210,7 +222,6 @@ code, pre, .line, .hljs { font-family: 'Fira Code', 'JetBrains Mono', Consolas, 
     100% { filter: contrast(1.5) hue-rotate(180deg) invert(0.8); transform: scale(1.05) skewX(4deg); }
 }
 
-/* 🚀 赛博爆闪与精悍的乱码质问 */
 #ctf-shell-overlay.cyber-flash-extreme { animation: cyber-flash 0.3s ease-out; }
 @keyframes cyber-flash {
     0% { background: #ffffff; filter: invert(1); }
@@ -225,7 +236,6 @@ code, pre, .line, .hljs { font-family: 'Fira Code', 'JetBrains Mono', Consolas, 
 }
 .jumpscare-slam {
     opacity: 0;
-    /* 切入极其干脆，没有模糊缩放的廉价感 */
     animation: cyber-snap-in 0.1s steps(2, start) forwards;
 }
 @keyframes cyber-snap-in {
@@ -233,12 +243,12 @@ code, pre, .line, .hljs { font-family: 'Fira Code', 'JetBrains Mono', Consolas, 
     100% { opacity: 1; transform: translateY(0); }
 }
 .cyber-aberration {
-    color: #ffffff; /* 冰冷骨白 */
+    color: #ffffff; 
     font-family: 'Fira Code', 'Noto Serif SC', monospace !important; 
-    font-size: 3.5rem; /* 精悍锐利 */
+    font-size: 3.5rem; 
     font-weight: 900; letter-spacing: 5px;
     white-space: nowrap;
-    text-shadow: 2px 0 0 #ff003c, -2px 0 0 #00f0ff; /* 极其赛博的通道分离 */
+    text-shadow: 2px 0 0 #ff003c, -2px 0 0 #00f0ff; 
     animation: cyber-glitch 0.2s infinite;
 }
 @keyframes cyber-glitch {
