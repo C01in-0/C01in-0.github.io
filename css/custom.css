@@ -2,67 +2,43 @@
    【 Colin's Blog 】完全体 100% 健壮级极客 UI
    ========================================= */
 
-/* -----------------------------------------
-   0. 个性化设定：Logo、字体与副标题防闪烁
-   ----------------------------------------- */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;900&display=swap');
+
 #nav #blog-info .site-icon {
   height: 32px !important; width: auto !important; image-rendering: pixelated !important;
   transition: transform 0.3s ease-in-out !important; display: inline-block !important; vertical-align: middle !important;
 }
 #nav #blog-info a:hover .site-icon { transform: scale(1.2) !important; cursor: pointer !important; }
 
-@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;900&display=swap');
-
-/* =========================================
-   副标题艺术字与【极致优雅原版淡入】
-   ========================================= */
 #subtitle {
     font-family: 'Noto Serif SC', serif !important; 
     font-size: 1.4rem !important; 
     letter-spacing: 2px !important; 
 }
 
-/* 恢复最初的优雅杀招：强制 0 透明度掩护，屏蔽原生光标乱闪 */
-#site-subtitle {
-    opacity: 0 !important;
-    transition: opacity 0.5s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
-}
+#site-subtitle { opacity: 0 !important; transition: opacity 0.5s cubic-bezier(0.25, 0.8, 0.25, 1) !important; }
+#site-subtitle.colin-ready { opacity: 1 !important; }
 
-/* JS 重构完毕后，赋予通行证，丝滑淡入，绝不拖泥带水 */
-#site-subtitle.colin-ready {
-    opacity: 1 !important;
-}
-
-/* 🚀 普瑞塞斯彩蛋：底层数据溢出特效 (去赛博朋克化，纯粹的代码剥离感) */
-.glitch-active {
-    animation: colin-glitch-skew 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
+/* 🚀 首页灰色闪烁撕裂感 */
+#subtitle.glitch-active {
+    animation: colin-subtitle-glitch 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite !important;
     color: #a0a0a0 !important;
-    letter-spacing: 3px !important;
+    letter-spacing: 5px !important;
+    font-weight: 900 !important;
+    text-shadow: none !important;
+    display: inline-block !important;
+}
+@keyframes colin-subtitle-glitch {
+    0% { transform: skew(0deg); opacity: 0.9; }
+    20% { transform: skew(-5deg) translateX(-2px); opacity: 0.6; }
+    40% { transform: skew(5deg) translateX(2px); opacity: 1; }
+    100% { transform: skew(0deg); opacity: 0.9; }
 }
 
-@keyframes colin-glitch-skew {
-    0% { transform: translateX(0) skew(0deg); opacity: 0.8; }
-    20% { transform: translateX(-1px) skew(-2deg); opacity: 0.5; }
-    40% { transform: translateX(1px) skew(2deg); opacity: 1; }
-    100% { transform: translateX(0) skew(0deg); opacity: 0.8; }
-}
-
-
-/* -----------------------------------------
-   1. 性能优化与浏览器渲染统一 (修复火狐发虚)
-   ----------------------------------------- */
-body { 
-    background-color: #2c3e50 !important; 
-    -webkit-font-smoothing: antialiased !important;
-    -moz-osx-font-smoothing: grayscale !important;
-}
+body { background-color: #2c3e50 !important; -webkit-font-smoothing: antialiased !important; -moz-osx-font-smoothing: grayscale !important; }
 #nav, #web_bg, .post-content img { will-change: transform, opacity, background; }
 
-
-/* -----------------------------------------
-   2. 视差底座与电影级调色
-   ----------------------------------------- */
 #web_bg {
     background-color: #2c3e50 !important; background-attachment: fixed !important;
     background-position: center center !important; background-size: cover !important;
@@ -78,160 +54,48 @@ body {
 }
 
 #page-header { background: transparent !important; }
-#page-header::before {
-    display: block !important;
-    background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.05) 50%, rgba(0,0,0,0.35) 100%) !important;
-}
-#site-title, #site-subtitle, #post-info, .page-title {
-    text-shadow: 0 4px 15px rgba(0, 0, 0, 0.6), 0 0 40px rgba(0,0,0,0.3) !important;
-}
+#page-header::before { display: block !important; background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.05) 50%, rgba(0,0,0,0.35) 100%) !important; }
+#site-title, #site-subtitle, #post-info, .page-title { text-shadow: 0 4px 15px rgba(0, 0, 0, 0.6), 0 0 40px rgba(0,0,0,0.3) !important; }
 
-
-/* -----------------------------------------
-   3. 导航栏：彻底解决发黑与图标消失的终极隔离方案
-   ----------------------------------------- */
-#nav {
-    background: transparent !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
-    border: none !important; box-shadow: none !important; z-index: 90 !important; 
-}
-
-/* 【策略 A：文字区】精确拦截文字，赋予 500 字重，绝对不碰图标 */
-#page-header.nav-fixed #nav #site-name, 
-#page-header.nav-fixed #nav .menus_items a, 
-#page-header.nav-fixed #nav #search-button a,
-#page-header.nav-fixed #nav #search-button span,
-#page-header.nav-visible #nav #site-name, 
-#page-header.nav-visible #nav .menus_items a, 
-#page-header.nav-visible #nav #search-button a,
-#page-header.nav-visible #nav #search-button span,
-#nav #site-name, #nav .menus_items a, #nav #search-button a, #nav #search-button span, #nav #toggle-menu { 
-    color: #eee !important; 
-    text-shadow: 0 2px 5px rgba(0,0,0,0.4) !important; 
-    font-weight: 500 !important; 
-}
-
-/* 【策略 B：图标区】精准保护图标，赋予必不可少的 900 字重，找回搜索放大镜 */
-#page-header.nav-fixed #nav #search-button i,
-#page-header.nav-visible #nav #search-button i,
-#nav #search-button i {
-    color: #eee !important;
-    font-weight: 900 !important; /* FontAwesome Solid 的命脉，绝不能改 */
-    text-shadow: 0 2px 5px rgba(0,0,0,0.4) !important;
-}
-
-#nav.show {
-    background: rgba(255, 255, 255, 0.15) !important; 
-    backdrop-filter: blur(12px) !important; -webkit-backdrop-filter: blur(12px) !important;
-    box-shadow: 0 4px 15px -5px rgba(0, 0, 0, 0.1) !important;
-}
+#nav { background: transparent !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; border: none !important; box-shadow: none !important; z-index: 90 !important; }
+#page-header.nav-fixed #nav #site-name, #page-header.nav-fixed #nav .menus_items a, #page-header.nav-fixed #nav #search-button a, #page-header.nav-fixed #nav #search-button span, #page-header.nav-visible #nav #site-name, #page-header.nav-visible #nav .menus_items a, #page-header.nav-visible #nav #search-button a, #page-header.nav-visible #nav #search-button span, #nav #site-name, #nav .menus_items a, #nav #search-button a, #nav #search-button span, #nav #toggle-menu { color: #eee !important; text-shadow: 0 2px 5px rgba(0,0,0,0.4) !important; font-weight: 500 !important; }
+#page-header.nav-fixed #nav #search-button i, #page-header.nav-visible #nav #search-button i, #nav #search-button i { color: #eee !important; font-weight: 900 !important; text-shadow: 0 2px 5px rgba(0,0,0,0.4) !important; }
+#nav.show { background: rgba(255, 255, 255, 0.15) !important; backdrop-filter: blur(12px) !important; -webkit-backdrop-filter: blur(12px) !important; box-shadow: 0 4px 15px -5px rgba(0, 0, 0, 0.1) !important; }
 [data-theme="dark"] #nav.show { background: rgba(20, 20, 20, 0.4) !important; }
+#nav .menus_items .menus_item .menus_item_child { background: rgba(255, 255, 255, 0.65) !important; backdrop-filter: blur(10px) !important; -webkit-backdrop-filter: blur(10px) !important; border: 1px solid rgba(255, 255, 255, 0.5) !important; border-radius: 8px !important; box-shadow: 0 8px 16px -4px rgba(0,0,0,0.1) !important; }
 
-#nav .menus_items .menus_item .menus_item_child {
-    background: rgba(255, 255, 255, 0.65) !important;
-    backdrop-filter: blur(10px) !important; -webkit-backdrop-filter: blur(10px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.5) !important; border-radius: 8px !important; box-shadow: 0 8px 16px -4px rgba(0,0,0,0.1) !important;
-}
-
-
-/* -----------------------------------------
-   4. 全局毛玻璃底座与悬浮微交互
-   ----------------------------------------- */
-#post, #archive, #tag, #category, .card-widget, .recent-post-item {
-    background: rgba(255, 255, 255, 0.65) !important;
-    backdrop-filter: blur(12px) !important; -webkit-backdrop-filter: blur(12px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.5) !important; box-shadow: 0 8px 16px -4px rgba(0, 0, 0, 0.05) !important;
-    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important; 
-}
-[data-theme="dark"] #post, [data-theme="dark"] #archive, [data-theme="dark"] #tag, [data-theme="dark"] #category, [data-theme="dark"] .card-widget, [data-theme="dark"] .recent-post-item {
-    background: rgba(20, 20, 20, 0.6) !important; border: 1px solid rgba(255, 255, 255, 0.08) !important; box-shadow: 0 8px 16px -4px rgba(0, 0, 0, 0.5) !important;
-}
-.card-widget:hover, .recent-post-item:hover {
-    transform: translateY(-5px); background: rgba(255, 255, 255, 0.85) !important; 
-    box-shadow: 0 15px 25px -5px rgba(0, 0, 0, 0.1) !important; border: 1px solid rgba(255, 255, 255, 0.9) !important; 
-}
-[data-theme="dark"] .card-widget:hover, [data-theme="dark"] .recent-post-item:hover {
-    background: rgba(45, 45, 45, 0.7) !important; border: 1px solid rgba(255, 255, 255, 0.15) !important; 
-}
+#post, #archive, #tag, #category, .card-widget, .recent-post-item { background: rgba(255, 255, 255, 0.65) !important; backdrop-filter: blur(12px) !important; -webkit-backdrop-filter: blur(12px) !important; border: 1px solid rgba(255, 255, 255, 0.5) !important; box-shadow: 0 8px 16px -4px rgba(0, 0, 0, 0.05) !important; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important; }
+[data-theme="dark"] #post, [data-theme="dark"] #archive, [data-theme="dark"] #tag, [data-theme="dark"] #category, [data-theme="dark"] .card-widget, [data-theme="dark"] .recent-post-item { background: rgba(20, 20, 20, 0.6) !important; border: 1px solid rgba(255, 255, 255, 0.08) !important; box-shadow: 0 8px 16px -4px rgba(0, 0, 0, 0.5) !important; }
+.card-widget:hover, .recent-post-item:hover { transform: translateY(-5px); background: rgba(255, 255, 255, 0.85) !important; box-shadow: 0 15px 25px -5px rgba(0, 0, 0, 0.1) !important; border: 1px solid rgba(255, 255, 255, 0.9) !important; }
+[data-theme="dark"] .card-widget:hover, [data-theme="dark"] .recent-post-item:hover { background: rgba(45, 45, 45, 0.7) !important; border: 1px solid rgba(255, 255, 255, 0.15) !important; }
 .recent-post-info { background: transparent !important; }
 
-
-/* -----------------------------------------
-   5. 待办清单 (Note) 极客卡片
-   ----------------------------------------- */
-.note {
-    background: rgba(255, 255, 255, 0.25) !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
-    border: 1px solid rgba(255, 255, 255, 0.4) !important; border-radius: 8px !important; box-shadow: 0 4px 6px -2px rgba(0, 0, 0, 0.02) !important;
-    color: #333 !important; padding: 18px 20px !important; margin-bottom: 24px !important;
-    transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1) !important; 
-}
+.note { background: rgba(255, 255, 255, 0.25) !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; border: 1px solid rgba(255, 255, 255, 0.4) !important; border-radius: 8px !important; box-shadow: 0 4px 6px -2px rgba(0, 0, 0, 0.02) !important; color: #333 !important; padding: 18px 20px !important; margin-bottom: 24px !important; transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1) !important; }
 [data-theme="dark"] .note { background: rgba(0, 0, 0, 0.3) !important; border: 1px solid rgba(255, 255, 255, 0.05) !important; color: #eee !important; }
 .note.blue { border-left: 5px solid rgba(73, 177, 245, 0.85) !important; }
 .note.green { border-left: 5px solid rgba(66, 185, 131, 0.85) !important; }
 .note.red { border-left: 5px solid rgba(245, 108, 108, 0.85) !important; }
+.note:hover { transform: translateY(-4px) !important; background: rgba(255, 255, 255, 0.6) !important; border: 1px solid rgba(255, 255, 255, 0.8) !important; box-shadow: 0 12px 20px -5px rgba(0, 0, 0, 0.08) !important; }
+[data-theme="dark"] .note:hover { background: rgba(30, 30, 30, 0.6) !important; border: 1px solid rgba(255, 255, 255, 0.1) !important; box-shadow: 0 12px 20px -5px rgba(0, 0, 0, 0.4) !important; }
 
-/* 【核心修复】找回交互动效，并物理屏蔽暗色模式下的大白块 */
-.note:hover {
-    transform: translateY(-4px) !important; 
-    background: rgba(255, 255, 255, 0.6) !important;
-    border: 1px solid rgba(255, 255, 255, 0.8) !important; 
-    box-shadow: 0 12px 20px -5px rgba(0, 0, 0, 0.08) !important; 
-}
-[data-theme="dark"] .note:hover { 
-    background: rgba(30, 30, 30, 0.6) !important; /* 强制暗色底座，杀掉大白块 */
-    border: 1px solid rgba(255, 255, 255, 0.1) !important; 
-    box-shadow: 0 12px 20px -5px rgba(0, 0, 0, 0.4) !important;
-}
-
-
-/* -----------------------------------------
-   6. 细节体验与阅读排版优化
-   ----------------------------------------- */
-input[type="checkbox"] {
-    -webkit-appearance: none; appearance: none; width: 16px; height: 16px; border: 2px solid rgba(255, 255, 255, 0.7); border-radius: 4px;
-    background: rgba(255, 255, 255, 0.2); position: relative; vertical-align: middle; margin-right: 6px; margin-top: -2px; transition: all 0.2s;
-}
+input[type="checkbox"] { -webkit-appearance: none; appearance: none; width: 16px; height: 16px; border: 2px solid rgba(255, 255, 255, 0.7); border-radius: 4px; background: rgba(255, 255, 255, 0.2); position: relative; vertical-align: middle; margin-right: 6px; margin-top: -2px; transition: all 0.2s; }
 input[type="checkbox"]:checked { background: #49b1f5; border-color: #49b1f5; }
-input[type="checkbox"]:checked::after {
-    content: ''; position: absolute; top: 1px; left: 4px; width: 4px; height: 8px; border: solid white; border-width: 0 2px 2px 0; transform: rotate(45deg);
-}
+input[type="checkbox"]:checked::after { content: ''; position: absolute; top: 1px; left: 4px; width: 4px; height: 8px; border: solid white; border-width: 0 2px 2px 0; transform: rotate(45deg); }
 ::selection { background: #49b1f5 !important; color: #fff !important; }
 [data-theme="dark"] ::selection { background: rgba(255, 255, 255, 0.8) !important; color: #1a1a1a !important; }
 
-code, pre, .line, .hljs { 
-    font-family: 'Fira Code', 'JetBrains Mono', Consolas, monospace !important; font-weight: 400 !important; 
-    font-size: 0.95rem; color: #3c4f62 !important; 
-}
+code, pre, .line, .hljs { font-family: 'Fira Code', 'JetBrains Mono', Consolas, monospace !important; font-weight: 400 !important; font-size: 0.95rem; color: #3c4f62 !important; }
 [data-theme="dark"] code, [data-theme="dark"] pre, [data-theme="dark"] .line, [data-theme="dark"] .hljs { color: #eee !important; }
-
-.post-content code:not([class*="language-"]) {
-    background: rgba(73, 177, 245, 0.08) !important;
-    color: #2b6cb0 !important; font-weight: 500 !important; 
-    border: 1px solid rgba(73, 177, 245, 0.2) !important;
-    border-radius: 4px !important; padding: 2px 6px !important; margin: 0 3px !important; word-break: break-word;
-}
-[data-theme="dark"] .post-content code:not([class*="language-"]) {
-    background: rgba(255, 255, 255, 0.08) !important; color: #90cdf4 !important; border: 1px solid rgba(255, 255, 255, 0.15) !important;
-}
-
+.post-content code:not([class*="language-"]) { background: rgba(73, 177, 245, 0.08) !important; color: #2b6cb0 !important; font-weight: 500 !important; border: 1px solid rgba(73, 177, 245, 0.2) !important; border-radius: 4px !important; padding: 2px 6px !important; margin: 0 3px !important; word-break: break-word; }
+[data-theme="dark"] .post-content code:not([class*="language-"]) { background: rgba(255, 255, 255, 0.08) !important; color: #90cdf4 !important; border: 1px solid rgba(255, 255, 255, 0.15) !important; }
 .post-content { color: #2c3e50 !important; font-size: 16px !important; line-height: 1.8 !important; }
 [data-theme="dark"] .post-content { color: #ccc !important; }
-
-.post-content p a {
-    position: relative; color: #49b1f5 !important; text-decoration: none !important; transition: color 0.3s;
-}
-.post-content p a::after {
-    content: ''; position: absolute; width: 100%; height: 2px; bottom: -2px; left: 0;
-    background-color: #49b1f5; visibility: hidden; transform: scaleX(0); transition: all 0.3s ease-in-out;
-}
+.post-content p a { position: relative; color: #49b1f5 !important; text-decoration: none !important; transition: color 0.3s; }
+.post-content p a::after { content: ''; position: absolute; width: 100%; height: 2px; bottom: -2px; left: 0; background-color: #49b1f5; visibility: hidden; transform: scaleX(0); transition: all 0.3s ease-in-out; }
 .post-content p a:hover::after { visibility: visible; transform: scaleX(1); }
-
 .card-tag-cloud a { color: #444 !important; font-weight: 500 !important; text-shadow: none !important; }
 [data-theme="dark"] .card-tag-cloud a { color: #ccc !important; }
 
-
-/* -----------------------------------------
-   7. 滚动条与图片美化
-   ----------------------------------------- */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: rgba(150, 150, 150, 0.3); border-radius: 10px; transition: all 0.3s; }
@@ -244,10 +108,6 @@ code, pre, .line, .hljs {
 [data-theme="dark"] .post-content img { filter: brightness(0.85); }
 [data-theme="dark"] .post-content img:hover { filter: brightness(1.0); }
 
-
-/* -----------------------------------------
-   8. 硬件兜底 (Fallback)
-   ----------------------------------------- */
 @supports not (backdrop-filter: blur(12px)) {
     #nav.show { background: rgba(255, 255, 255, 0.85) !important; }
     [data-theme="dark"] #nav.show { background: rgba(20, 20, 20, 0.9) !important; }
@@ -255,69 +115,181 @@ code, pre, .line, .hljs {
     [data-theme="dark"] #post, [data-theme="dark"] #archive, [data-theme="dark"] #tag, [data-theme="dark"] #category, [data-theme="dark"] .card-widget, [data-theme="dark"] .recent-post-item { background: rgba(20, 20, 20, 0.8) !important; }
 }
 
-/* =========================================
-   【 搜索组件 8.2 】极致字体统一与柔和深灰
-   ========================================= */
-
-/* 对齐文本，严密保护 i 标签不被波及 */
-#local-search .search-dialog,
-#local-search .search-nav,
-#local-search .search-nav::after,
-#local-search-input,
-#local-search-results .search-result-list,
-.search-result-list .search-result-title,
-.search-result-list .search-result,
-#local-search-results .search-result-count {
-    font-family: 'Noto Serif SC', 'Fira Code', serif !important;
-}
-
-#local-search .search-dialog {
-    background: rgba(255, 255, 255, 0.25) !important;
-    backdrop-filter: blur(30px) saturate(180%) !important;
-    -webkit-backdrop-filter: blur(30px) saturate(180%) !important;
-    border-radius: 12px !important;
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.2) !important;
-}
-[data-theme="dark"] #local-search .search-dialog {
-    background: rgba(15, 15, 0, 0.35) !important;
-    border: 1px solid rgba(73, 177, 245, 0.15) !important;
-}
-
-#local-search-input {
-    background: rgba(255, 255, 255, 0.15) !important;
-    border: 1px solid rgba(73, 177, 245, 0.5) !important;
-    color: #080808 !important; 
-}
+#local-search .search-dialog, #local-search .search-nav, #local-search .search-nav::after, #local-search-input, #local-search-results .search-result-list, .search-result-list .search-result-title, .search-result-list .search-result, #local-search-results .search-result-count { font-family: 'Noto Serif SC', 'Fira Code', serif !important; }
+#local-search .search-dialog { background: rgba(255, 255, 255, 0.25) !important; backdrop-filter: blur(30px) saturate(180%) !important; -webkit-backdrop-filter: blur(30px) saturate(180%) !important; border-radius: 12px !important; border: 1px solid rgba(255, 255, 255, 0.2) !important; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.2) !important; }
+[data-theme="dark"] #local-search .search-dialog { background: rgba(15, 15, 0, 0.35) !important; border: 1px solid rgba(73, 177, 245, 0.15) !important; }
+#local-search-input { background: rgba(255, 255, 255, 0.15) !important; border: 1px solid rgba(73, 177, 245, 0.5) !important; color: #080808 !important; }
 #local-search-input::placeholder { color: rgba(50, 50, 50, 0.45) !important; }
-
-.search-result-list .search-result {
-    color: #333333 !important; 
-    opacity: 0.9 !important;
-}
-.search-result-list .search-result-title {
-    color: #49b1f5 !important; font-weight: 700 !important;
-}
-
-#local-search .search-dialog::before,
-#local-search .search-dialog::after {
-    content: ''; position: absolute; width: 30px; height: 15px;
-    border: 1.5px solid rgba(73, 177, 245, 0.5); pointer-events: none; z-index: 1;
-}
+.search-result-list .search-result { color: #333333 !important; opacity: 0.9 !important; }
+.search-result-list .search-result-title { color: #49b1f5 !important; font-weight: 700 !important; }
+#local-search .search-dialog::before, #local-search .search-dialog::after { content: ''; position: absolute; width: 30px; height: 15px; border: 1.5px solid rgba(73, 177, 245, 0.5); pointer-events: none; z-index: 1; }
 #local-search .search-dialog::before { top: 15px; left: 15px; border-right: 0; border-bottom: 0; }
 #local-search .search-dialog::after { bottom: 15px; right: 15px; border-left: 0; border-top: 0; }
+#local-search .search-dialog hr, #local-search .search-dialog .fa-cut, #local-search .search-dialog .search-dialog-title::after, #local-search .search-dialog .search-dialog-title::before { display: none !important; }
+#local-search .search-nav { position: relative; border-bottom: 1px solid rgba(73, 177, 245, 0.3) !important; margin-bottom: 15px; }
+#local-search .search-nav::after { content: '[ DATA_LINK: SECURED ]'; position: absolute; right: 0; bottom: -15px; font-size: 9px; font-weight: 600; color: rgba(73, 177, 245, 0.8) !important; }
+#local-search i.fa, #local-search i.fas { font-family: "Font Awesome 6 Free", "Font Awesome 5 Free", "FontAwesome", sans-serif !important; font-weight: 900 !important; }
 
-#local-search .search-dialog hr, #local-search .search-dialog .fa-cut,
-#local-search .search-dialog .search-dialog-title::after,
-#local-search .search-dialog .search-dialog-title::before { 
-    display: none !important; 
+
+/* =========================================
+   【 极客彩蛋 】PRTS 骇入全屏洗屏与极客骑脸 UI
+   ========================================= */
+#ctf-shell-overlay {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background: #050508; z-index: 99999;
+    padding: 60px; box-sizing: border-box;
+    font-family: 'Fira Code', 'JetBrains Mono', Consolas, monospace; 
+    color: #42b983; font-size: 1.2rem; line-height: 2.2;
+    pointer-events: none; overflow: hidden;
+    animation: crt-turn-on 0.3s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+    transition: background 1.5s ease, box-shadow 1s ease;
 }
 
-#local-search .search-nav {
-    position: relative; border-bottom: 1px solid rgba(73, 177, 245, 0.3) !important; margin-bottom: 15px;
+#ctf-shell-overlay::after {
+    content: " "; display: block; position: absolute;
+    top: 0; left: 0; bottom: 0; right: 0;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+    background-size: 100% 4px; z-index: 2; pointer-events: none;
 }
-#local-search .search-nav::after {
-    content: '[ DATA_LINK: SECURED ]';
-    position: absolute; right: 0; bottom: -15px; font-size: 9px;
-    font-weight: 600; color: rgba(73, 177, 245, 0.8) !important;
+
+#ctf-shell-overlay p { margin: 0; text-shadow: 0 0 5px rgba(66, 185, 131, 0.4); position: relative; z-index: 3; transition: all 1s ease; }
+
+#ctf-shell-overlay.priestess-override p:last-child::after { 
+    content: ' █'; 
+    color: #00f0ff;
+    text-shadow: 0 0 10px #00f0ff;
+    animation: fatal-cursor-blink 0.3s infinite; 
 }
+#ctf-shell-overlay:not(.priestess-override) p:last-child::after { 
+    content: ' _'; 
+    animation: shell-blink 0.8s steps(2) infinite; 
+}
+
+@keyframes fatal-cursor-blink { 0%, 100% { opacity: 1; color: #00f0ff; } 50% { opacity: 0.5; color: #fff; } }
+
+/* 🚀 锋利化极客警报 */
+#ctf-shell-overlay .shell-warning-sharp { 
+    font-family: 'Fira Code', 'JetBrains Mono', Consolas, monospace !important;
+    color: #ff003c; 
+    text-shadow: 0 0 12px rgba(255, 0, 60, 0.9); 
+    font-size: 1.45rem !important;
+    font-weight: 900;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+}
+
+#ctf-shell-overlay .shell-priestess { color: #e0e0e0; text-shadow: 0 0 8px rgba(255, 255, 255, 0.3); letter-spacing: 2px; }
+#ctf-shell-overlay .text-red { color: #ff003c !important; font-weight: bold; text-shadow: 0 0 12px rgba(255,0,60,0.9); }
+#ctf-shell-overlay .shell-highlight { color: #00f0ff; text-shadow: 0 0 8px rgba(0, 240, 255, 0.6); }
+
+#ctf-shell-overlay .shell-priestess-intro {
+    color: #ffffff !important; font-size: 1.8rem !important; 
+    text-shadow: 0 0 15px rgba(255,255,255,0.8) !important;
+    margin-bottom: 20px !important; letter-spacing: 5px;
+}
+
+.hex-dump-wash-extreme {
+    position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
+    padding: 20px; box-sizing: border-box; overflow: hidden; opacity: 0.6;
+    color: #00ff00; font-size: 1.05rem; line-height: 1.1;
+    word-break: break-all; white-space: pre-wrap;
+    transition: opacity 0.3s ease; z-index: 100; background: rgba(0,0,0,0.8);
+}
+.hex-dump-wash-extreme p { text-shadow: 0 0 5px #00ff00 !important; animation: none !important; margin: 0; }
+.hex-dump-wash-extreme .fatal-hex-block { color: #ff003c !important; background: rgba(255,0,60,0.2); text-shadow: 0 0 8px #ff003c !important; font-weight: bold; }
+.wash-fade { opacity: 0 !important; }
+
+/* 🚀 系统接管暗场 */
+#ctf-shell-overlay.priestess-override { background: #020202; }
+#ctf-shell-overlay.priestess-override p:not(.shell-priestess):not(.shell-priestess-intro) { opacity: 0.05 !important; filter: blur(6px); }
+
+.terminal-meltdown { animation: meltdown-anim 0.15s infinite; }
+@keyframes meltdown-anim {
+    0% { filter: contrast(1.5) hue-rotate(90deg) invert(0.8); transform: scale(1.02) skewX(2deg); }
+    50% { filter: contrast(1) hue-rotate(-90deg) invert(0); transform: scale(0.98) skewX(-2deg); }
+    100% { filter: contrast(1.5) hue-rotate(180deg) invert(0.8); transform: scale(1.05) skewX(4deg); }
+}
+
+/* 🚀 赛博爆闪与精悍的乱码质问 */
+#ctf-shell-overlay.cyber-flash-extreme { animation: cyber-flash 0.3s ease-out; }
+@keyframes cyber-flash {
+    0% { background: #ffffff; filter: invert(1); }
+    50% { background: #000000; filter: invert(0); }
+    100% { background: #000000; }
+}
+
+.jumpscare-center {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000000; pointer-events: none;
+}
+.jumpscare-slam {
+    opacity: 0;
+    /* 切入极其干脆，没有模糊缩放的廉价感 */
+    animation: cyber-snap-in 0.1s steps(2, start) forwards;
+}
+@keyframes cyber-snap-in {
+    0% { opacity: 0; transform: translateY(-10px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+.cyber-aberration {
+    color: #ffffff; /* 冰冷骨白 */
+    font-family: 'Fira Code', 'Noto Serif SC', monospace !important; 
+    font-size: 3.5rem; /* 精悍锐利 */
+    font-weight: 900; letter-spacing: 5px;
+    white-space: nowrap;
+    text-shadow: 2px 0 0 #ff003c, -2px 0 0 #00f0ff; /* 极其赛博的通道分离 */
+    animation: cyber-glitch 0.2s infinite;
+}
+@keyframes cyber-glitch {
+    0% { transform: translate(0); }
+    20% { transform: translate(-2px, 1px); text-shadow: -2px 0 0 #ff003c, 2px 0 0 #00f0ff; }
+    40% { transform: translate(-1px, -1px); }
+    60% { transform: translate(2px, 1px) skewX(2deg); filter: blur(0.5px); }
+    80% { transform: translate(1px, -1px); filter: blur(0); }
+    100% { transform: translate(0); text-shadow: 2px 0 0 #ff003c, -2px 0 0 #00f0ff; }
+}
+
+/* 🚀 拒绝访问弹窗特效 */
+.access-denied-pop {
+    position: fixed; color: #ff003c;
+    font-family: 'Fira Code', 'JetBrains Mono', Consolas, monospace !important;
+    font-size: 2.5rem; font-weight: 900; text-shadow: 0 0 15px #ff003c;
+    pointer-events: none; z-index: 1000001;
+    transform: translate(-50%, -50%);
+    animation: deny-fade 0.6s ease-out forwards;
+}
+@keyframes deny-fade {
+    0% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    100% { opacity: 0; transform: translate(-50%, -150%) scale(1.5); filter: blur(4px); }
+}
+
+.prts-glitch-intense { animation: prts-glitch-anim-1 0.15s infinite; }
+.prts-glitch-subtle { animation: prts-glitch-anim-2 3s infinite; }
+
+@keyframes prts-glitch-anim-1 {
+    0% { transform: translate(0); text-shadow: 2px 0 0 rgba(255,0,60,0.8), -2px 0 0 rgba(0,240,255,0.8); }
+    20% { transform: translate(-2px, 2px) skew(-2deg); text-shadow: -2px 0 0 rgba(255,0,60,0.8), 2px 0 0 rgba(0,240,255,0.8); }
+    40% { transform: translate(-1px, -1px); }
+    60% { transform: translate(2px, 2px) skew(2deg); }
+    80% { transform: translate(1px, -1px); }
+    100% { transform: translate(0); text-shadow: 2px 0 0 rgba(255,0,60,0.8), -2px 0 0 rgba(0,240,255,0.8); }
+}
+@keyframes prts-glitch-anim-2 {
+    0%, 95% { transform: translate(0); text-shadow: 0 0 8px rgba(0, 240, 255, 0.6); }
+    96% { transform: translate(-1px, 1px); text-shadow: 3px 0 0 rgba(255,0,60,0.7), -3px 0 0 rgba(0,240,255,0.7); }
+    98% { transform: translate(1px, -1px); text-shadow: -3px 0 0 rgba(255,0,60,0.7), 3px 0 0 rgba(0,240,255,0.7); }
+    100% { transform: translate(0); }
+}
+
+.screen-shake-heavy { animation: prts-shake-heavy 0.5s cubic-bezier(.36,.07,.19,.97) both; }
+@keyframes prts-shake-heavy {
+    10%, 90% { transform: translate3d(-10px, 2px, 0) rotate(-1deg); }
+    30%, 50%, 70% { transform: translate3d(-20px, 5px, 0) rotate(-2deg); }
+    100% { transform: translate3d(0,0,0); }
+}
+
+@keyframes crt-turn-on { 0% { transform: scale(1, 0.001); filter: brightness(10); opacity: 0; } 100% { transform: scale(1, 1); filter: brightness(1); opacity: 1; } }
+.crt-turn-off { animation: crt-turn-off-anim 0.4s forwards !important; }
+@keyframes crt-turn-off-anim { 0% { transform: scale(1, 1); opacity: 1; } 100% { transform: scale(1, 0.001); opacity: 0; } }
+@keyframes shell-blink { 50% { opacity: 0; } }
