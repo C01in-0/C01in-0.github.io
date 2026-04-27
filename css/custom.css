@@ -5,53 +5,29 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;900&display=swap');
 
-#nav #blog-info .site-icon {
-  height: 32px !important; width: auto !important; image-rendering: pixelated !important;
-  transition: transform 0.3s ease-in-out !important; display: inline-block !important; vertical-align: middle !important;
-}
+#nav #blog-info .site-icon { height: 32px !important; width: auto !important; image-rendering: pixelated !important; transition: transform 0.3s ease-in-out !important; display: inline-block !important; vertical-align: middle !important; }
 #nav #blog-info a:hover .site-icon { transform: scale(1.2) !important; cursor: pointer !important; }
 
-#subtitle {
-    font-family: 'Noto Serif SC', serif !important; 
-    font-size: 1.4rem !important; 
-    letter-spacing: 2px !important; 
-}
-
+#subtitle { font-family: 'Noto Serif SC', serif !important; font-size: 1.4rem !important; letter-spacing: 2px !important; }
 #site-subtitle { opacity: 0 !important; transition: opacity 0.5s cubic-bezier(0.25, 0.8, 0.25, 1) !important; }
 #site-subtitle.colin-ready { opacity: 1 !important; }
 
-/* 🚀 首页灰色闪烁撕裂感：已加入最强 !important 权重剥夺主题覆写 */
 #subtitle.glitch-active {
     animation: colin-subtitle-glitch 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite !important;
-    color: #a0a0a0 !important;
-    letter-spacing: 5px !important;
-    font-weight: 900 !important;
-    text-shadow: none !important;
-    display: inline-block !important;
+    color: #a0a0a0 !important; letter-spacing: 5px !important; font-weight: 900 !important;
+    text-shadow: none !important; display: inline-block !important;
 }
 @keyframes colin-subtitle-glitch {
-    0% { transform: skew(0deg); opacity: 0.9; }
-    20% { transform: skew(-5deg) translateX(-2px); opacity: 0.6; }
-    40% { transform: skew(5deg) translateX(2px); opacity: 1; }
-    100% { transform: skew(0deg); opacity: 0.9; }
+    0% { transform: skew(0deg); opacity: 0.9; } 20% { transform: skew(-5deg) translateX(-2px); opacity: 0.6; }
+    40% { transform: skew(5deg) translateX(2px); opacity: 1; } 100% { transform: skew(0deg); opacity: 0.9; }
 }
 
 body { background-color: #2c3e50 !important; -webkit-font-smoothing: antialiased !important; -moz-osx-font-smoothing: grayscale !important; }
 #nav, #web_bg, .post-content img { will-change: transform, opacity, background; }
 
-#web_bg {
-    background-color: #2c3e50 !important; background-attachment: fixed !important;
-    background-position: center center !important; background-size: cover !important;
-    filter: brightness(0.85) contrast(1.05) saturate(1.05) !important;
-}
-#page {
-    background: linear-gradient(180deg, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.6) 100%) !important;
-    box-shadow: 0 -10px 20px -10px rgba(0,0,0,0.05) !important;
-}
-[data-theme="dark"] #page {
-    background: linear-gradient(180deg, rgba(20,20,20,0.7) 0%, rgba(20,20,20,0.6) 100%) !important;
-    box-shadow: 0 -10px 20px -10px rgba(0,0,0,0.2) !important;
-}
+#web_bg { background-color: #2c3e50 !important; background-attachment: fixed !important; background-position: center center !important; background-size: cover !important; filter: brightness(0.85) contrast(1.05) saturate(1.05) !important; }
+#page { background: linear-gradient(180deg, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.6) 100%) !important; box-shadow: 0 -10px 20px -10px rgba(0,0,0,0.05) !important; }
+[data-theme="dark"] #page { background: linear-gradient(180deg, rgba(20,20,20,0.7) 0%, rgba(20,20,20,0.6) 100%) !important; box-shadow: 0 -10px 20px -10px rgba(0,0,0,0.2) !important; }
 
 #page-header { background: transparent !important; }
 #page-header::before { display: block !important; background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.05) 50%, rgba(0,0,0,0.35) 100%) !important; }
@@ -134,17 +110,20 @@ code, pre, .line, .hljs { font-family: 'Fira Code', 'JetBrains Mono', Consolas, 
 /* =========================================
    【 极客彩蛋 】PRTS 骇入全屏洗屏与极客骑脸 UI
    ========================================= */
+
+/* 🚀 安全光标锁：利用 HTML 根节点彻底接管光标，退出时移除类即可复原 */
+html.prts-lock-cursor, html.prts-lock-cursor body { cursor: crosshair !important; }
+html.prts-hide-cursor, html.prts-hide-cursor body { cursor: none !important; }
+
 #ctf-shell-overlay {
     position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
     background: #050508; z-index: 99999;
     padding: 60px; box-sizing: border-box;
     font-family: 'Fira Code', 'JetBrains Mono', Consolas, monospace; 
     color: #42b983; font-size: 1.2rem; line-height: 2.2;
-    overflow: hidden;
+    pointer-events: none; overflow: hidden;
     animation: crt-turn-on 0.3s cubic-bezier(0.23, 1, 0.32, 1) forwards;
     transition: background 1.5s ease, box-shadow 1s ease;
-    /* 🚀 物理操控剥夺：强制显示狙击准星 */
-    cursor: crosshair !important; 
 }
 
 #ctf-shell-overlay::after {
@@ -154,36 +133,22 @@ code, pre, .line, .hljs { font-family: 'Fira Code', 'JetBrains Mono', Consolas, 
     background-size: 100% 4px; z-index: 2; pointer-events: none;
 }
 
-/* 🚀 选中权限剥夺：反向高亮，选中即不可见 */
-#ctf-shell-overlay ::selection {
-    background: #ff003c !important;
-    color: #000000 !important;
-    text-shadow: none !important;
-}
-
+#ctf-shell-overlay ::selection { background: #ff003c !important; color: #000000 !important; text-shadow: none !important; }
 #ctf-shell-overlay p { margin: 0; text-shadow: 0 0 5px rgba(66, 185, 131, 0.4); position: relative; z-index: 3; transition: all 1s ease; }
 
 #ctf-shell-overlay.priestess-override p:last-child::after { 
-    content: ' █'; 
-    color: #00f0ff;
-    text-shadow: 0 0 10px #00f0ff;
-    animation: fatal-cursor-blink 0.3s infinite; 
+    content: ' █'; color: #00f0ff; text-shadow: 0 0 10px #00f0ff; animation: fatal-cursor-blink 0.3s infinite; 
 }
 #ctf-shell-overlay:not(.priestess-override) p:last-child::after { 
-    content: ' _'; 
-    animation: shell-blink 0.8s steps(2) infinite; 
+    content: ' _'; animation: shell-blink 0.8s steps(2) infinite; 
 }
 
 @keyframes fatal-cursor-blink { 0%, 100% { opacity: 1; color: #00f0ff; } 50% { opacity: 0.5; color: #fff; } }
 
 #ctf-shell-overlay .shell-warning-sharp { 
     font-family: 'Fira Code', 'JetBrains Mono', Consolas, monospace !important;
-    color: #ff003c; 
-    text-shadow: 0 0 12px rgba(255, 0, 60, 0.9); 
-    font-size: 1.45rem !important;
-    font-weight: 900;
-    letter-spacing: 3px;
-    text-transform: uppercase;
+    color: #ff003c; text-shadow: 0 0 8px rgba(255, 0, 60, 0.6); 
+    font-size: 1.25rem !important; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
 }
 
 #ctf-shell-overlay .shell-priestess { color: #e0e0e0; text-shadow: 0 0 8px rgba(255, 255, 255, 0.3); letter-spacing: 2px; }
@@ -207,13 +172,43 @@ code, pre, .line, .hljs { font-family: 'Fira Code', 'JetBrains Mono', Consolas, 
 .hex-dump-wash-extreme .fatal-hex-block { color: #ff003c !important; background: rgba(255,0,60,0.2); text-shadow: 0 0 8px #ff003c !important; font-weight: bold; }
 .wash-fade { opacity: 0 !important; }
 
-/* 🚀 系统完全接管暗场 */
-#ctf-shell-overlay.priestess-override { 
-    background: #020202; 
-    /* 彻底剥夺光标 */
-    cursor: none !important; 
+/* 🚀 1:1 像素级弹窗复刻：纯净胶囊白边体 */
+.fake-browser-warning {
+    position: fixed;
+    background: #202124; 
+    color: #ffffff;
+    padding: 10px 18px;
+    border-radius: 5px; /* 经典微弧角 */
+    border: 1.5px solid #ffffff; /* 完美复刻白色外发光边框 */
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 14px; font-weight: 500; letter-spacing: normal;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+    white-space: nowrap; z-index: 2147483647;
+    pointer-events: none;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0;
+    animation: fake-warning-drop 0.2s ease-out forwards;
 }
+.fake-browser-warning .esc-key {
+    display: inline-block;
+    border: 1px solid #ffffff; 
+    border-radius: 3px; 
+    padding: 2px 6px;
+    font-size: 12px; font-weight: normal;
+    background: transparent; color: #ffffff; 
+    margin-left: 8px; line-height: 1.2;
+}
+@keyframes fake-warning-drop {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+#ctf-shell-overlay.priestess-override { background: #020202; }
 #ctf-shell-overlay.priestess-override p:not(.shell-priestess):not(.shell-priestess-intro) { opacity: 0.05 !important; filter: blur(6px); }
+
+#ctf-shell-overlay.punishment-mode-geek {
+    background: #000000 !important; filter: invert(1) hue-rotate(180deg) !important; transition: all 0.1s !important;
+}
 
 .terminal-meltdown { animation: meltdown-anim 0.15s infinite; }
 @keyframes meltdown-anim {
@@ -229,25 +224,14 @@ code, pre, .line, .hljs { font-family: 'Fira Code', 'JetBrains Mono', Consolas, 
     100% { background: #000000; }
 }
 
-.jumpscare-center {
-    position: absolute; top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 1000000; pointer-events: none;
-}
-.jumpscare-slam {
-    opacity: 0;
-    animation: cyber-snap-in 0.1s steps(2, start) forwards;
-}
-@keyframes cyber-snap-in {
-    0% { opacity: 0; transform: translateY(-10px); }
-    100% { opacity: 1; transform: translateY(0); }
-}
+.jumpscare-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1000000; pointer-events: none; }
+.jumpscare-slam { opacity: 0; animation: cyber-snap-in 0.1s steps(2, start) forwards; }
+@keyframes cyber-snap-in { 0% { opacity: 0; transform: translateY(-10px); } 100% { opacity: 1; transform: translateY(0); } }
+
 .cyber-aberration {
     color: #ffffff; 
     font-family: 'Fira Code', 'Noto Serif SC', monospace !important; 
-    font-size: 3.5rem; 
-    font-weight: 900; letter-spacing: 5px;
-    white-space: nowrap;
+    font-size: 3.5rem; font-weight: 900; letter-spacing: 5px; white-space: nowrap;
     text-shadow: 2px 0 0 #ff003c, -2px 0 0 #00f0ff; 
     animation: cyber-glitch 0.2s infinite;
 }
@@ -260,18 +244,17 @@ code, pre, .line, .hljs { font-family: 'Fira Code', 'JetBrains Mono', Consolas, 
     100% { transform: translate(0); text-shadow: 2px 0 0 #ff003c, -2px 0 0 #00f0ff; }
 }
 
-/* 🚀 拒绝访问弹窗特效 */
 .access-denied-pop {
     position: fixed; color: #ff003c;
     font-family: 'Fira Code', 'JetBrains Mono', Consolas, monospace !important;
-    font-size: 2.5rem; font-weight: 900; text-shadow: 0 0 15px #ff003c;
-    pointer-events: none; z-index: 1000001;
+    font-size: 3rem; font-weight: 900; text-shadow: 0 0 20px #ff003c;
+    pointer-events: none; z-index: 2147483647; 
     transform: translate(-50%, -50%);
     animation: deny-fade 0.6s ease-out forwards;
 }
 @keyframes deny-fade {
     0% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-    100% { opacity: 0; transform: translate(-50%, -150%) scale(1.5); filter: blur(4px); }
+    100% { opacity: 0; transform: translate(-50%, -150%) scale(1.5); filter: blur(6px); }
 }
 
 .prts-glitch-intense { animation: prts-glitch-anim-1 0.15s infinite; }
