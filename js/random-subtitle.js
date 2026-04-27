@@ -431,12 +431,12 @@
         var lines = [
             "[ * ] PRTS System Initializing... (底层协议挂载中)",
             "[ + ] Decrypting core memory...", 
-            "[ ! ] TARGET GPU: " + prtsGPU + " | 硬件嗅探完毕",
+            "[ ! ] TARGET GPU: " + prtsGPU + " | 硬件嗅探完毕，发起信息追踪",
             "[ SYNC ] LOCAL_TIME: " + getPrtsTime(),
             "[ ! ] TARGET LOCKED: IP " + (prtsUserIP||"RESOLVING...") + " | " + (prtsUserLoc||"PROXY"), 
             "[+] Mounting /dev/video0... 视频流权限已接管 [ REC ]", 
             "[ ! ] FATAL: ABNORMAL DATA SURGE DETECTED IN ORIGINIUM ENGINE.",
-            "[ * ] Firewall bypassed. Override authorization: PRIESTESS. (防线击穿)",
+            "[ * ] Firewall bypassed. Override authorization: PRIESTESS. (已获取管理员权限)",
             "root@PRTS:~# cat /memory/fragment_001.log",
             "你终于......找到我了",
             "就算是海洋沸腾、大气消失，就算我们的卫星接连坠入重力的漩涡...",
@@ -576,4 +576,24 @@
             }, 600);
         }, delay + 500); 
     }
+})();
+/* =========================================
+   【 F12 规则怪谈控制台 】 
+   ========================================= */
+(function() {
+    var asciiArt = `
+   ______      ___     
+  / ____/___  / (_)___ 
+ / /   / __ \\/ / / __ \\
+/ /___/ /_/ / / / / / /
+\\____/\\____/_/_/_/ /_/ 
+\n`;
+    var message = "Welcome to Colin's Matrix.\n\n";
+    var info = "Talk is cheap. Show me the shell.\n发现漏洞请手下留情，扣扣：502068770\n";
+    var horrorRule = "\n[ ! ] 访客须知：无论屏幕里出现什么，绝对、绝对不要在主界面键入 'prts'，否则可能造成不可估量的后果";
+    var styleArt = "color: #49b1f5; font-size: 16px; line-height: 1.2; font-weight: bold; font-family: 'Fira Code', monospace; text-shadow: 0 0 5px rgba(73,177,245,0.5);";
+    var styleMsg = "color: #eee; font-size: 14px; background: #2c3e50; padding: 5px 10px; border-radius: 4px; font-family: 'Fira Code', monospace;";
+    var styleInfo = "color: #42b983; font-size: 14px; font-family: 'Fira Code', monospace; margin-top: 10px;";
+    var styleRule = "color: #ff0000; font-size: 16px; font-weight: 900; text-shadow: 0 0 10px #ff0000; font-family: 'Noto Serif SC', serif; margin-top: 10px; background: rgba(0,0,0,0.8);";
+    console.log("%c" + asciiArt + "%c" + message + "%c" + info + "%c" + horrorRule, styleArt, styleMsg, styleInfo, styleRule);
 })();
