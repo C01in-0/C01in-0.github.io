@@ -281,3 +281,39 @@ html.prts-hide-cursor, html.prts-hide-cursor body { cursor: none !important; }
 @keyframes crt-turn-on { 0% { transform: scale(1, 0.001); filter: brightness(10); opacity: 0; } 100% { transform: scale(1, 1); filter: brightness(1); opacity: 1; } }
 .crt-turn-off { animation: crt-turn-off-anim 0.4s forwards !important; }
 @keyframes crt-turn-off-anim { 0% { transform: scale(1, 1); opacity: 1; } 100% { transform: scale(1, 0.001); opacity: 0; } }
+
+/* ========================================
+   行内代码高亮：恢复温和护眼蓝
+   只影响文章里的 `git push`、`.env` 这类 inline code
+   ======================================== */
+
+#article-container p code:not([class*="language-"]),
+#article-container li code:not([class*="language-"]),
+#article-container td code:not([class*="language-"]),
+#article-container blockquote code:not([class*="language-"]),
+.post-content p code:not([class*="language-"]),
+.post-content li code:not([class*="language-"]),
+.post-content td code:not([class*="language-"]),
+.post-content blockquote code:not([class*="language-"]) {
+    background: rgba(73, 177, 245, 0.08) !important;
+    color: #2b6cb0 !important;
+    font-weight: 500 !important;
+    border: 1px solid rgba(73, 177, 245, 0.2) !important;
+    border-radius: 4px !important;
+    padding: 2px 6px !important;
+    margin: 0 3px !important;
+    word-break: break-word !important;
+}
+
+[data-theme="dark"] #article-container p code:not([class*="language-"]),
+[data-theme="dark"] #article-container li code:not([class*="language-"]),
+[data-theme="dark"] #article-container td code:not([class*="language-"]),
+[data-theme="dark"] #article-container blockquote code:not([class*="language-"]),
+[data-theme="dark"] .post-content p code:not([class*="language-"]),
+[data-theme="dark"] .post-content li code:not([class*="language-"]),
+[data-theme="dark"] .post-content td code:not([class*="language-"]),
+[data-theme="dark"] .post-content blockquote code:not([class*="language-"]) {
+    background: rgba(255, 255, 255, 0.08) !important;
+    color: #90cdf4 !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+}

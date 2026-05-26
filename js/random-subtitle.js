@@ -64,7 +64,7 @@
         var rand = Math.random();
         var isEasterEgg = rand < 0.15;
         var text = "";
-        if (rand < 0.02) text = "恭喜你！这句话出现的概率仅为万分之一。";
+        if (rand < 0.02) text = "恭喜你！这句话出现的概率仅为万分之一，幸运的人啊，祝你天天开心。";
         else if (rand < 0.265) text = "余虽不敏，亦望卒有所获";
         else if (rand < 0.510) text = "人生亦不过百岁，何必蹉跎徒伤悲";
         else if (rand < 0.755) text = "别辜负眼前季节";
