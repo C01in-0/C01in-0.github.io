@@ -317,3 +317,30 @@ html.prts-hide-cursor, html.prts-hide-cursor body { cursor: none !important; }
     color: #90cdf4 !important;
     border: 1px solid rgba(255, 255, 255, 0.15) !important;
 }
+
+/* 文章图片悬停呼吸效果 */
+#article-container img {
+  transition:
+    transform 0.35s ease,
+    filter 0.35s ease,
+    box-shadow 0.35s ease;
+  will-change: transform;
+}
+
+#article-container img:hover {
+  animation: post-image-breathe 1.8s ease-in-out infinite;
+  filter: brightness(1.04);
+}
+
+@keyframes post-image-breathe {
+  0%,
+  100% {
+    transform: scale(1.01);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.16);
+  }
+
+  50% {
+    transform: scale(1.035);
+    box-shadow: 0 14px 32px rgba(0, 0, 0, 0.26);
+  }
+}
