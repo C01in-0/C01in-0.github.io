@@ -1,5 +1,5 @@
 /* =========================================
-   【 Colin's Blog 】完全体 100% 健壮级极客 UI
+   【 Colin's Blog 】博客 UI
    ========================================= */
 
 @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;900&display=swap');
@@ -318,29 +318,22 @@ html.prts-hide-cursor, html.prts-hide-cursor body { cursor: none !important; }
     border: 1px solid rgba(255, 255, 255, 0.15) !important;
 }
 
-/* 文章图片悬停呼吸效果 */
-#article-container img {
+/* 文章图片：悬停后上浮并轻微放大 */
+#article-container img:not(.no-lightbox) {
+  cursor: zoom-in;
+  transform: translateY(0) scale(1);
+  transform-origin: center;
   transition:
-    transform 0.35s ease,
-    filter 0.35s ease,
-    box-shadow 0.35s ease;
+    transform 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.32s ease,
+    filter 0.32s ease;
   will-change: transform;
 }
 
-#article-container img:hover {
-  animation: post-image-breathe 1.8s ease-in-out infinite;
-  filter: brightness(1.04);
-}
-
-@keyframes post-image-breathe {
-  0%,
-  100% {
-    transform: scale(1.01);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.16);
-  }
-
-  50% {
-    transform: scale(1.035);
-    box-shadow: 0 14px 32px rgba(0, 0, 0, 0.26);
+@media (hover: hover) and (pointer: fine) {
+  #article-container img:not(.no-lightbox):hover {
+    transform: translateY(-7px) scale(1.025);
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.22);
+    filter: brightness(1.03);
   }
 }
