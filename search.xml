@@ -20,8 +20,6 @@
       
         <tags>
             
-            <tag> 学习笔记 </tag>
-            
             <tag> Linux </tag>
             
             <tag> 计算机网络 </tag>
@@ -31,6 +29,8 @@
             <tag> Nginx </tag>
             
             <tag> Jenkins </tag>
+            
+            <tag> 学习笔记 </tag>
             
         </tags>
       
@@ -59,9 +59,9 @@
             
             <tag> AI安全 </tag>
             
-            <tag> HackAPrompt </tag>
-            
             <tag> 提示词注入 </tag>
+            
+            <tag> HackAPrompt </tag>
             
         </tags>
       
@@ -86,13 +86,13 @@
       
         <tags>
             
-            <tag> AI安全 </tag>
-            
-            <tag> 提示词注入 </tag>
-            
             <tag> LLM </tag>
             
             <tag> Android </tag>
+            
+            <tag> AI安全 </tag>
+            
+            <tag> 提示词注入 </tag>
             
         </tags>
       
@@ -181,9 +181,9 @@
             
             <tag> CTF </tag>
             
-            <tag> Pwn </tag>
-            
             <tag> 学习笔记 </tag>
+            
+            <tag> Pwn </tag>
             
         </tags>
       
