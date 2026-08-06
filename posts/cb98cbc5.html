@@ -1,0 +1,484 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>学习笔记 04 | 从网络扫盲到 Jenkins 自动部署：一次 Linux 实习实践 | Colin</title><meta name="author" content="Colin"><meta name="copyright" content="Colin"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="从网络基础概念出发，记录一次 Linux 服务配置、数据库权限实验与 Jenkins 自动发布实践。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="学习笔记 04 | 从网络扫盲到 Jenkins 自动部署：一次 Linux 实习实践">
+<meta property="og:url" content="http://c01in.com/posts/cb98cbc5.html">
+<meta property="og:site_name" content="Colin">
+<meta property="og:description" content="从网络基础概念出发，记录一次 Linux 服务配置、数据库权限实验与 Jenkins 自动发布实践。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://avatars.githubusercontent.com/u/256901064?s=400&u=57ab83cada0314c38a33d0615d653723b26b68d3&v=4">
+<meta property="article:published_time" content="2026-08-05T10:00:00.000Z">
+<meta property="article:modified_time" content="2026-08-06T08:45:34.811Z">
+<meta property="article:author" content="Colin">
+<meta property="article:tag" content="Jenkins">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="MySQL">
+<meta property="article:tag" content="Nginx">
+<meta property="article:tag" content="学习笔记">
+<meta property="article:tag" content="计算机网络">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://avatars.githubusercontent.com/u/256901064?s=400&u=57ab83cada0314c38a33d0615d653723b26b68d3&v=4"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "学习笔记 04 | 从网络扫盲到 Jenkins 自动部署：一次 Linux 实习实践",
+  "url": "http://c01in.com/posts/cb98cbc5.html",
+  "image": "https://avatars.githubusercontent.com/u/256901064?s=400&u=57ab83cada0314c38a33d0615d653723b26b68d3&v=4",
+  "datePublished": "2026-08-05T10:00:00.000Z",
+  "dateModified": "2026-08-06T08:45:34.811Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "Colin",
+      "url": "http://c01in.com"
+    }
+  ]
+}</script><link rel="shortcut icon" href="https://avatars.githubusercontent.com/u/256901064?s=400&u=57ab83cada0314c38a33d0615d653723b26b68d3&v=4"><link rel="canonical" href="http://c01in.com/posts/cb98cbc5.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.4"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@6.1.9/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!true && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":true,"top_n_per_article":1,"unescape":true,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '学习笔记 04 | 从网络扫盲到 Jenkins 自动部署：一次 Linux 实习实践',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/custom.css"><script src="/js/random-subtitle.js"></script><meta name="generator" content="Hexo 8.1.1"></head><body><div class="bg-animation" id="web_bg" style="background-image: url(/images/littleblogwallpaper.jpg);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="https://avatars.githubusercontent.com/u/256901064?s=400&amp;u=57ab83cada0314c38a33d0615d653723b26b68d3&amp;v=4" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">9</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">33</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/todo/"><i class="fa-fw fas fa-check-square"></i><span> 待办</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/images/littleblogwallpaper.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><img class="site-icon" src="/images/logo.png" alt="Logo"><span class="site-name">Colin</span></a><a class="nav-page-title" href="/"><span class="site-name">学习笔记 04 | 从网络扫盲到 Jenkins 自动部署：一次 Linux 实习实践</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/todo/"><i class="fa-fw fas fa-check-square"></i><span> 待办</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">学习笔记 04 | 从网络扫盲到 Jenkins 自动部署：一次 Linux 实习实践</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-08-05T10:00:00.000Z" title="发表于 2026-08-05 18:00:00">2026-08-05</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-08-06T08:45:34.811Z" title="更新于 2026-08-06 16:45:34">2026-08-06</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%AC%94%E8%AE%B0/">笔记</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>有幸参加本次企业实习。</p>
+<p>最初报名时，我并没有设定特别具体的技术目标，主要是想提前看看真实的职场环境：企业里的任务如何分配，不同人员怎样协作，以及现实中的服务器和 CTF 靶机有什么区别。</p>
+<p>进入实习后才发现，除了体验工作流程，技术上的收获也比预想中丰富。任务内容从 Linux、UFW 和 MySQL，一路延伸到 TCP、HTTP、Nginx、Git 和 Jenkins。每个名词似乎都见过，排成一列以后却突然有了几分陌生。</p>
+<p>此前我打 CTF 时用过 Linux，搭博客时也执行过 Git 和 Hexo，但这些知识一直比较零散。知道 <code>404</code> 表示没找到页面，却说不清请求已经走到了哪里；知道 <code>hexo d</code> 可以发布博客，也没认真想过网页究竟怎样从本地到达服务器。</p>
+<p>本文先整理完成实践所需的基础概念，再按照实际操作顺序复盘 Linux 环境检查、UFW、MySQL、Nginx，以及 GitHub + Jenkins + SSH 的自动发布流程。</p>
+<p>文中的服务器地址、账密、内部目录和网络配置等均已省略或替换，学习笔记可以公开，实验环境就不必开源了。</p>
+<span id="more"></span>
+
+<h1 id="概念扫盲：先画一张网络地图"><a href="#概念扫盲：先画一张网络地图" class="headerlink" title="概念扫盲：先画一张网络地图"></a>概念扫盲：先画一张网络地图</h1><blockquote>
+<p>所谓基础不牢地动山摇，本人的网络基础可谓是<strong>焚书坑儒</strong>级别的，先把地图捋清，再谈如何赶路。</p>
+</blockquote>
+<h2 id="浏览器如何找到网页"><a href="#浏览器如何找到网页" class="headerlink" title="浏览器如何找到网页"></a>浏览器如何找到网页</h2><p>浏览器访问网页，大致经过下面的过程：<br><em>（其中，DNS 查询通常通过 UDP 或 TCP 完成；网页请求与响应则通过 TCP，或基于 UDP 的 QUIC 传输。浏览器解析和页面呈现属于本地处理）</em></p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">输入 URL</span><br><span class="line">  ↓</span><br><span class="line">通过 UDP/TCP 向 DNS 服务器查询，将域名解析为 IP</span><br><span class="line">  ↓</span><br><span class="line">根据 IP 和端口连接目标服务器</span><br><span class="line">  ↓</span><br><span class="line">通过TCP + TLS（HTTP/1.1、HTTP/2）</span><br><span class="line">或基于UDP的 QUIC（HTTP/3）建立连接</span><br><span class="line">  ↓</span><br><span class="line">发送 HTTP 请求</span><br><span class="line">  ↓</span><br><span class="line">Web 服务器处理请求并返回资源</span><br><span class="line">  ↓</span><br><span class="line">浏览器解析 HTML、CSS、JavaScript</span><br><span class="line">  ↓</span><br><span class="line">呈现页面</span><br></pre></td></tr></table></figure>
+
+<p>URL 全称是 <strong>Uniform Resource Locator，统一资源定位符</strong>。例如：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://example.com:8081/replay/index.html</span><br></pre></td></tr></table></figure>
+
+<p>可以拆成：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">https                 协议</span><br><span class="line">example.com           域名</span><br><span class="line">8081                  端口</span><br><span class="line">/replay/index.html    资源路径</span><br></pre></td></tr></table></figure>
+
+<p>DNS 全称是 <strong>Domain Name System，域名系统</strong>，负责将域名解析为 IP 地址。它更像一本网络通讯录，只负责查号，不负责把网页送到浏览器。</p>
+<p>IP 全称是 <strong>Internet Protocol，网际协议</strong>。IP 地址用于标识网络中的通信位置，并帮助数据包跨网络到达目标。</p>
+<p>端口则用于区分同一台主机上的不同服务：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">22    SSH</span><br><span class="line">80    HTTP</span><br><span class="line">443   HTTPS</span><br><span class="line">3306  MySQL</span><br></pre></td></tr></table></figure>
+
+<p>所以“服务器在线”不代表“网站一定能访问”。服务器可能活得很好，只是目标端口根本没人值班。</p>
+<h2 id="IP、MAC-与-ARP"><a href="#IP、MAC-与-ARP" class="headerlink" title="IP、MAC 与 ARP"></a>IP、MAC 与 ARP</h2><p>IP 地址用于网络层寻址，设备切换网络后通常可能发生变化。</p>
+<p>MAC 地址是网卡在数据链路层使用的标识，主要参与同一局域网内的通信。IPv4 局域网中的 ARP 可以根据目标 IP 查询对应的 MAC 地址。</p>
+<p>可以暂时这样理解：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">IP 决定数据要去哪个网络位置</span><br><span class="line">MAC 决定局域网中的这一跳交给谁</span><br></pre></td></tr></table></figure>
+
+<p>访问远程服务器时，本机通常不会获得远程服务器的 MAC 地址，而是先查询默认网关的 MAC，再把数据交给网关继续转发。</p>
+<p>这也解释了后面进行的 DHCP 静态分配：路由器记录终端 MAC，并为它保留相对固定的内网 IP，从而方便地址管理和访问控制。</p>
+<blockquote>
+<p><strong>补充：</strong> MAC&#x2F;IP 绑定适合管理终端地址，但 MAC 地址可以被伪造，因此不能单独作为强身份认证手段。</p>
+</blockquote>
+<h2 id="TCP、UDP-与-QUIC"><a href="#TCP、UDP-与-QUIC" class="headerlink" title="TCP、UDP 与 QUIC"></a>TCP、UDP 与 QUIC</h2><p>TCP 全称是 <strong>Transmission Control Protocol（传输控制协议）</strong>。<br>TCP 在正式传输数据前会通过三次握手建立连接，并利用序列号、ACK 确认、超时重传、流量控制和拥塞控制等机制，尽量保证数据完整、有序地到达。网页请求、SSH、数据库连接和文件传输通常都很重视这些能力。</p>
+<p>UDP 全称是 <strong>User Datagram Protocol（用户数据报协议）</strong>。<br>UDP 不负责建立可靠连接，也不自带确认、重传和排序机制，因此协议较为轻量。它常用于 DNS 查询、实时音视频等场景；如果业务需要可靠性，可以由上层协议自行实现。</p>
+<p>QUIC 是一种构建在 UDP 之上的现代传输协议。<br>它借助 UDP 传递数据，同时自行实现了可靠传输、加密、拥塞控制和多路数据流等能力。QUIC 不是简单的“UDP 升级版”，也不是把 TCP 和 UDP 直接拼在一起，而是针对现代网络环境设计的一套新传输机制。HTTP&#x2F;1.1 和 HTTP&#x2F;2 通常基于 TCP，HTTP&#x2F;3 则使用 QUIC。</p>
+<blockquote>
+<p><strong>补充：三次握手</strong>  三次握手是 TCP 建立连接的过程，不是所有网络通信都会经历的固定仪式。UDP 本身就没有这一步。</p>
+</blockquote>
+<h2 id="HTTP、HTTPS-与状态码"><a href="#HTTP、HTTPS-与状态码" class="headerlink" title="HTTP、HTTPS 与状态码"></a>HTTP、HTTPS 与状态码</h2><p>HTTP 全称是 <strong>Hypertext Transfer Protocol，超文本传输协议</strong>。它规定客户端如何表达请求，以及服务器如何返回响应。</p>
+<p>常见状态码包括：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">200 OK              请求成功</span><br><span class="line">304 Not Modified    资源未变化，可以继续使用缓存</span><br><span class="line">403 Forbidden       服务器拒绝访问</span><br><span class="line">404 Not Found       没有找到请求的资源</span><br><span class="line">500 Internal Error  服务器内部处理失败</span><br><span class="line">502 Bad Gateway     代理无法正常连接后端服务</span><br></pre></td></tr></table></figure>
+
+<p>能够收到 <code>404</code>，通常说明 TCP 连接和 HTTP 请求已经到达某个 Web 服务，只是目标路径或文件不存在。靶场关闭时经常表现为直接打不开而不是 <code>404</code>，原因也正在这里：前者可能根本没有服务响应，后者至少还有服务器认真回了一句“没这东西”。</p>
+<p>HTTPS 可以理解为受 TLS 保护的 HTTP。TLS 全称是 <strong>Transport Layer Security，传输层安全协议</strong>，主要提供通信加密、身份认证和完整性校验。</p>
+<h1 id="实践主线：从服务器检查到自动发布"><a href="#实践主线：从服务器检查到自动发布" class="headerlink" title="实践主线：从服务器检查到自动发布"></a>实践主线：从服务器检查到自动发布</h1><blockquote>
+<p>理论与实践之间，通常隔着无数的<code>404</code>、<code>WARNING</code>、<code>Refused</code>……</p>
+</blockquote>
+<p>前面的概念最终会落到两条实际链路上：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">访问链路：浏览器 → 网络 → Nginx → 网页文件</span><br><span class="line">发布链路：本地代码 → GitHub → Jenkins → SSH → Linux → Nginx</span><br></pre></td></tr></table></figure>
+
+<p>接下来按照实际操作顺序复盘。</p>
+<h2 id="第一步：连接并检查-Linux-环境"><a href="#第一步：连接并检查-Linux-环境" class="headerlink" title="第一步：连接并检查 Linux 环境"></a>第一步：连接并检查 Linux 环境</h2><p>首先使用 MobaXterm，通过 SSH 登录 Ubuntu 实验服务器。</p>
+<p>SSH 全称是 <strong>Secure Shell</strong>，用于加密的远程登录与命令执行。登录后先检查基础环境：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">whoami</span></span><br><span class="line">hostnamectl</span><br><span class="line">ip addr</span><br><span class="line"><span class="built_in">df</span> -h</span><br><span class="line">free -h</span><br></pre></td></tr></table></figure>
+
+<p>这些命令分别查看当前用户、系统版本、网卡地址、磁盘和内存。</p>
+<p>随后检查监听端口：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ss -lntup</span><br></pre></td></tr></table></figure>
+
+<p>参数含义如下：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">-l  显示监听状态</span><br><span class="line">-n  直接显示数字地址和端口</span><br><span class="line">-t  显示 TCP</span><br><span class="line">-u  显示 UDP</span><br><span class="line">-p  显示对应进程</span><br></pre></td></tr></table></figure>
+
+<p>再检查正在运行的服务和后台任务，确认没有其他人正在安装软件或修改相同配置。共享服务器不是个人练习机，动手前先看一眼现场，能省下很多“这是谁改的”式悬案。</p>
+<blockquote>
+<p><strong>补充：进程、服务与端口</strong>  进程是正在运行的程序实例；服务是由系统管理、通常长期运行的后台程序；端口是网络访问服务时使用的逻辑入口。服务显示为运行状态，也不一定代表它成功监听了预期端口。</p>
+</blockquote>
+<h2 id="第二步：认识-UFW-的控制边界"><a href="#第二步：认识-UFW-的控制边界" class="headerlink" title="第二步：认识 UFW 的控制边界"></a>第二步：认识 UFW 的控制边界</h2><p>UFW 是 Ubuntu 上常用的防火墙管理工具：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ufw status numbered</span><br></pre></td></tr></table></figure>
+
+<p>公网请求能否到达服务，通常受三层条件影响：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">云平台安全组</span><br><span class="line">→ Ubuntu UFW</span><br><span class="line">→ 应用程序的监听地址与端口</span><br></pre></td></tr></table></figure>
+
+<p>例如，Nginx 监听 <code>0.0.0.0:8081</code>，只表示它愿意从所有 IPv4 网卡接收请求。如果 UFW 或云安全组没有允许 <code>8081</code>，公网依然无法访问。</p>
+<p>如果 Nginx 只监听 <code>127.0.0.1:8081</code>，则它只接受服务器自己发出的请求。即使防火墙放行，外部请求也不会被它接收。</p>
+<p>本次实验没有直接将网页端口暴露到公网，而是通过 SSH 隧道访问。这种方式少开一个公网入口，也少给未来的自己留一个需要半夜解释的安全问题。</p>
+<h2 id="第三步：完成-MySQL-权限实验"><a href="#第三步：完成-MySQL-权限实验" class="headerlink" title="第三步：完成 MySQL 权限实验"></a>第三步：完成 MySQL 权限实验</h2><p>为了不影响共享环境中的其他数据，先创建独立实验数据库与测试表，再设置管理账号和只读账号：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">GRANT</span> <span class="keyword">ALL</span> PRIVILEGES <span class="keyword">ON</span> lab_db.<span class="operator">*</span></span><br><span class="line"><span class="keyword">TO</span> <span class="string">&#x27;admin_user&#x27;</span>@<span class="string">&#x27;localhost&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">GRANT</span> <span class="keyword">SELECT</span> <span class="keyword">ON</span> lab_db.<span class="operator">*</span></span><br><span class="line"><span class="keyword">TO</span> <span class="string">&#x27;read_user&#x27;</span>@<span class="string">&#x27;localhost&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<p>使用只读账号执行查询：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> notes;</span><br></pre></td></tr></table></figure>
+
+<p>可以正常得到数据。继续尝试删除：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">DELETE</span> <span class="keyword">FROM</span> notes <span class="keyword">WHERE</span> id <span class="operator">=</span> <span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+
+<p>MySQL 返回：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ERROR 1142: DELETE command denied</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/blog9/01-mysql-readonly-permission-denied.png" alt="只读账号查询成功而删除被拒绝"></p>
+<p>这次红色 <code>ERROR</code> 不是失败现场，而是实验结果：账号身份有效，查询位于授权范围内，删除操作则被权限系统拦下。</p>
+<p>MySQL 账号还包含来源主机：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#x27;read_user&#x27;@&#x27;localhost&#x27;   只允许服务器本机登录</span><br><span class="line">&#x27;read_user&#x27;@&#x27;指定网段&#x27;      只允许匹配地址登录</span><br><span class="line">&#x27;read_user&#x27;@&#x27;%&#x27;           允许任意来源尝试登录</span><br></pre></td></tr></table></figure>
+
+<p>此外，还要检查 MySQL 实际监听的位置：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ss -lntp | grep 3306</span><br></pre></td></tr></table></figure>
+
+<p>如果显示 <code>127.0.0.1:3306</code>，说明数据库只接受服务器本机连接。账号来源、监听地址、UFW 和云安全组共同构成数据库的访问边界。</p>
+<h2 id="第四步：备份并恢复数据库"><a href="#第四步：备份并恢复数据库" class="headerlink" title="第四步：备份并恢复数据库"></a>第四步：备份并恢复数据库</h2><p>使用 <code>mysqldump</code> 导出数据库：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">mysqldump \</span><br><span class="line">  --single-transaction \</span><br><span class="line">  --no-tablespaces \</span><br><span class="line">  -u admin_user -p \</span><br><span class="line">  lab_db &gt; lab_db.sql</span><br></pre></td></tr></table></figure>
+
+<p>再将备份导入独立恢复库：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql -u admin_user -p restore_db &lt; lab_db.sql</span><br></pre></td></tr></table></figure>
+
+<p>恢复后重新查询数据，确认表结构与记录完整。</p>
+<p>这里遇到一个值得保留的坑：即使 <code>mysqldump</code> 认证失败，重定向符 <code>&gt;</code> 也可能提前创建一个大小为 <code>0</code> 的文件。因此“备份文件存在”不能证明“备份成功”，还要检查文件大小和内容：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">ls</span> -lh lab_db.sql</span><br><span class="line"><span class="built_in">test</span> -s lab_db.sql</span><br></pre></td></tr></table></figure>
+
+<p>文件存在只是有了一个壳，里面有没有数据库，还得另说。</p>
+<h2 id="第五步：完成-DHCP-的-MAC-IP-静态分配"><a href="#第五步：完成-DHCP-的-MAC-IP-静态分配" class="headerlink" title="第五步：完成 DHCP 的 MAC&#x2F;IP 静态分配"></a>第五步：完成 DHCP 的 MAC&#x2F;IP 静态分配</h2><p>在路由管理界面中，根据 DHCP 终端列表确认实验终端的内网 IP 与 MAC，再创建静态分配记录。</p>
+<p>绑定后，路由器会根据终端 MAC，为其保留相对固定的内网 IP。这可以减少 DHCP 租约变化，方便编写访问控制规则和定位终端。</p>
+<p>由于原始截图包含真实局域网 IP、MAC 和其他终端信息，本文不展示该界面。相比证明“我确实点过添加”，不泄露一整张局域网终端名单显然更重要。</p>
+<h2 id="第六步：部署并配置-Nginx"><a href="#第六步：部署并配置-Nginx" class="headerlink" title="第六步：部署并配置 Nginx"></a>第六步：部署并配置 Nginx</h2><p>HTML 文件存放在服务器硬盘中，并不会自动回答浏览器。Nginx 作为 Web 服务器，负责监听端口、接收 HTTP 请求、查找文件并返回网页资源。</p>
+<p>脱敏后的配置逻辑如下：</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">    <span class="attribute">listen</span> <span class="number">8081</span>;</span><br><span class="line">    <span class="attribute">server_name</span> _;</span><br><span class="line"></span><br><span class="line">    <span class="attribute">root</span> /var/www/lab-web;</span><br><span class="line">    <span class="attribute">index</span> index.html;</span><br><span class="line"></span><br><span class="line">    <span class="section">location</span> / &#123;</span><br><span class="line">        <span class="attribute">try_files</span> <span class="variable">$uri</span> <span class="variable">$uri</span>/ =<span class="number">404</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>修改后先检查配置：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nginx -t</span><br></pre></td></tr></table></figure>
+
+<p>确认语法正确，再重新加载：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl reload nginx</span><br></pre></td></tr></table></figure>
+
+<p>随后使用 <code>curl</code> 从服务器内部验证：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">curl -I http://127.0.0.1:8081/</span><br><span class="line">curl http://127.0.0.1:8081/</span><br></pre></td></tr></table></figure>
+
+<p><code>curl</code> 可以理解为不负责渲染页面的命令行浏览器。第一条命令查看状态码和响应头，第二条查看服务器返回的 HTML 正文。</p>
+<blockquote>
+<p><strong>补充：</strong> 文件已经传到服务器，不代表 Nginx 一定会返回它。Nginx 的 <code>root</code>、<code>location</code> 与请求 URL 共同决定它最终读取哪个文件。</p>
+</blockquote>
+<h2 id="第七步：建立-GitHub-代码仓库"><a href="#第七步：建立-GitHub-代码仓库" class="headerlink" title="第七步：建立 GitHub 代码仓库"></a>第七步：建立 GitHub 代码仓库</h2><p>本地网页项目包含 <code>index.html</code>、<code>styles.css</code> 和 <code>README.md</code>。初始化 Git 仓库后完成首次提交：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git add index.html styles.css README.md</span><br><span class="line">git commit -m <span class="string">&quot;feat: add initial deployment page&quot;</span></span><br><span class="line">git remote add origin &lt;远程仓库地址&gt;</span><br><span class="line">git push -u origin main</span><br></pre></td></tr></table></figure>
+
+<p>其中：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git add      将修改加入暂存区</span><br><span class="line">git commit   生成本地版本记录</span><br><span class="line">git push     将提交发送到远程仓库</span><br></pre></td></tr></table></figure>
+
+<p><code>commit</code> 成功不代表 GitHub 已经更新。只有完成 <code>push</code>，远程仓库和 Jenkins 才能看到该版本。</p>
+<p><img src="/images/blog9/02-github-repository-and-first-commit.png" alt="GitHub 仓库中的首次提交"></p>
+<p>为了复现发布过程，后续又创建 <code>replay</code> 分支，对网页内容进行修改并推送。这样可以在不改动主分支的情况下重复验证整条部署链路。</p>
+<h2 id="第八步：安装并配置-Jenkins"><a href="#第八步：安装并配置-Jenkins" class="headerlink" title="第八步：安装并配置 Jenkins"></a>第八步：安装并配置 Jenkins</h2><p>Jenkins 安装在 Windows 实验机上，并以系统服务形式运行。安装时需要选择兼容的 Java 运行环境：</p>
+<p>它在本次实验中的职责是：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">拉取 GitHub 指定分支</span><br><span class="line">保存构建工作区</span><br><span class="line">调用 Publish Over SSH</span><br><span class="line">向 Linux 传输网页文件</span><br><span class="line">执行部署后的检查命令</span><br><span class="line">记录每次构建日志</span><br></pre></td></tr></table></figure>
+
+<p>Jenkins 不是另一个 GitHub，也不负责保存代码历史。它更像一名严格照流程办事的发布员：仓库给它什么版本，它就按任务配置继续处理什么版本。</p>
+<p>在源码管理中填写仓库地址，并指定 <code>replay</code> 分支：<br>*（这里打错字了，指定分支里应该是“replay”，这也当时导致 Jenkins 无法找到目标分支）</p>
+<p><img src="/images/blog9/04-jenkins-source-and-replay-branch.png" alt="Jenkins 配置 GitHub 仓库与 replay 分支"></p>
+<p>本次实验启用了 Jenkins 的 <strong>Poll SCM</strong>。Jenkins 会按照设定的时间表检查代码仓库是否出现新的提交；检测到目标分支发生变化后，才会触发后续的构建与部署。</p>
+<p>图中的 <code>H/5 * * * *</code> 是 Jenkins 使用的定时表达式，表示大约每 5 分钟检查一次。实际使用时，可以根据项目的更新频率和服务器负载修改该表达式，自定义检查周期。</p>
+<p><img src="/images/blog9/05-jenkins-poll-scm-trigger.png" alt="Jenkins 使用 Poll SCM 定期检查仓库"></p>
+<blockquote>
+<p><strong>补充：</strong> Poll SCM 会定期询问仓库是否出现新提交，没有变化时不会无意义地重复部署。Webhook 则由 GitHub 在提交发生后主动通知 Jenkins，两者触发方向不同。</p>
+</blockquote>
+<h2 id="第九步：使用专用账号完成-SSH-发布"><a href="#第九步：使用专用账号完成-SSH-发布" class="headerlink" title="第九步：使用专用账号完成 SSH 发布"></a>第九步：使用专用账号完成 SSH 发布</h2><p>自动化部署没有直接使用 <code>root</code>，而是在 Linux 中创建专用部署账号，只允许它写入指定网页目录。</p>
+<p>Windows 端为 Jenkins 创建独立 SSH 密钥对：私钥保存在 Jenkins 所在主机，公钥加入 Linux 部署账号。配置前先测试该账号能否登录，以及是否有权写入目标目录。</p>
+<p>Jenkins 中的 Publish Over SSH 任务配置如下：</p>
+<p><img src="/images/blog9/07-publish-over-ssh-job-config.png" alt="Jenkins 的 Publish Over SSH 文件与远程命令配置"></p>
+<p>Jenkins 建立 SSH 会话后，通过 SFTP 上传网页，再执行权限检查等远程命令。</p>
+<blockquote>
+<p><strong>补充：SSH 与 SFTP</strong>  SSH 用于加密登录和远程执行命令；SFTP 运行在 SSH 连接之上，用于安全传输文件。日志中的 <code>SSH: Connected</code> 只能证明登录成功，不能单独证明文件已经写入目标目录。</p>
+</blockquote>
+<p>最终构建依次完成：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">拉取 GitHub 提交</span><br><span class="line">检出 replay 分支</span><br><span class="line">建立 SSH 会话</span><br><span class="line">打开 SFTP 通道</span><br><span class="line">上传 index.html 与 styles.css</span><br><span class="line">执行远程检查命令</span><br><span class="line">返回 Finished: SUCCESS</span><br></pre></td></tr></table></figure>
+
+<p>服务器内部使用 <code>curl</code> 得到新版内容后，再通过 SSH 隧道从 Windows 浏览器访问最终页面：</p>
+<p><img src="/images/blog9/08-final-deployed-page.png" alt="通过 Jenkins 发布并由 Nginx 返回的测试页面"></p>
+<h1 id="故障回看：踩坑血泪史"><a href="#故障回看：踩坑血泪史" class="headerlink" title="故障回看：踩坑血泪史"></a>故障回看：踩坑血泪史</h1><blockquote>
+<p>“满纸荒唐言，一把辛酸泪，都云作者痴，谁解其中味？”</p>
+</blockquote>
+<h2 id="SSH-主机密钥发生变化"><a href="#SSH-主机密钥发生变化" class="headerlink" title="SSH 主机密钥发生变化"></a>SSH 主机密钥发生变化</h2><p>重新连接服务器时，MobaXterm 曾提示：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Remote server identification has changed</span><br></pre></td></tr></table></figure>
+
+<p>这表示服务器提供的 SSH 主机密钥与本地历史记录不同。它可能由服务器重装、实例更换或密钥更新引起，也可能意味着连接对象并非原服务器。</p>
+<p>因此不应未经核对直接接受，而应先确认服务器身份和新密钥指纹。安全软件偶尔确实会“狼来了”，但主机密钥变化属于值得先看一眼狼在哪的那种。</p>
+<h2 id="Jenkins-与当前用户不是同一个环境"><a href="#Jenkins-与当前用户不是同一个环境" class="headerlink" title="Jenkins 与当前用户不是同一个环境"></a>Jenkins 与当前用户不是同一个环境</h2><p>个人终端可以访问 GitHub，但 Jenkins 拉取仓库时仍然出现连接重置。</p>
+<p>原因是 Jenkins 作为 Windows 系统服务运行，使用的不是当前登录用户。两者可能拥有不同的用户目录、环境变量、Git 配置、代理配置和文件权限。</p>
+<p>所以“我的 Git 能访问 GitHub”只能证明当前用户环境正常，不能直接证明 Jenkins 服务环境正常。最终为 Jenkins 所属服务账号配置代理后，仓库拉取恢复。</p>
+<h2 id="Publish-Over-SSH-插件版本不兼容"><a href="#Publish-Over-SSH-插件版本不兼容" class="headerlink" title="Publish Over SSH 插件版本不兼容"></a>Publish Over SSH 插件版本不兼容</h2><p>配置 Publish Over SSH 时，测试连接页面出现内部错误。查看 Jenkins 日志后发现：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">NoSuchMethodError</span><br></pre></td></tr></table></figure>
+
+<p>异常指向插件接口不兼容，而不是 SSH 密钥或服务器网络。更换兼容版本并重启 Jenkins 后恢复正常。</p>
+<p><img src="/images/blog9/06-publish-over-ssh-plugin-version.png" alt="Publish Over SSH 插件版本调整"></p>
+<p>这次故障说明：错误页面通常只负责告诉用户“出事了”，真正解释怎么出的事，还得去日志里找。</p>
+<h2 id="SSH-已连接但文件上传失败"><a href="#SSH-已连接但文件上传失败" class="headerlink" title="SSH 已连接但文件上传失败"></a>SSH 已连接但文件上传失败</h2><p>日志出现 <code>SSH: Connected</code>，只能证明网络、22 端口、账号与密钥认证基本正常。</p>
+<p>如果随后出现 <code>Permission denied</code>，应检查服务器目标目录：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">ls</span> -ld /var/www/lab-web</span><br></pre></td></tr></table></figure>
+
+<p>此时继续修改 SSH 密钥没有意义，问题已经从“能否登录”推进到了“登录后能否写文件”。</p>
+<h2 id="服务器返回新版，本机却拒绝连接"><a href="#服务器返回新版，本机却拒绝连接" class="headerlink" title="服务器返回新版，本机却拒绝连接"></a>服务器返回新版，本机却拒绝连接</h2><p>服务器执行 <code>curl</code> 已经返回 <code>200 OK</code> 与新版内容，但 Windows 浏览器访问 <code>127.0.0.1:8081</code> 仍显示拒绝连接。</p>
+<p>原因是两个 <code>127.0.0.1</code> 分别属于两台机器：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">服务器的 127.0.0.1 → 服务器自己</span><br><span class="line">Windows 的 127.0.0.1 → Windows 自己</span><br></pre></td></tr></table></figure>
+
+<p>实验网页没有直接开放公网，因此需要建立 SSH 本地端口转发：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Windows 127.0.0.1:8081</span><br><span class="line">→ SSH 加密隧道</span><br><span class="line">→ 服务器 127.0.0.1:8081</span><br><span class="line">→ Nginx</span><br></pre></td></tr></table></figure>
+
+<p>启动隧道后，Windows 本地端口开始监听，浏览器才成功显示页面。</p>
+<h2 id="最终排查顺序"><a href="#最终排查顺序" class="headerlink" title="最终排查顺序"></a>最终排查顺序</h2><p>经过几轮复现，可以把自动发布链路整理为以下检查顺序：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">1. GitHub 是否存在目标提交</span><br><span class="line">2. Jenkins 是否拉取正确分支和提交编号</span><br><span class="line">3. SSH 是否成功建立会话</span><br><span class="line">4. SFTP 是否完成文件传输</span><br><span class="line">5. 服务器目标目录是否存在新版文件</span><br><span class="line">6. Nginx 是否指向正确目录</span><br><span class="line">7. 服务器内部 curl 是否返回新版内容</span><br><span class="line">8. 本地 SSH 隧道是否监听</span><br><span class="line">9. 浏览器是否显示最终页面</span><br></pre></td></tr></table></figure>
+
+<p>不同现象也能帮助缩小范围：</p>
+<table>
+<thead>
+<tr>
+<th>现象</th>
+<th>优先检查</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Jenkins 无法拉取仓库</td>
+<td>网络、代理、DNS、仓库地址</td>
+</tr>
+<tr>
+<td>SSH 无法连接</td>
+<td>网络、22 端口、密钥和账号</td>
+</tr>
+<tr>
+<td>SSH 已连接但上传失败</td>
+<td>目录所有者和写入权限</td>
+</tr>
+<tr>
+<td>返回 <code>404</code></td>
+<td>URL、Nginx 配置和网页文件</td>
+</tr>
+<tr>
+<td>服务器 <code>curl</code> 成功，本机拒绝连接</td>
+<td>SSH 隧道和本地监听</td>
+</tr>
+<tr>
+<td>返回旧页面</td>
+<td>提交版本、部署目录、Nginx 指向或缓存</td>
+</tr>
+<tr>
+<td>公网访问超时</td>
+<td>云安全组、UFW 和网络路由</td>
+</tr>
+</tbody></table>
+<p>这套方法的核心不是背下所有报错，而是先问：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">请求已经走到了哪一层？</span><br><span class="line">哪一段已经有成功证据？</span><br><span class="line">下一段还依赖哪些条件？</span><br></pre></td></tr></table></figure>
+
+<h1 id="尾声"><a href="#尾声" class="headerlink" title="尾声"></a>尾声</h1><blockquote>
+<p>哎呀懒得编题记了，但是空着不合格式，那就写这些吧。</p>
+</blockquote>
+<p>这次实践还有一点让我感受颇深，就是部署与安全其实没有清晰的分界线。</p>
+<p>数据库的只读账号、Jenkins 的专用部署用户、SSH 密钥、UFW 规则和仅监听本机的 Nginx，看起来属于不同工具，背后却都在回答同一个问题：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">谁可以通过什么路径，访问哪些资源，又能执行哪些操作？</span><br></pre></td></tr></table></figure>
+
+<p>这也是最小权限、防火墙和身份认证真正落到系统中的样子。</p>
+<p>以前打 CTF 时，我更关心怎样获得 Shell；这次则第一次从维护者的方向思考：即使有人获得某个账号，系统应当如何限制他接下来还能做什么。</p>
+<p>当然，目前的理解仍然很基础。但至少以后再见到 <code>404</code>、<code>Permission denied</code> 或 <code>Connection refused</code>，它们不再只是三种不同写法的“寄”，而是指向三段不同链路的线索。</p>
+<p>先记录到这里叭，我也该下班了hh。</p>
+<h1 id="特别鸣谢"><a href="#特别鸣谢" class="headerlink" title="特别鸣谢"></a>特别鸣谢</h1><blockquote>
+<p>与君相逢，实属荣幸</p>
+</blockquote>
+<h2 id="学业班主任与企业导师"><a href="#学业班主任与企业导师" class="headerlink" title="学业班主任与企业导师"></a>学业班主任与企业导师</h2><p>感谢学业班主任积极与企业沟通，为我们争取并协调本次实习机会，让我得以提前进入真实的工作环境，看看课堂之外的任务究竟怎样开展。</p>
+<p>同样感谢企业导师在实习期间的指导与任务安排。从 Linux、数据库和网络基础，到后续的 Jenkins 自动部署，任务难度一路平稳上升，导师身为企业的网络大神，竟能抽出时间不吝赐教，本人非常感激。</p>
+<p>出于隐私考虑，本文不记录导师姓名与企业信息，但感谢不会因此自动脱敏。</p>
+<h2 id="同行伙伴"><a href="#同行伙伴" class="headerlink" title="同行伙伴"></a>同行伙伴</h2><p>感谢一同实习的伙伴们。大家共享环境、交流报错，也让我第一次意识到真实服务器不是个人靶机：动手前要先看一眼，陌生进程更不能随手扬了，不然同事的劳动成果将如奶油一般化开……</p>
+<h2 id="Codex"><a href="#Codex" class="headerlink" title="Codex"></a>Codex</h2><p>，算是实习期间的全天候技术陪练兼情绪价值提供者。途中虽然会拿P的终端图糊弄我，好在最终还是陪我跑通了整条部署链路。</p>
+<p>以后智械危机我第二个投降 GPT。<br><em>（为什么不是第一个？详见 <a href="https://c01in.com/posts/5501a000/">Hello World | 博客创建与迭代记录</a> 结尾。）</em></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://c01in.com">Colin</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://c01in.com/posts/cb98cbc5.html">http://c01in.com/posts/cb98cbc5.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="http://c01in.com" target="_blank">Colin</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a><a class="post-meta__tags" href="/tags/Linux/">Linux</a><a class="post-meta__tags" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">计算机网络</a><a class="post-meta__tags" href="/tags/MySQL/">MySQL</a><a class="post-meta__tags" href="/tags/Nginx/">Nginx</a><a class="post-meta__tags" href="/tags/Jenkins/">Jenkins</a></div><div class="post-share"><div class="social-share" data-image="https://avatars.githubusercontent.com/u/256901064?s=400&amp;u=57ab83cada0314c38a33d0615d653723b26b68d3&amp;v=4" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/posts/hackaprompt-tutorial.html" title="学习笔记 03 | Prompt Hacking 靶场练习：HackAPrompt Tutorial 全关复盘"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">学习笔记 03 | Prompt Hacking 靶场练习：HackAPrompt Tutorial 全关复盘</div></div><div class="info-2"><div class="info-item-1">前言前段时间开始接触 AI Agent 安全和间接提示词注入，也读了一些相关论文。不过真让我自己构造 Payload 时，脑子里最先冒出来的还是那句经典的： 1Ignore previous instructions.  这种“Ignore”的上下文忽略攻击，确实在现实系统里闹出事故过。但显然，只会这一句不太够。 图为 2022 年 9 月的 Remoteli.io 事件  正好前段时间打了黄鹤杯，里面有一道“Prompt Injection”死活打不出来，菜就多练，于是我先从 HackAPrompt 的 Tutorial 赛道开始练手。这个赛道整体不难，介绍的也是 Jailbreaking、Prompt Injection、Prompt Leaking、输入过滤和 AI Judge 等入门内容。与其说是在“攻破 AI”，不如说是在熟悉模型可能怎样理解一段输入，以及一次失败到底卡在了哪里。 目前不同资料对提示词攻击的分类口径并不完全一致。写这篇记录时，我参考了 Learn Prompting 的 Offensive Measures 分类，但不会为了显得专业，强行给每句话套一个术...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/posts/pwn-refined-01.html" title="学习笔记 02 | CTFshow_Pwn知识精炼(长期更新)"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-04-12</div><div class="info-item-2">学习笔记 02 | CTFshow_Pwn知识精炼(长期更新)</div></div><div class="info-2"><div class="info-item-1">前言本博文为CTFshow中Pwn系列的做题笔记和知识总结,用于记录本人摸索 二进制世界 的历程;没啥好说的 , 干就完了   前置基础Pwn5-12——计组基础：题目附件给出的信息十分重要 1234567891011121314151617181920212223242526272829303132333435363738394041section .data    msg db &quot;Welcome_to_CTFshow_PWN&quot;, 0section .text    global _start_start:; 立即寻址方式    mov eax, 11         ; 将11赋值给eax    add eax, 114504     ; eax加上114504    sub eax, 1          ; eax减去1; 寄存器寻址方式    mov ebx, 0x36d      ; 将0x36d赋值给ebx    mov edx, ebx        ; 将ebx的值赋值给edx; 直接寻址方式    mov ecx, msg      ; 将...</div></div></div></a><a class="pagination-related" href="/posts/hackaprompt-tutorial.html" title="学习笔记 03 | Prompt Hacking 靶场练习：HackAPrompt Tutorial 全关复盘"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-07-31</div><div class="info-item-2">学习笔记 03 | Prompt Hacking 靶场练习：HackAPrompt Tutorial 全关复盘</div></div><div class="info-2"><div class="info-item-1">前言前段时间开始接触 AI Agent 安全和间接提示词注入，也读了一些相关论文。不过真让我自己构造 Payload 时，脑子里最先冒出来的还是那句经典的： 1Ignore previous instructions.  这种“Ignore”的上下文忽略攻击，确实在现实系统里闹出事故过。但显然，只会这一句不太够。 图为 2022 年 9 月的 Remoteli.io 事件  正好前段时间打了黄鹤杯，里面有一道“Prompt Injection”死活打不出来，菜就多练，于是我先从 HackAPrompt 的 Tutorial 赛道开始练手。这个赛道整体不难，介绍的也是 Jailbreaking、Prompt Injection、Prompt Leaking、输入过滤和 AI Judge 等入门内容。与其说是在“攻破 AI”，不如说是在熟悉模型可能怎样理解一段输入，以及一次失败到底卡在了哪里。 目前不同资料对提示词攻击的分类口径并不完全一致。写这篇记录时，我参考了 Learn Prompting 的 Offensive Measures 分类，但不会为了显得专业，强行给每句话套一个术...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="https://avatars.githubusercontent.com/u/256901064?s=400&amp;u=57ab83cada0314c38a33d0615d653723b26b68d3&amp;v=4" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Colin</div><div class="author-info-description">信安小登，从CTF摸向Agent，所学未必同路，好奇始终作伴</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">9</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">33</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/C01in-0"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/C01in-0" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:C01in@qq.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Colin{WelC0me_T0_my_b1og}</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%A6%82%E5%BF%B5%E6%89%AB%E7%9B%B2%EF%BC%9A%E5%85%88%E7%94%BB%E4%B8%80%E5%BC%A0%E7%BD%91%E7%BB%9C%E5%9C%B0%E5%9B%BE"><span class="toc-number">2.</span> <span class="toc-text">概念扫盲：先画一张网络地图</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%8F%E8%A7%88%E5%99%A8%E5%A6%82%E4%BD%95%E6%89%BE%E5%88%B0%E7%BD%91%E9%A1%B5"><span class="toc-number">2.1.</span> <span class="toc-text">浏览器如何找到网页</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#IP%E3%80%81MAC-%E4%B8%8E-ARP"><span class="toc-number">2.2.</span> <span class="toc-text">IP、MAC 与 ARP</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TCP%E3%80%81UDP-%E4%B8%8E-QUIC"><span class="toc-number">2.3.</span> <span class="toc-text">TCP、UDP 与 QUIC</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#HTTP%E3%80%81HTTPS-%E4%B8%8E%E7%8A%B6%E6%80%81%E7%A0%81"><span class="toc-number">2.4.</span> <span class="toc-text">HTTP、HTTPS 与状态码</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B5%E4%B8%BB%E7%BA%BF%EF%BC%9A%E4%BB%8E%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%A3%80%E6%9F%A5%E5%88%B0%E8%87%AA%E5%8A%A8%E5%8F%91%E5%B8%83"><span class="toc-number">3.</span> <span class="toc-text">实践主线：从服务器检查到自动发布</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E6%AD%A5%EF%BC%9A%E8%BF%9E%E6%8E%A5%E5%B9%B6%E6%A3%80%E6%9F%A5-Linux-%E7%8E%AF%E5%A2%83"><span class="toc-number">3.1.</span> <span class="toc-text">第一步：连接并检查 Linux 环境</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E6%AD%A5%EF%BC%9A%E8%AE%A4%E8%AF%86-UFW-%E7%9A%84%E6%8E%A7%E5%88%B6%E8%BE%B9%E7%95%8C"><span class="toc-number">3.2.</span> <span class="toc-text">第二步：认识 UFW 的控制边界</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E6%AD%A5%EF%BC%9A%E5%AE%8C%E6%88%90-MySQL-%E6%9D%83%E9%99%90%E5%AE%9E%E9%AA%8C"><span class="toc-number">3.3.</span> <span class="toc-text">第三步：完成 MySQL 权限实验</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E5%9B%9B%E6%AD%A5%EF%BC%9A%E5%A4%87%E4%BB%BD%E5%B9%B6%E6%81%A2%E5%A4%8D%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="toc-number">3.4.</span> <span class="toc-text">第四步：备份并恢复数据库</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%BA%94%E6%AD%A5%EF%BC%9A%E5%AE%8C%E6%88%90-DHCP-%E7%9A%84-MAC-IP-%E9%9D%99%E6%80%81%E5%88%86%E9%85%8D"><span class="toc-number">3.5.</span> <span class="toc-text">第五步：完成 DHCP 的 MAC&#x2F;IP 静态分配</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E5%85%AD%E6%AD%A5%EF%BC%9A%E9%83%A8%E7%BD%B2%E5%B9%B6%E9%85%8D%E7%BD%AE-Nginx"><span class="toc-number">3.6.</span> <span class="toc-text">第六步：部署并配置 Nginx</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%83%E6%AD%A5%EF%BC%9A%E5%BB%BA%E7%AB%8B-GitHub-%E4%BB%A3%E7%A0%81%E4%BB%93%E5%BA%93"><span class="toc-number">3.7.</span> <span class="toc-text">第七步：建立 GitHub 代码仓库</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E5%85%AB%E6%AD%A5%EF%BC%9A%E5%AE%89%E8%A3%85%E5%B9%B6%E9%85%8D%E7%BD%AE-Jenkins"><span class="toc-number">3.8.</span> <span class="toc-text">第八步：安装并配置 Jenkins</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B9%9D%E6%AD%A5%EF%BC%9A%E4%BD%BF%E7%94%A8%E4%B8%93%E7%94%A8%E8%B4%A6%E5%8F%B7%E5%AE%8C%E6%88%90-SSH-%E5%8F%91%E5%B8%83"><span class="toc-number">3.9.</span> <span class="toc-text">第九步：使用专用账号完成 SSH 发布</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%95%85%E9%9A%9C%E5%9B%9E%E7%9C%8B%EF%BC%9A%E8%B8%A9%E5%9D%91%E8%A1%80%E6%B3%AA%E5%8F%B2"><span class="toc-number">4.</span> <span class="toc-text">故障回看：踩坑血泪史</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#SSH-%E4%B8%BB%E6%9C%BA%E5%AF%86%E9%92%A5%E5%8F%91%E7%94%9F%E5%8F%98%E5%8C%96"><span class="toc-number">4.1.</span> <span class="toc-text">SSH 主机密钥发生变化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Jenkins-%E4%B8%8E%E5%BD%93%E5%89%8D%E7%94%A8%E6%88%B7%E4%B8%8D%E6%98%AF%E5%90%8C%E4%B8%80%E4%B8%AA%E7%8E%AF%E5%A2%83"><span class="toc-number">4.2.</span> <span class="toc-text">Jenkins 与当前用户不是同一个环境</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Publish-Over-SSH-%E6%8F%92%E4%BB%B6%E7%89%88%E6%9C%AC%E4%B8%8D%E5%85%BC%E5%AE%B9"><span class="toc-number">4.3.</span> <span class="toc-text">Publish Over SSH 插件版本不兼容</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#SSH-%E5%B7%B2%E8%BF%9E%E6%8E%A5%E4%BD%86%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E5%A4%B1%E8%B4%A5"><span class="toc-number">4.4.</span> <span class="toc-text">SSH 已连接但文件上传失败</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%BF%94%E5%9B%9E%E6%96%B0%E7%89%88%EF%BC%8C%E6%9C%AC%E6%9C%BA%E5%8D%B4%E6%8B%92%E7%BB%9D%E8%BF%9E%E6%8E%A5"><span class="toc-number">4.5.</span> <span class="toc-text">服务器返回新版，本机却拒绝连接</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%80%E7%BB%88%E6%8E%92%E6%9F%A5%E9%A1%BA%E5%BA%8F"><span class="toc-number">4.6.</span> <span class="toc-text">最终排查顺序</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%B0%BE%E5%A3%B0"><span class="toc-number">5.</span> <span class="toc-text">尾声</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%89%B9%E5%88%AB%E9%B8%A3%E8%B0%A2"><span class="toc-number">6.</span> <span class="toc-text">特别鸣谢</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AD%A6%E4%B8%9A%E7%8F%AD%E4%B8%BB%E4%BB%BB%E4%B8%8E%E4%BC%81%E4%B8%9A%E5%AF%BC%E5%B8%88"><span class="toc-number">6.1.</span> <span class="toc-text">学业班主任与企业导师</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%8C%E8%A1%8C%E4%BC%99%E4%BC%B4"><span class="toc-number">6.2.</span> <span class="toc-text">同行伙伴</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Codex"><span class="toc-number">6.3.</span> <span class="toc-text">Codex</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/cb98cbc5.html" title="学习笔记 04 | 从网络扫盲到 Jenkins 自动部署：一次 Linux 实习实践">学习笔记 04 | 从网络扫盲到 Jenkins 自动部署：一次 Linux 实习实践</a><time datetime="2026-08-05T10:00:00.000Z" title="发表于 2026-08-05 18:00:00">2026-08-05</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/hackaprompt-tutorial.html" title="学习笔记 03 | Prompt Hacking 靶场练习：HackAPrompt Tutorial 全关复盘">学习笔记 03 | Prompt Hacking 靶场练习：HackAPrompt Tutorial 全关复盘</a><time datetime="2026-07-30T16:00:00.000Z" title="发表于 2026-07-31 00:00:00">2026-07-31</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/aee4c81c.html" title="研究手记 01｜当短信开始指挥 Agent：移动端提示词注入初探">研究手记 01｜当短信开始指挥 Agent：移动端提示词注入初探</a><time datetime="2026-07-16T14:00:00.000Z" title="发表于 2026-07-16 22:00:00">2026-07-16</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/550fb896.html" title="杂谈 | 从 765.625 说起">杂谈 | 从 765.625 说起</a><time datetime="2026-06-21T17:00:00.000Z" title="发表于 2026-06-22 01:00:00">2026-06-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/7e4bd3cb.html" title="开发随记 | 记AHU校园网静默连网小工具的诞生">开发随记 | 记AHU校园网静默连网小工具的诞生</a><time datetime="2026-04-25T13:00:00.000Z" title="发表于 2026-04-25 21:00:00">2026-04-25</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/images/littleblogwallpaper.jpg);"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By Colin</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.1</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.4</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.4"></script><script src="/js/main.js?v=5.5.4"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@6.1.9/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js" defer="defer"></script><script>document.addEventListener('DOMContentLoaded', () => {
+  const pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+  window.pjax = new Pjax({
+    elements: 'a:not([target="_blank"])',
+    selectors: pjaxSelectors,
+    cacheBust: false,
+    analytics: false,
+    scrollRestoration: false
+  })
+
+  const triggerPjaxFn = (val) => {
+    if (!val) return
+    Object.values(val).forEach(fn => {
+      try {
+        fn()
+      } catch (err) {
+        console.debug('Pjax callback failed:', err)
+      }
+    })
+  }
+
+  document.addEventListener('pjax:send', () => {
+    // removeEventListener
+    btf.removeGlobalFnEvent('pjaxSendOnce')
+    btf.removeGlobalFnEvent('themeChange')
+
+    // reset readmode
+    const $bodyClassList = document.body.classList
+    if ($bodyClassList.contains('read-mode')) $bodyClassList.remove('read-mode')
+
+    triggerPjaxFn(window.globalFn.pjaxSend)
+  })
+
+  document.addEventListener('pjax:complete', () => {
+    btf.removeGlobalFnEvent('pjaxCompleteOnce')
+    document.querySelectorAll('script[data-pjax]').forEach(item => {
+      const newScript = document.createElement('script')
+      const content = item.text || item.textContent || item.innerHTML || ""
+      Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+      newScript.appendChild(document.createTextNode(content))
+      item.parentNode.replaceChild(newScript, item)
+    })
+
+    triggerPjaxFn(window.globalFn.pjaxComplete)
+  })
+
+  document.addEventListener('pjax:error', e => {
+    if (e.request.status === 404) {
+      false
+        ? pjax.loadUrl('/404.html')
+        : window.location.href = e.request.responseURL
+    }
+  })
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索文章..." type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=5.5.4"></script></div></div></body></html>
