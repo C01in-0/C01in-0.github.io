@@ -1,0 +1,33 @@
+/* R9 local font roles: compact Latin utility, serif subtitle, four-glyph atlas label. */
+@font-face {
+  font-family: 'Fira Code';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/fira-code-latin-400-normal.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Fira Code';
+  font-style: normal;
+  font-weight: 500 700;
+  font-display: swap;
+  src: url('/fonts/fira-code-latin-500-normal.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Noto Serif SC';
+  font-style: normal;
+  font-weight: 500 900;
+  font-display: swap;
+  src: url('/fonts/noto-serif-sc-500-normal.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Noto Sans SC Atlas';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/noto-sans-sc-atlas-500-normal.ttf') format('truetype');
+  unicode-range: U+56FE, U+661F, U+77E5, U+8BC6;
+}

@@ -1,0 +1,589 @@
+/* Personal Ops UI v1.6: isolated refinements layered over v1.5. */
+
+/* A narrow, quiet scrollbar with a visible handle. */
+html {
+  scrollbar-color: rgba(55, 104, 132, 0.42) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 3px;
+  height: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+  min-height: 46px;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(55, 104, 132, 0.42);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(44, 145, 195, 0.7);
+}
+
+[data-theme='dark'] ::-webkit-scrollbar-thumb {
+  background: rgba(151, 181, 197, 0.34);
+}
+
+[data-theme='dark'] ::-webkit-scrollbar-thumb:hover {
+  background: rgba(126, 177, 201, 0.58);
+}
+
+/* The avatar rests still and turns only after a deliberate hover. */
+#aside-content .card-info .avatar-img,
+#aside-content .card-info .avatar-img img {
+  animation: none !important;
+}
+
+#aside-content .card-info .avatar-img img {
+  transform: none !important;
+}
+
+#aside-content .card-info .avatar-img:hover img {
+  transform: rotate(360deg) !important;
+}
+
+/* Follow Me: calm blue in light mode, clean low-chroma blue in dark mode. */
+#aside-content .card-info #card-info-btn,
+#aside-content .card-info #card-info-btn:visited {
+  color: rgba(255, 255, 255, 0.94) !important;
+  background: #46a7d8 !important;
+  box-shadow: 0 7px 16px rgba(37, 126, 169, 0.15) !important;
+  filter: none !important;
+  transition: background-color 180ms ease, box-shadow 180ms ease, transform 180ms var(--ops-ease) !important;
+}
+
+#aside-content .card-info #card-info-btn:hover,
+#aside-content .card-info #card-info-btn:focus-visible {
+  color: white !important;
+  background: #409dcb !important;
+  box-shadow: 0 9px 20px rgba(37, 126, 169, 0.2) !important;
+  transform: translateY(-1px);
+}
+
+[data-theme='dark'] #aside-content .card-info #card-info-btn,
+[data-theme='dark'] #aside-content .card-info #card-info-btn:visited {
+  color: #d1dde3 !important;
+  background: #416778 !important;
+  box-shadow: inset 0 0 0 1px rgba(164, 195, 209, 0.12) !important;
+}
+
+[data-theme='dark'] #aside-content .card-info #card-info-btn:hover,
+[data-theme='dark'] #aside-content .card-info #card-info-btn:focus-visible {
+  color: #e3edf1 !important;
+  background: #496f80 !important;
+  box-shadow: inset 0 0 0 1px rgba(177, 207, 220, 0.16), 0 7px 17px rgba(0, 0, 0, 0.16) !important;
+}
+
+/* One milestone symbol, not a flag with a second mark colliding into it. */
+.ops-article-category-icon[data-ops-category='milestone']::after,
+.ops-category-icon[data-ops-category='milestone']::after,
+.ops-atlas-category-icon.is-milestone::after {
+  display: none !important;
+  content: none !important;
+}
+
+/* Home cards stay editorial; detailed tags belong to the article page. */
+#recent-posts .ops-article-tags,
+#recent-posts .ops-post-tags {
+  display: none !important;
+}
+
+.ops-article-category-icon {
+  margin-right: 0.18rem;
+  color: var(--ops-accent) !important;
+}
+
+.ops-post-tags {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.32rem;
+  margin-left: 0.3rem;
+}
+
+.ops-post-tags a {
+  color: rgba(230, 241, 247, 0.86) !important;
+  text-decoration: none !important;
+}
+
+.ops-post-tags a:hover {
+  color: white !important;
+}
+
+/* Utility pages no longer fade through a mismatched gray band. */
+.ops-subpage #page-header:not(.full_page)::after {
+  display: none !important;
+  content: none !important;
+}
+
+.ops-subpage #content-inner {
+  margin-top: 0 !important;
+}
+
+.ops-subpage #page-header:not(.full_page) {
+  height: 18rem;
+}
+
+.ops-subpage #page-header:not(.full_page)::before {
+  background: transparent !important;
+}
+
+[data-theme='dark'].ops-subpage #page-header:not(.full_page)::before {
+  background: transparent !important;
+}
+
+/* Read-only quest board. */
+.ops-quest-board {
+  overflow: hidden;
+  color: var(--ops-ink);
+  border: 1px solid rgba(255, 255, 255, 0.58);
+  border-radius: 8px;
+  background: var(--ops-panel);
+  box-shadow: var(--ops-shadow);
+  opacity: 0;
+  transform: translateY(10px) scale(0.992);
+  backdrop-filter: blur(20px) saturate(116%);
+  transition: opacity 320ms ease, transform 460ms var(--ops-ease);
+}
+
+.ops-quest-board.is-ready {
+  opacity: 1;
+  transform: none;
+}
+
+.ops-quest-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 1.25rem 2rem;
+  padding: 2rem 2.25rem 1.4rem;
+  border-bottom: 1px solid var(--ops-line);
+}
+
+.ops-quest-heading h2 {
+  margin: 0;
+  color: var(--ops-ink);
+  font-size: clamp(1.52rem, 2.5vw, 2.2rem);
+  line-height: 1.2;
+  letter-spacing: 0;
+}
+
+.ops-quest-heading p {
+  margin: 0.85rem 0 0;
+  color: var(--ops-muted);
+  font: 500 0.92rem/1.6 Georgia, 'Noto Serif SC', serif;
+}
+
+.ops-quest-stat {
+  display: flex;
+  min-width: 5.6rem;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.ops-quest-stat strong {
+  color: var(--ops-ink);
+  font: 650 1.85rem/1 ui-monospace, SFMono-Regular, Consolas, monospace;
+}
+
+.ops-quest-stat small {
+  color: var(--ops-muted);
+  font-size: 0.78rem;
+}
+
+.ops-quest-progress {
+  grid-column: 1 / -1;
+  overflow: hidden;
+  height: 2px;
+  border-radius: 999px;
+  background: var(--ops-line);
+}
+
+.ops-quest-progress span {
+  display: block;
+  width: var(--quest-progress);
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--ops-accent), #76bad8);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 720ms var(--ops-ease) 100ms;
+}
+
+.ops-quest-board.is-ready .ops-quest-progress span {
+  transform: scaleX(1);
+}
+
+.ops-quest-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.ops-quest-lane {
+  min-width: 0;
+  padding: 1.55rem 1.65rem 1.7rem;
+  border-right: 1px solid var(--ops-line);
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 300ms ease calc(120ms + var(--lane-index) * 70ms), transform 480ms var(--ops-ease) calc(120ms + var(--lane-index) * 70ms);
+}
+
+.ops-quest-board.is-ready .ops-quest-lane {
+  opacity: 1;
+  transform: none;
+}
+
+.ops-quest-lane:last-child {
+  border-right: 0;
+}
+
+.ops-quest-lane > header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.ops-quest-lane header span {
+  display: block;
+  margin-bottom: 0.34rem;
+  color: var(--ops-accent);
+  font: 700 0.62rem/1 ui-monospace, SFMono-Regular, Consolas, monospace;
+  letter-spacing: 0.1em;
+}
+
+.ops-quest-lane h3 {
+  margin: 0;
+  color: var(--ops-ink);
+  font-size: 0.98rem;
+}
+
+.ops-quest-lane header > strong {
+  color: var(--ops-muted);
+  font: 700 0.8rem/1.2 ui-monospace, SFMono-Regular, Consolas, monospace;
+}
+
+.ops-quest-lane header small {
+  font-size: 0.68rem;
+}
+
+.ops-quest-lane ul {
+  display: grid;
+  gap: 0.14rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ops-quest-lane li {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: 0.92rem minmax(0, 1fr);
+  gap: 0.6rem;
+  align-items: start;
+  margin: 0;
+  padding: 0.48rem 0;
+  color: var(--ops-ink);
+  font-size: 0.88rem;
+  line-height: 1.48;
+}
+
+.ops-quest-check {
+  position: relative;
+  display: block;
+  box-sizing: border-box;
+  width: 0.82rem;
+  height: 0.82rem;
+  margin-top: 0.22rem;
+  overflow: hidden;
+  border: 1px solid rgba(86, 121, 141, 0.34);
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.ops-quest-lane li.is-complete .ops-quest-check {
+  border-color: color-mix(in srgb, var(--ops-accent) 70%, transparent);
+  background: color-mix(in srgb, var(--ops-accent) 88%, white);
+}
+
+.ops-quest-lane li.is-complete .ops-quest-check::after {
+  position: absolute;
+  top: 0.12rem;
+  left: 0.25rem;
+  width: 0.22rem;
+  height: 0.4rem;
+  border-right: 1.5px solid white;
+  border-bottom: 1.5px solid white;
+  content: '';
+  transform: rotate(42deg);
+}
+
+.ops-quest-text {
+  min-width: 0;
+}
+
+.ops-quest-lane li.is-complete .ops-quest-text {
+  color: color-mix(in srgb, var(--ops-ink) 78%, var(--ops-muted));
+  opacity: 0.76;
+  text-decoration: none;
+}
+
+/* Dual-axis knowledge atlas: one composed entrance, then responsive links. */
+.ops-atlas-header {
+  grid-template-columns: minmax(0, 1fr) minmax(15rem, 0.38fr);
+  align-items: center;
+  padding: 1.8rem 2rem 1.45rem;
+}
+
+.ops-atlas-header h2 {
+  font-size: clamp(1.5rem, 2.55vw, 2.3rem);
+}
+
+.ops-atlas-header p,
+.ops-atlas-legend {
+  display: none !important;
+}
+
+.ops-atlas-shell {
+  grid-template-columns: 12.5rem minmax(27rem, 1fr) minmax(18rem, 0.7fr);
+}
+
+.ops-atlas-map {
+  contain: layout paint;
+}
+
+.ops-atlas-lines line {
+  stroke: var(--ops-accent);
+  stroke-width: 0.2;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  opacity: 0;
+  transition: stroke-dashoffset 620ms var(--ops-ease) calc(120ms + var(--atlas-delay)), opacity 300ms ease calc(120ms + var(--atlas-delay)), stroke-width 180ms ease;
+}
+
+.ops-atlas-map.is-map-ready .ops-atlas-lines line {
+  stroke-dashoffset: 0;
+  opacity: 0.17;
+}
+
+.ops-atlas-map.is-map-ready .ops-atlas-lines line.is-related {
+  stroke-width: 0.42;
+  opacity: 0.82;
+}
+
+.ops-atlas-core {
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.86);
+  transition: opacity 320ms ease 80ms, transform 560ms var(--ops-ease) 80ms;
+}
+
+.ops-atlas-map.is-map-ready .ops-atlas-core {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.ops-atlas-node {
+  width: max-content;
+  max-width: 9.6rem;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.84);
+  will-change: transform, opacity;
+  transition: opacity 280ms ease calc(150ms + var(--atlas-delay)), color 180ms ease, border-color 180ms ease, background-color 180ms ease, box-shadow 220ms ease, transform 500ms var(--ops-ease) calc(150ms + var(--atlas-delay));
+}
+
+.ops-atlas-node span {
+  display: block;
+  max-width: 7.6rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ops-atlas-map.is-map-ready .ops-atlas-node {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.ops-atlas-map.is-map-ready .ops-atlas-node:hover,
+.ops-atlas-map.is-map-ready .ops-atlas-node:focus-visible,
+.ops-atlas-map.is-map-ready .ops-atlas-node.is-active {
+  transform: translate(-50%, -50%) scale(1.055);
+}
+
+.ops-atlas-result-list {
+  scrollbar-color: rgba(55, 104, 132, 0.36) transparent;
+}
+
+/* Search returns to a simple command palette with useful article context. */
+.ops-command-shell {
+  width: min(700px, calc(100vw - 24px));
+}
+
+.ops-command-filters,
+.ops-command-hint {
+  display: none !important;
+}
+
+.ops-command-input-row {
+  padding: 15px 16px;
+}
+
+.ops-command-results {
+  max-height: min(58vh, 460px);
+  padding: 7px;
+}
+
+.ops-command-item {
+  grid-template-columns: 30px minmax(0, 1fr) auto;
+  padding: 9px 10px;
+  border-radius: 6px;
+}
+
+.ops-command-copy-top {
+  gap: 0.48rem;
+}
+
+.ops-command-category {
+  color: var(--ops-accent);
+  border: 0;
+  background: transparent;
+  font: 650 0.61rem/1 ui-monospace, SFMono-Regular, Consolas, monospace;
+}
+
+.ops-command-title mark,
+.ops-command-subtitle mark {
+  border-bottom: 1px solid var(--ops-accent);
+  color: inherit;
+  background: var(--ops-accent-soft);
+}
+
+.ops-command-footer {
+  min-height: 2.35rem;
+  padding: 0.62rem 0.95rem;
+  color: var(--ops-muted);
+  font: 650 0.66rem/1 ui-monospace, SFMono-Regular, Consolas, monospace;
+  letter-spacing: 0.08em;
+}
+
+@media (max-width: 1180px) {
+  .ops-atlas-shell {
+    grid-template-columns: 11rem minmax(22rem, 1fr) minmax(16rem, 0.68fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .ops-subpage #content-inner {
+    margin-top: 0 !important;
+  }
+
+  .ops-quest-grid,
+  .ops-atlas-shell,
+  .ops-atlas-header {
+    grid-template-columns: 1fr;
+  }
+
+  .ops-quest-lane {
+    border-right: 0;
+    border-bottom: 1px solid var(--ops-line);
+  }
+
+  .ops-atlas-header {
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .ops-subpage #page-header:not(.full_page) {
+    height: 14rem;
+  }
+
+  .ops-quest-hero {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.9rem;
+    padding: 1.35rem 1.1rem 1.1rem;
+  }
+
+  .ops-quest-heading h2 {
+    font-size: 1.35rem;
+  }
+
+  .ops-quest-heading p {
+    font-size: 0.82rem;
+  }
+
+  .ops-quest-stat strong {
+    font-size: 1.35rem;
+  }
+
+  .ops-quest-lane {
+    padding: 1.25rem 1.1rem;
+  }
+
+  .ops-atlas-header {
+    padding: 1.35rem 1.1rem 1.1rem;
+  }
+
+  .ops-atlas-map {
+    display: grid;
+    min-height: auto;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
+    padding: 1.1rem;
+  }
+
+  .ops-atlas-node,
+  .ops-atlas-map.is-map-ready .ops-atlas-node,
+  .ops-atlas-map.is-map-ready .ops-atlas-node:hover,
+  .ops-atlas-map.is-map-ready .ops-atlas-node:focus-visible {
+    position: static;
+    width: 100%;
+    max-width: none;
+    justify-content: space-between;
+    transform: none;
+  }
+
+  .ops-atlas-node span {
+    max-width: calc(100% - 1.5rem);
+  }
+
+  .ops-post-tags {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ops-quest-board,
+  .ops-quest-lane,
+  .ops-quest-progress span,
+  .ops-atlas,
+  .ops-atlas-lines line,
+  .ops-atlas-core,
+  .ops-atlas-node,
+  #aside-content .card-info .avatar-img img {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .ops-quest-board,
+  .ops-quest-lane,
+  .ops-atlas,
+  .ops-atlas-core,
+  .ops-atlas-node {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .ops-atlas-core {
+    transform: translate(-50%, -50%) !important;
+  }
+
+  .ops-atlas-lines line {
+    stroke-dashoffset: 0 !important;
+    opacity: 0.17 !important;
+  }
+
+  #aside-content .card-info .avatar-img:hover img {
+    transform: none !important;
+  }
+}

@@ -2,9 +2,6 @@
    【 Colin's Blog 】博客 UI
    ========================================= */
 
-@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;900&display=swap');
-
 #nav #blog-info .site-icon { height: 32px !important; width: auto !important; image-rendering: pixelated !important; transition: transform 0.3s ease-in-out !important; display: inline-block !important; vertical-align: middle !important; }
 #nav #blog-info a:hover .site-icon { transform: scale(1.2) !important; cursor: pointer !important; }
 
@@ -411,4 +408,1134 @@ html.prts-hide-cursor, html.prts-hide-cursor body { cursor: none !important; }
 
 [data-theme="dark"] #aside-content .card-info .site-data > a::after {
   background: rgba(145, 173, 188, 0.45);
+}
+
+/* =========================================
+   UI polish v1: quiet motion and clearer hierarchy
+   ========================================= */
+
+/* Keep the hero focused on the title and changing subtitle. */
+@media (min-width: 769px) {
+  #page-header.full_page #site_social_icons {
+    display: none;
+  }
+}
+
+/* The checklist benefits from a narrower reading measure on wide screens. */
+@media (min-width: 769px) {
+  .ops-page-todo #content-inner {
+    max-width: 1120px;
+  }
+}
+
+/* Article cards keep their airy character with slightly tighter rhythm. */
+#recent-posts > .recent-post-items > .recent-post-item,
+#aside-content .card-widget {
+  transition:
+    transform 0.24s cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 0.24s ease,
+    border-color 0.24s ease,
+    box-shadow 0.24s ease !important;
+}
+
+#recent-posts > .recent-post-items > .recent-post-item:hover,
+#aside-content .card-widget:hover {
+  transform: translateY(-2px);
+}
+
+@media (min-width: 769px) {
+  #recent-posts > .recent-post-items > .recent-post-item {
+    height: 17.2em;
+  }
+
+  #recent-posts > .recent-post-items > .recent-post-item > .recent-post-info.no-cover {
+    padding: 28px 36px;
+  }
+}
+
+#recent-posts .article-meta-wrap,
+#recent-posts .article-meta-wrap a {
+  color: rgba(58, 75, 88, 0.74) !important;
+}
+
+[data-theme="dark"] #recent-posts .article-meta-wrap,
+[data-theme="dark"] #recent-posts .article-meta-wrap a {
+  color: rgba(205, 215, 221, 0.68) !important;
+}
+
+/* Sidebar headings and mixed Chinese/English titles read more cleanly. */
+#aside-content .card-widget:not(.card-info) {
+  padding: 19px 22px;
+}
+
+#aside-content .item-headline {
+  padding-bottom: 8px;
+  color: #40576a;
+  font-size: 1.08em;
+  font-weight: 600;
+}
+
+[data-theme="dark"] #aside-content .item-headline {
+  color: #b8c4ca;
+}
+
+#aside-content .aside-list > .aside-list-item .content {
+  min-width: 0;
+  word-break: normal;
+  overflow-wrap: break-word;
+}
+
+#aside-content .aside-list > .aside-list-item .content > .title {
+  word-break: normal;
+  overflow-wrap: break-word;
+}
+
+/* Lower the button saturation and let social color appear on interaction. */
+#aside-content .card-info #card-info-btn {
+  background: rgba(54, 151, 210, 0.88) !important;
+  line-height: 2.28;
+  box-shadow: 0 5px 12px rgba(47, 126, 184, 0.1);
+  transition:
+    transform 0.22s ease,
+    background-color 0.22s ease,
+    box-shadow 0.22s ease;
+}
+
+#aside-content .card-info #card-info-btn:hover {
+  transform: translateY(-1px);
+  background: rgba(43, 132, 188, 0.94) !important;
+  box-shadow: 0 8px 16px rgba(47, 126, 184, 0.16);
+}
+
+[data-theme="dark"] #aside-content .card-info #card-info-btn {
+  border: 1px solid rgba(166, 187, 198, 0.1);
+  background: rgba(80, 104, 118, 0.52) !important;
+  color: rgba(225, 232, 236, 0.74) !important;
+  box-shadow: none;
+}
+
+[data-theme="dark"] #aside-content .card-info #card-info-btn:hover {
+  background: rgba(88, 120, 138, 0.66) !important;
+  color: rgba(242, 246, 248, 0.9) !important;
+  box-shadow: none;
+}
+
+#aside-content .card-info .card-info-social-icons .social-icon {
+  color: #526879 !important;
+  opacity: 0.82;
+  transition:
+    color 0.22s ease,
+    opacity 0.22s ease;
+}
+
+#aside-content .card-info .card-info-social-icons .social-icon i {
+  transition: transform 0.22s ease;
+}
+
+#aside-content .card-info .card-info-social-icons .social-icon:hover {
+  color: #2f7eb8 !important;
+  opacity: 1;
+}
+
+#aside-content .card-info .card-info-social-icons .social-icon:hover i {
+  transform: translateY(-2px) scale(1.04) !important;
+}
+
+[data-theme="dark"] #aside-content .card-info .card-info-social-icons .social-icon {
+  color: #91a8b5 !important;
+}
+
+/* Utility buttons stay available without competing with the content. */
+#rightside.rightside-show {
+  opacity: 0.58;
+}
+
+#rightside.rightside-show:hover {
+  opacity: 0.92;
+}
+
+#rightside > div > button,
+#rightside > div > a {
+  background-color: rgba(55, 145, 199, 0.78) !important;
+}
+
+@media (max-width: 768px) {
+  #web_bg {
+    background-attachment: scroll !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #recent-posts > .recent-post-items > .recent-post-item,
+  #aside-content .card-widget,
+  #aside-content .card-info #card-info-btn,
+  #aside-content .card-info .card-info-social-icons .social-icon i {
+    transition: none !important;
+  }
+
+  #recent-posts > .recent-post-items > .recent-post-item:hover,
+  #aside-content .card-widget:hover,
+  #aside-content .card-info #card-info-btn:hover,
+  #aside-content .card-info .card-info-social-icons .social-icon:hover i {
+    transform: none !important;
+  }
+}
+
+/* =========================================
+   Personal Ops UI Lab v1.3
+   Experimental overrides. Never deploy directly.
+   ========================================= */
+
+:root {
+  --ops-ink: #263b49;
+  --ops-muted: #677d8b;
+  --ops-accent: #3c86ad;
+  --ops-accent-soft: rgba(60, 134, 173, 0.12);
+  --ops-panel: rgba(245, 249, 251, 0.72);
+  --ops-panel-strong: rgba(249, 252, 253, 0.9);
+  --ops-line: rgba(63, 94, 112, 0.16);
+  --ops-highlight: rgba(255, 255, 255, 0.72);
+  --ops-shadow: 0 14px 32px rgba(31, 58, 75, 0.1);
+}
+
+[data-theme="dark"] {
+  --ops-ink: #d8e2e7;
+  --ops-muted: #8fa2ad;
+  --ops-accent: #77abc6;
+  --ops-accent-soft: rgba(119, 171, 198, 0.1);
+  --ops-panel: rgba(19, 26, 31, 0.78);
+  --ops-panel-strong: rgba(23, 31, 36, 0.94);
+  --ops-line: rgba(173, 198, 211, 0.14);
+  --ops-highlight: rgba(255, 255, 255, 0.055);
+  --ops-shadow: 0 18px 36px rgba(0, 0, 0, 0.3);
+}
+
+/* Light mode keeps the familiar blue action; dark mode uses quiet material. */
+#aside-content .card-info #card-info-btn {
+  border: 1px solid rgba(50, 140, 198, 0.18) !important;
+  background: rgba(54, 151, 210, 0.88) !important;
+  color: #fff !important;
+  box-shadow: 0 5px 12px rgba(47, 126, 184, 0.1) !important;
+  letter-spacing: 0;
+}
+
+#aside-content .card-info #card-info-btn:hover {
+  border-color: rgba(43, 132, 188, 0.3) !important;
+  background: rgba(43, 132, 188, 0.94) !important;
+  color: #fff !important;
+  box-shadow: 0 8px 16px rgba(47, 126, 184, 0.16) !important;
+}
+
+[data-theme="dark"] #aside-content .card-info #card-info-btn {
+  border-color: rgba(176, 201, 213, 0.16) !important;
+  background: rgba(255, 255, 255, 0.035) !important;
+  color: rgba(216, 228, 234, 0.76) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.045) !important;
+}
+
+[data-theme="dark"] #aside-content .card-info #card-info-btn:hover {
+  border-color: rgba(133, 184, 208, 0.28) !important;
+  background: rgba(105, 158, 184, 0.095) !important;
+  color: rgba(235, 243, 247, 0.94) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07) !important;
+}
+
+/* Home entries read like a quiet, human-scale activity stream. */
+#recent-posts > .recent-post-items > .recent-post-item {
+  position: relative;
+  overflow: hidden;
+  border-color: var(--ops-line) !important;
+  background: var(--ops-panel) !important;
+  box-shadow:
+    inset 0 1px 0 var(--ops-highlight),
+    var(--ops-shadow) !important;
+}
+
+#recent-posts > .recent-post-items > .recent-post-item::before {
+  position: absolute;
+  z-index: 2;
+  top: 20px;
+  bottom: 20px;
+  left: 0;
+  width: 2px;
+  border-radius: 0 2px 2px 0;
+  background: var(--ops-accent);
+  content: '';
+  opacity: 0.36;
+  transform: scaleY(0.28);
+  transform-origin: center;
+  transition:
+    opacity 0.24s ease,
+    transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+#recent-posts > .recent-post-items > .recent-post-item::after {
+  position: absolute;
+  top: 16px;
+  right: 22px;
+  color: var(--ops-muted);
+  content: 'ENTRY ' attr(data-ops-index);
+  font-family: 'Fira Code', Consolas, monospace;
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  opacity: 0.68;
+}
+
+#recent-posts > .recent-post-items > .recent-post-item:hover {
+  border-color: rgba(60, 134, 173, 0.25) !important;
+  background: var(--ops-panel-strong) !important;
+  box-shadow:
+    inset 0 1px 0 var(--ops-highlight),
+    0 17px 36px rgba(30, 66, 88, 0.13) !important;
+  transform: translateX(4px) !important;
+}
+
+#recent-posts > .recent-post-items > .recent-post-item:hover::before {
+  opacity: 0.9;
+  transform: scaleY(0.82);
+}
+
+[data-theme="dark"] #recent-posts > .recent-post-items > .recent-post-item:hover {
+  background: var(--ops-panel-strong) !important;
+  box-shadow:
+    inset 0 1px 0 var(--ops-highlight),
+    0 20px 42px rgba(0, 0, 0, 0.34) !important;
+}
+
+#recent-posts .article-meta-wrap {
+  font-family: 'Fira Code', Consolas, monospace;
+  font-size: 0.76rem;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+}
+
+#recent-posts .article-title {
+  padding-right: 72px;
+}
+
+/* Todo uses compact grouped modules: distinct enough to scan, quiet enough to read. */
+.ops-page-todo #page {
+  padding: 10px 0 34px !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+@media (min-width: 769px) {
+  .ops-page-todo #content-inner {
+    max-width: 920px;
+  }
+}
+
+.ops-page-todo #article-container .note {
+  margin: 14px 0 !important;
+  padding: 19px 22px !important;
+  border: 1px solid var(--ops-line) !important;
+  border-radius: 6px !important;
+  background: var(--ops-panel) !important;
+  box-shadow: inset 0 1px 0 var(--ops-highlight) !important;
+  transform: none !important;
+  backdrop-filter: blur(12px) saturate(108%) !important;
+  -webkit-backdrop-filter: blur(12px) saturate(108%) !important;
+}
+
+.ops-page-todo #article-container .note:hover,
+[data-theme="dark"] .ops-page-todo #article-container .note,
+[data-theme="dark"] .ops-page-todo #article-container .note:hover {
+  border: 1px solid var(--ops-line) !important;
+  background: var(--ops-panel) !important;
+  box-shadow: inset 0 1px 0 var(--ops-highlight) !important;
+  transform: none !important;
+}
+
+.ops-page-todo #article-container > div:first-child {
+  color: var(--ops-ink) !important;
+  font-weight: 600;
+  opacity: 0.88;
+  text-shadow: 0 1px 0 var(--ops-highlight);
+}
+
+.ops-page-todo #article-container > hr:first-of-type {
+  width: 72px !important;
+  margin: 18px auto 12px !important;
+  border-color: var(--ops-line) !important;
+}
+
+.ops-page-todo #article-container .note ul {
+  margin: 10px 0 0;
+  padding-left: 0;
+  list-style: none;
+}
+
+.ops-page-todo #article-container .note li {
+  padding: 5px 0;
+  list-style: none;
+}
+
+.ops-page-todo #article-container .note li::marker {
+  content: '';
+}
+
+/* Category symbols live in navigation only; article metadata keeps Butterfly's own icon. */
+.ops-category-link {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 0.5em;
+}
+
+.ops-category-icon {
+  width: 1.1em;
+  color: var(--ops-muted) !important;
+  text-align: center;
+  opacity: 0.78;
+  transition: color 0.2s ease, opacity 0.2s ease, transform 0.2s ease;
+}
+
+.ops-category-link:hover .ops-category-icon {
+  color: var(--ops-accent) !important;
+  opacity: 1;
+  transform: translateY(-1px);
+}
+
+.category-lists .category-list-item {
+  padding-left: 0.35em !important;
+}
+
+.category-lists .category-list-item::before {
+  display: none !important;
+}
+
+[data-theme="dark"] .ops-category-icon {
+  filter: none;
+  opacity: 0.72;
+}
+
+/* A softer system scrollbar keeps the edge quiet without hiding affordance. */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(73, 96, 111, 0.34) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  border: 2px solid transparent;
+  border-radius: 999px;
+  background: rgba(73, 96, 111, 0.34);
+  background-clip: padding-box;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: rgba(73, 96, 111, 0.52);
+  background-clip: padding-box;
+}
+
+[data-theme="dark"] {
+  scrollbar-color: rgba(171, 190, 201, 0.25) transparent;
+}
+
+[data-theme="dark"] *::-webkit-scrollbar-thumb {
+  background: rgba(171, 190, 201, 0.25);
+  background-clip: padding-box;
+}
+
+[data-theme="dark"] *::-webkit-scrollbar-thumb:hover {
+  background: rgba(171, 190, 201, 0.4);
+  background-clip: padding-box;
+}
+
+/* The tag cloud remains secondary, but no longer fades into the panel. */
+#aside-content .card-tag-cloud a {
+  color: rgba(48, 67, 80, 0.72) !important;
+}
+
+#aside-content .card-tag-cloud a:hover {
+  color: var(--ops-accent) !important;
+}
+
+[data-theme="dark"] #aside-content .card-tag-cloud a {
+  color: rgba(202, 214, 221, 0.68) !important;
+}
+
+/* Spotlight-style command palette: the single expressive interaction. */
+body.ops-palette-open {
+  overflow: hidden;
+}
+
+#ops-command-palette[hidden] {
+  display: none;
+}
+
+#ops-command-palette {
+  position: fixed;
+  z-index: 2147483000;
+  inset: 0;
+  display: grid;
+  place-items: start center;
+  padding: min(14vh, 132px) 20px 24px;
+}
+
+.ops-command-backdrop {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  background: rgba(21, 31, 38, 0.36);
+  backdrop-filter: blur(14px) saturate(0.82);
+  -webkit-backdrop-filter: blur(14px) saturate(0.82);
+  cursor: default;
+}
+
+.ops-command-shell {
+  position: relative;
+  width: min(680px, 100%);
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.58);
+  border-radius: 8px;
+  background: rgba(246, 250, 252, 0.92);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.92),
+    0 28px 74px rgba(11, 31, 44, 0.3);
+  color: #223744;
+  animation: ops-command-in 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+[data-theme="dark"] .ops-command-shell {
+  border-color: rgba(185, 209, 220, 0.16);
+  background: rgba(18, 25, 30, 0.94);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.055),
+    0 32px 86px rgba(0, 0, 0, 0.58);
+  color: #dbe6eb;
+}
+
+.ops-command-input-row {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 15px 17px;
+  border-bottom: 1px solid var(--ops-line);
+}
+
+.ops-command-input-row > i {
+  color: var(--ops-accent);
+}
+
+#ops-command-input {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: inherit;
+  font: 500 1rem/1.4 -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  letter-spacing: 0;
+}
+
+#ops-command-input::placeholder {
+  color: var(--ops-muted);
+  opacity: 0.76;
+}
+
+.ops-command-input-row kbd,
+.ops-command-hint kbd {
+  border: 1px solid var(--ops-line);
+  border-radius: 4px;
+  background: var(--ops-accent-soft);
+  color: var(--ops-muted);
+  font: 500 0.68rem/1 'Fira Code', Consolas, monospace;
+  padding: 5px 7px;
+}
+
+.ops-command-results {
+  max-height: min(52vh, 420px);
+  overflow-y: auto;
+  padding: 8px;
+}
+
+.ops-command-item {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 7px 10px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.ops-command-item:hover,
+.ops-command-item.is-active {
+  border-color: rgba(60, 134, 173, 0.16);
+  background: var(--ops-accent-soft);
+  color: inherit;
+}
+
+.ops-command-icon {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border: 1px solid var(--ops-line);
+  border-radius: 6px;
+  color: var(--ops-accent);
+}
+
+.ops-command-copy {
+  min-width: 0;
+}
+
+.ops-command-title,
+.ops-command-subtitle {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ops-command-title {
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.ops-command-subtitle {
+  margin-top: 2px;
+  color: var(--ops-muted);
+  font: 400 0.7rem/1.35 'Fira Code', Consolas, monospace;
+}
+
+.ops-command-arrow {
+  color: var(--ops-muted);
+  font-size: 0.72rem;
+}
+
+.ops-command-empty {
+  padding: 36px 20px;
+  color: var(--ops-muted);
+  text-align: center;
+}
+
+.ops-command-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 16px;
+  border-top: 1px solid var(--ops-line);
+  color: var(--ops-muted);
+  font: 400 0.68rem/1.4 'Fira Code', Consolas, monospace;
+}
+
+.ops-command-hint {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+@keyframes ops-command-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (max-width: 768px) {
+  .ops-page-todo #page {
+    padding: 8px 0 26px !important;
+  }
+
+  .ops-page-todo #article-container .note {
+    padding: 17px 18px !important;
+  }
+
+  #recent-posts > .recent-post-items > .recent-post-item::after {
+    top: 12px;
+    right: 14px;
+  }
+
+  #recent-posts .article-title {
+    padding-right: 54px;
+  }
+
+  #recent-posts > .recent-post-items > .recent-post-item:hover {
+    transform: none !important;
+  }
+
+  #ops-command-palette {
+    padding: 72px 10px 16px;
+  }
+
+  .ops-command-footer {
+    display: none;
+  }
+
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ops-command-shell {
+    animation: none;
+  }
+
+  #recent-posts > .recent-post-items > .recent-post-item::before {
+    transition: none;
+  }
+}
+
+/* =========================================
+   Personal Ops UI Lab v1.4
+   Isolated experiment: structure before decoration.
+   ========================================= */
+
+/* The author portrait is calm at rest and only turns when intentionally touched. */
+#aside-content .card-info .avatar-img img {
+  animation: none !important;
+  transform: rotate(0deg) !important;
+  transition: transform 0.72s cubic-bezier(0.22, 1, 0.36, 1) !important;
+}
+
+#aside-content .card-info .avatar-img:hover img {
+  transform: rotate(360deg) !important;
+}
+
+/* Restore a little breathing room after v1.3's over-tightened article cards. */
+@media (min-width: 769px) {
+  #recent-posts > .recent-post-items > .recent-post-item {
+    height: 18em;
+  }
+}
+
+/* Category identity replaces Butterfly's generic inbox glyph in article metadata. */
+.ops-article-category-icon {
+  width: 1.15em;
+  margin-right: 0.34em;
+  color: var(--ops-muted) !important;
+  text-align: center;
+  opacity: 0.82;
+  transition: color 0.2s ease, opacity 0.2s ease, transform 0.22s ease;
+}
+
+.article-meta:hover .ops-article-category-icon {
+  color: var(--ops-accent) !important;
+  opacity: 1;
+  transform: translateY(-1px);
+}
+
+.ops-category-icon[data-ops-category="milestone"],
+.ops-article-category-icon[data-ops-category="milestone"] {
+  transform: rotate(-35deg);
+  transform-origin: center;
+}
+
+.article-meta:hover .ops-article-category-icon[data-ops-category="milestone"],
+.ops-category-link:hover .ops-category-icon[data-ops-category="milestone"] {
+  transform: translate(1px, -2px) rotate(-35deg) scale(1.08);
+}
+
+/* Thin but legible scrollbars: less frame, clearer thumb. */
+html {
+  scrollbar-color: rgba(62, 92, 109, 0.5) rgba(62, 92, 109, 0.055);
+}
+
+*::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+*::-webkit-scrollbar-track {
+  background: rgba(62, 92, 109, 0.055);
+}
+
+*::-webkit-scrollbar-thumb {
+  border: 0;
+  border-radius: 999px;
+  background: rgba(62, 92, 109, 0.5);
+  background-clip: border-box;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: rgba(48, 117, 151, 0.72);
+  background-clip: border-box;
+}
+
+[data-theme="dark"] {
+  scrollbar-color: rgba(159, 187, 201, 0.46) rgba(159, 187, 201, 0.045);
+}
+
+[data-theme="dark"] *::-webkit-scrollbar-track {
+  background: rgba(159, 187, 201, 0.045);
+}
+
+[data-theme="dark"] *::-webkit-scrollbar-thumb {
+  background: rgba(159, 187, 201, 0.46);
+}
+
+[data-theme="dark"] *::-webkit-scrollbar-thumb:hover {
+  background: rgba(132, 190, 217, 0.68);
+}
+
+/* A single animated signal line gives Latest Articles a quiet live-system pulse. */
+#aside-content .card-recent-post {
+  position: relative;
+  overflow: hidden;
+}
+
+#aside-content .card-recent-post::before {
+  position: absolute;
+  z-index: 2;
+  top: 18px;
+  bottom: 18px;
+  left: 0;
+  width: 2px;
+  border-radius: 0 2px 2px 0;
+  background: linear-gradient(
+    180deg,
+    rgba(60, 134, 173, 0.12) 0%,
+    rgba(60, 134, 173, 0.92) 46%,
+    rgba(112, 184, 205, 0.28) 72%,
+    rgba(60, 134, 173, 0.12) 100%
+  );
+  background-size: 100% 220%;
+  content: '';
+  animation: ops-recent-signal 4.4s ease-in-out infinite;
+}
+
+@keyframes ops-recent-signal {
+  0%, 100% { background-position: 50% 0%; opacity: 0.56; }
+  50% { background-position: 50% 100%; opacity: 1; }
+}
+
+/* Todo is one mission board, not three note cards stacked inside another card. */
+.ops-page-todo #page {
+  padding: 0 0 38px !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+@media (min-width: 769px) {
+  .ops-page-todo #content-inner {
+    max-width: 1160px;
+  }
+}
+
+.ops-page-todo #article-container {
+  overflow: visible;
+}
+
+.ops-todo-board {
+  overflow: hidden;
+  border: 1px solid var(--ops-line);
+  border-radius: 8px;
+  background: var(--ops-panel);
+  box-shadow: inset 0 1px 0 var(--ops-highlight), var(--ops-shadow);
+  color: var(--ops-ink);
+  backdrop-filter: blur(16px) saturate(108%);
+  -webkit-backdrop-filter: blur(16px) saturate(108%);
+}
+
+.ops-todo-overview {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 22px 38px;
+  align-items: end;
+  padding: 34px 38px 28px;
+}
+
+.ops-todo-kicker {
+  display: block;
+  margin-bottom: 10px;
+  color: var(--ops-accent);
+  font: 500 0.68rem/1.2 'Fira Code', Consolas, monospace;
+}
+
+.ops-todo-overview h2 {
+  margin: 0;
+  color: var(--ops-ink);
+  font-size: clamp(1.45rem, 2.5vw, 2.15rem);
+  font-weight: 650;
+  letter-spacing: 0;
+}
+
+.ops-todo-overview-copy p {
+  margin: 12px 0 0;
+  color: var(--ops-muted);
+  font-size: 0.86rem;
+}
+
+.ops-todo-progress-copy {
+  min-width: 92px;
+  text-align: right;
+}
+
+.ops-todo-progress-copy strong {
+  display: block;
+  color: var(--ops-ink);
+  font: 500 2rem/1 'Fira Code', Consolas, monospace;
+}
+
+.ops-todo-progress-copy small {
+  color: var(--ops-muted);
+  font-size: 0.74rem;
+}
+
+.ops-todo-progress-copy span {
+  display: block;
+  margin-top: 7px;
+  color: var(--ops-muted);
+  font-size: 0.72rem;
+}
+
+.ops-todo-progress {
+  grid-column: 1 / -1;
+  height: 3px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--ops-accent-soft);
+}
+
+.ops-todo-progress > span {
+  display: block;
+  width: var(--ops-progress);
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #3c86ad, #77abc6);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.85s cubic-bezier(0.22, 1, 0.36, 1) 0.12s;
+}
+
+.ops-todo-board.is-ready .ops-todo-progress > span {
+  transform: scaleX(1);
+}
+
+.ops-todo-lanes {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-top: 1px solid var(--ops-line);
+}
+
+.ops-page-todo #article-container .ops-todo-lane.note {
+  min-width: 0;
+  margin: 0 !important;
+  padding: 27px 30px 31px !important;
+  border: 0 !important;
+  border-right: 1px solid var(--ops-line) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  opacity: 0;
+  transform: translateY(14px) !important;
+  transition:
+    opacity 0.46s ease calc(0.08s + var(--ops-lane-index) * 0.08s),
+    transform 0.58s cubic-bezier(0.22, 1, 0.36, 1) calc(0.08s + var(--ops-lane-index) * 0.08s) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.ops-page-todo #article-container .ops-todo-lane.note:last-child {
+  border-right: 0 !important;
+}
+
+.ops-page-todo #article-container .ops-todo-board.is-ready .ops-todo-lane.note {
+  opacity: 1;
+  transform: translateY(0) !important;
+}
+
+.ops-page-todo #article-container .ops-todo-lane.note:hover,
+[data-theme="dark"] .ops-page-todo #article-container .ops-todo-lane.note,
+[data-theme="dark"] .ops-page-todo #article-container .ops-todo-lane.note:hover {
+  border-top: 0 !important;
+  border-bottom: 0 !important;
+  border-left: 0 !important;
+  background: linear-gradient(180deg, var(--ops-accent-soft), transparent 48%) !important;
+  box-shadow: none !important;
+}
+
+.ops-todo-lane > p {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 0 18px !important;
+  color: var(--ops-ink);
+  font-size: 0.98rem;
+}
+
+.ops-todo-lane-meta {
+  color: var(--ops-muted);
+  font: 500 0.66rem/1 'Fira Code', Consolas, monospace;
+}
+
+.ops-page-todo #article-container .ops-todo-lane ul {
+  margin: 0;
+}
+
+.ops-page-todo #article-container .ops-todo-lane li {
+  position: relative;
+  display: grid;
+  grid-template-columns: 16px minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+  padding: 7px 0;
+  color: var(--ops-ink);
+  font-size: 0.84rem;
+  line-height: 1.55;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.ops-page-todo #article-container .ops-todo-lane li:hover {
+  color: var(--ops-accent);
+  transform: translateX(3px);
+}
+
+.ops-page-todo #article-container .ops-todo-lane li.is-complete {
+  color: var(--ops-muted);
+}
+
+.ops-page-todo #article-container .ops-todo-lane input[type="checkbox"] {
+  width: 14px;
+  height: 14px;
+  margin: 4px 0 0;
+  accent-color: var(--ops-accent);
+  opacity: 0.88;
+}
+
+/* Search filters stay compact; the result body now carries real article context. */
+.ops-command-filters {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--ops-line);
+  scrollbar-width: none;
+}
+
+.ops-command-filters::-webkit-scrollbar {
+  display: none;
+}
+
+.ops-command-filter {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 6px;
+  min-height: 28px;
+  padding: 4px 8px;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--ops-muted);
+  font-size: 0.72rem;
+  cursor: pointer;
+}
+
+.ops-command-filter:hover,
+.ops-command-filter.is-active {
+  border-color: rgba(60, 134, 173, 0.18);
+  background: var(--ops-accent-soft);
+  color: var(--ops-ink);
+}
+
+.ops-command-filter kbd {
+  color: inherit;
+  font: 500 0.56rem/1 'Fira Code', Consolas, monospace;
+  opacity: 0.62;
+}
+
+.ops-command-copy-top {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 8px;
+}
+
+.ops-command-copy-top .ops-command-title {
+  min-width: 0;
+}
+
+.ops-command-category {
+  flex: 0 0 auto;
+  padding: 2px 5px;
+  border: 1px solid var(--ops-line);
+  border-radius: 4px;
+  color: var(--ops-muted);
+  font: 500 0.58rem/1 'Fira Code', Consolas, monospace;
+}
+
+.ops-command-title mark,
+.ops-command-subtitle mark {
+  border-bottom: 1px solid var(--ops-accent);
+  background: rgba(84, 162, 200, 0.18);
+  color: inherit;
+  font-weight: inherit;
+}
+
+@media (max-width: 900px) {
+  .ops-todo-lanes {
+    grid-template-columns: 1fr;
+  }
+
+  .ops-page-todo #article-container .ops-todo-lane.note,
+  .ops-page-todo #article-container .ops-todo-lane.note:last-child {
+    border-right: 0 !important;
+    border-bottom: 1px solid var(--ops-line) !important;
+  }
+
+  .ops-page-todo #article-container .ops-todo-lane.note:last-child {
+    border-bottom: 0 !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .ops-todo-overview {
+    grid-template-columns: 1fr auto;
+    padding: 26px 22px 22px;
+  }
+
+  .ops-todo-overview h2 {
+    font-size: 1.36rem;
+  }
+
+  .ops-page-todo #article-container .ops-todo-lane.note {
+    padding: 23px 22px 25px !important;
+  }
+
+  .ops-command-filter kbd {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #aside-content .card-info .avatar-img img,
+  #aside-content .card-recent-post::before,
+  .ops-todo-progress > span,
+  .ops-page-todo #article-container .ops-todo-lane.note {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  #aside-content .card-info .avatar-img:hover img,
+  .ops-todo-board .ops-todo-progress > span,
+  .ops-page-todo #article-container .ops-todo-lane.note {
+    opacity: 1;
+    transform: none !important;
+  }
 }
