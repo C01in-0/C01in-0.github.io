@@ -1952,32 +1952,23 @@ html:has(#post) #content-inner {
   padding-top: 17px;
 }
 
-/* Decode first, then reveal one composited wallpaper layer over the existing gradient veil. */
+/* R10.3.2: restore the original deep-blue fallback while the progressive JPEG resolves. */
 html.ops-wallpaper-gated body {
-  background-color: #718e9b !important;
-  background-image:
-    radial-gradient(circle at 31% 24%, rgba(224, 170, 158, 0.3), transparent 34%),
-    linear-gradient(145deg, #7795a2 0%, #829ca6 46%, #496675 100%) !important;
-}
-
-[data-theme='dark'].ops-wallpaper-gated body {
-  background-color: #17242b !important;
-  background-image:
-    radial-gradient(circle at 31% 24%, rgba(113, 75, 69, 0.2), transparent 35%),
-    linear-gradient(145deg, #263a43 0%, #1d2c33 48%, #0d1820 100%) !important;
+  background-color: #2c3e50 !important;
+  background-image: none !important;
 }
 
 html.ops-wallpaper-gated #web_bg {
-  opacity: 0;
-  animation: none !important;
-  filter: brightness(0.9) contrast(1.025) saturate(1.01) !important;
-  transition: opacity 380ms cubic-bezier(.22,.76,.26,1), filter 420ms ease;
+  opacity: 1;
+  animation: to_show 4.6s ease both !important;
+  filter: brightness(0.85) contrast(1.05) saturate(1.05) !important;
+  transition: none;
   will-change: opacity, filter;
 }
 
-html.ops-wallpaper-gated.ops-wallpaper-ready #web_bg,
-html.ops-wallpaper-gated.ops-wallpaper-fallback #web_bg {
+html.ops-wallpaper-gated.ops-wallpaper-static #web_bg {
   opacity: 1;
+  animation: none !important;
   filter: brightness(0.85) contrast(1.05) saturate(1.05) !important;
 }
 
@@ -2256,6 +2247,8 @@ html.ops-wallpaper-gated.ops-wallpaper-settled #web_bg {
 
 @media (prefers-reduced-motion: reduce) {
   html.ops-wallpaper-gated #web_bg {
+    opacity: 1 !important;
+    animation: none !important;
     transition: none !important;
   }
 
