@@ -120,6 +120,7 @@ git diff --check
 - 修复 QA 脚本被 Hexo 自动载入的问题，并把目录对齐检查扩展到全部 13 篇文章、共 175 个标题。最终契约检查、Hexo 构建和 12 个页面/视口回归全部通过，目录错位为 0，知识连线离场残留为 0。
 - 2026-09-02 发布前复核发现正式 `source` 工作树未安装 Playwright 时，Hexo 扫描 QA 脚本仍会触发顶层依赖加载；已将 Playwright 改为仅在直接运行 QA 时加载，保持普通构建不依赖浏览器测试环境。
 - 2026-09-02 正式 `source` 工作树受全局 `core.autocrlf=true` 影响，将 Markdown 检出为 CRLF；契约检查现会在解析 front matter 前规范化换行，源文件无需批量重写，LF 与 CRLF 工作树都可重复构建。
+- 2026-09-02 Git 工作树发布链正式落地：功能分支与 `source` 均推送到远端，正式源站在独立 `source` 工作树生成 180 个文件；GitHub Pages `main` 部署提交为 `7a31536`。`https://c01in.com/`、RENNERVATE 文章页及 GitHub Pages 源地址均返回 200，并命中新版 `ops-v2.0.css?v=20260902-r9`。
 
 ## 9. 回滚位置
 
@@ -130,6 +131,7 @@ git diff --check
 - 本轮阅读态、知识连线与全站目录审计备份：`D:\Hacking_world\myblog-backups\20260901-title-shadow-article-opacity-r4`
 - 本轮 QA 可选依赖延迟加载备份：`D:\Hacking_world\myblog-backups\20260902-qa-lazy-playwright-r5`
 - 本轮文章契约 CRLF 兼容备份：`D:\Hacking_world\myblog-backups\20260902-contract-crlf-r6`
+- 本轮公网部署记录备份：`D:\Hacking_world\myblog-backups\20260902-public-deploy-record-r7`
 - Butterfly 原嵌套 Git 元数据：上述备份内 `theme-butterfly-dotgit`
 - 旧 BIPIA 草稿隔离：`D:\Hacking_world\myblog-isolated\20260901-old-bipia`
 - 当前功能工作树：`D:\Hacking_world\myblog-worktrees\paper-migration-20260901`
