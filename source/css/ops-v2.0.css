@@ -364,7 +364,6 @@ html[data-ops-nav-mode] #nav #menus {
   border-color: var(--ops-material-nav-base-border);
   border-radius: 15px;
   background:
-    radial-gradient(circle at var(--ops-liquid-x) -24%, var(--ops-material-nav-base-glow), transparent 44%),
     var(--ops-material-nav-base-layer),
     var(--ops-material-nav-base-color);
   box-shadow: var(--ops-material-nav-base-shadow);
@@ -2321,7 +2320,6 @@ html[data-ops-nav-mode='liquid'] #nav #menus {
   overflow: hidden;
   border-color: var(--ops-material-nav-border);
   background:
-    radial-gradient(120px 72px at var(--ops-liquid-x) -8%, var(--ops-material-liquid-glow), transparent 63%),
     var(--ops-material-liquid-layer),
     var(--ops-material-liquid-color);
   box-shadow: var(--ops-material-liquid-shadow);
@@ -2333,8 +2331,8 @@ html[data-ops-nav-mode='liquid'] #nav #menus {
 html[data-ops-nav-mode='liquid'] #nav #menus::before {
   inset: 1px 9% auto;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.68), rgba(211, 239, 249, 0.18), transparent);
-  opacity: 0.68;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.04), rgba(231, 247, 252, 0.2) 18%, rgba(231, 247, 252, 0.16) 82%, rgba(255, 255, 255, 0.04));
+  opacity: 0.52;
 }
 
 html[data-ops-nav-mode='liquid'] #nav #menus::after {
@@ -2469,9 +2467,33 @@ html:has(#post) #aside-content .card-widget:hover {
   box-shadow: var(--ops-reading-aside-shadow) !important;
 }
 
-html.ops-nav-scrolled[data-ops-nav-mode]:has(#post) #page-header.nav-fixed #nav .nav-page-title > .site-name:first-child {
-  line-height: 1.24;
-  text-wrap: pretty;
+@media (min-width: 901px) {
+  html[data-ops-nav-mode]:has(#post) #page-header.nav-fixed #nav #blog-info:has(.nav-page-title) {
+    flex: 0 1 min(58vw, 820px);
+    width: min(58vw, 820px);
+    max-width: calc(100vw - 470px);
+    height: 40px;
+    padding-right: 9px;
+    border-color: transparent;
+    border-radius: 0;
+    background: rgba(28, 55, 68, 0.015);
+    box-shadow: none;
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+    -webkit-mask-image: linear-gradient(90deg, #000 0, #000 calc(100% - 28px), transparent 100%);
+    mask-image: linear-gradient(90deg, #000 0, #000 calc(100% - 28px), transparent 100%);
+  }
+
+  html[data-ops-nav-mode]:has(#post) #page-header.nav-fixed #nav .nav-page-title > .site-name:first-child {
+    font-size: clamp(0.84rem, 1.15vw, 0.96rem);
+    font-weight: 620;
+    line-height: 1.24;
+    letter-spacing: 0.004em;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    text-wrap: nowrap;
+    transition: none;
+  }
 }
 
 @media (max-width: 768px) {
@@ -2501,20 +2523,21 @@ html.ops-nav-scrolled[data-ops-nav-mode]:has(#post) #page-header.nav-fixed #nav 
   }
 }
 
-/* R10.5 Pagination: one quiet reading rail instead of detached glass tiles. */
+/* R10.6 Pagination: a typographic folio cue directly on the wallpaper. */
 #pagination .pagination {
   position: relative;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   width: auto;
-  min-height: 42px;
-  margin-top: 24px;
-  padding: 3px 13px;
-  border-block: 1px solid color-mix(in srgb, var(--ops-pagination-border) 78%, transparent);
-  background: linear-gradient(90deg, transparent, var(--ops-pagination-surface) 18%, var(--ops-pagination-surface) 82%, transparent);
+  min-height: 38px;
+  margin-top: 26px;
+  padding: 0;
+  border: 0;
+  background: none;
   box-shadow: none;
-  -webkit-backdrop-filter: blur(10px) saturate(108%);
-  backdrop-filter: blur(10px) saturate(108%);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
 }
 
 #pagination .pagination > *:not(.space) {
@@ -2524,30 +2547,31 @@ html.ops-nav-scrolled[data-ops-nav-mode]:has(#post) #page-header.nav-fixed #nav 
   justify-content: center;
   width: auto;
   min-width: 30px;
-  height: 34px;
-  margin: 0 2px;
-  padding: 0 7px;
+  height: 32px;
+  margin: 0 1px;
+  padding: 0 6px;
   border: 0;
   border-radius: 7px;
   background: transparent;
-  color: var(--ops-pagination-ink);
+  color: rgba(231, 244, 249, 0.72);
   font: 650 12px/1 ui-monospace, SFMono-Regular, Consolas, monospace;
   letter-spacing: 0.05em;
   line-height: 34px;
   box-shadow: none;
+  text-shadow: 0 1px 7px rgba(1, 13, 22, 0.72);
   transform: translateY(0);
   transition: transform 180ms cubic-bezier(.2,.78,.2,1), background-color 180ms ease, color 180ms ease;
 }
 
 #pagination .pagination > *:not(.space):hover {
-  background: color-mix(in srgb, var(--ops-pagination-surface-hover) 68%, transparent);
-  color: var(--ops-v2-ink);
+  background: rgba(225, 244, 251, 0.09);
+  color: rgba(248, 252, 253, 0.98);
   transform: translateY(-1px);
 }
 
 #pagination .pagination .page-number.current {
   background: transparent;
-  color: var(--ops-pagination-active-ink);
+  color: rgba(137, 216, 244, 0.98);
   font-weight: 760;
   box-shadow: none;
 }
@@ -2556,7 +2580,7 @@ html.ops-nav-scrolled[data-ops-nav-mode]:has(#post) #page-header.nav-fixed #nav 
   content: '';
   position: absolute;
   right: 8px;
-  bottom: 2px;
+  bottom: 1px;
   left: 8px;
   height: 1px;
   background: currentColor;
@@ -2564,12 +2588,12 @@ html.ops-nav-scrolled[data-ops-nav-mode]:has(#post) #page-header.nav-fixed #nav 
 }
 
 #pagination .pagination .page-number + .page-number::before {
-  content: '/';
+  content: '·';
   position: absolute;
   left: -4px;
-  color: var(--ops-pagination-ink);
+  color: rgba(226, 241, 247, 0.58);
   font-weight: 450;
-  opacity: 0.4;
+  opacity: 0.72;
 }
 
 #pagination .pagination .extend {
@@ -2588,8 +2612,7 @@ html.ops-nav-scrolled[data-ops-nav-mode]:has(#post) #page-header.nav-fixed #nav 
 
 @media (max-width: 768px) {
   #pagination .pagination {
-    min-height: 40px;
-    padding-inline: 9px;
+    min-height: 36px;
   }
 
   #pagination .pagination > *:not(.space) {

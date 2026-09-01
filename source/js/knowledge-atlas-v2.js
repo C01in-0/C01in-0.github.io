@@ -4,6 +4,8 @@
   const PAGE_SELECTOR = '.type-knowledge, .page-type-knowledge, [data-page-type="knowledge"]';
   const LOADER_SELECTOR = '.ops-module-loading';
   const SVG_NS = 'http://www.w3.org/2000/svg';
+  const ROOT_PREVIEW_LIMIT = 3;
+  const RELATED_BRANCH_LIMIT = 3;
   const state = {
     category: '',
     tag: '',
@@ -275,7 +277,7 @@
     });
     return [...candidates.values()]
       .sort((a, b) => b.priority - a.priority || b.weight - a.weight || a.slug.localeCompare(b.slug))
-      .slice(0, 2);
+      .slice(0, RELATED_BRANCH_LIMIT);
   }
 
   function neighborhood() {
@@ -290,7 +292,7 @@
           .map(child => ({ slug: child, count: conceptUsage(child, sourcePosts) }))
           .filter(item => item.count)
           .sort((a, b) => b.count - a.count)
-          .slice(0, 2)
+          .slice(0, ROOT_PREVIEW_LIMIT)
           .forEach(item => nodes.push({ slug: item.slug, role: 'concept', level: 2, hop: 2, weight: item.count }));
       });
       const visible = new Set(nodes.map(node => node.slug));

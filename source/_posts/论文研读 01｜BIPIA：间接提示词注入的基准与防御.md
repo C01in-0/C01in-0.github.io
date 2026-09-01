@@ -3,7 +3,8 @@ title: 论文研读 01 | BIPIA：间接提示词注入的基准与防御
 date: 2026-07-23 18:50:00
 blog_id: 8
 categories:
-  - 笔记
+  - [笔记]
+  - [科研]
 tags:
   - 论文研读
   - AI安全

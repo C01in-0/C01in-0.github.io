@@ -30,7 +30,16 @@ function readPost(fileName) {
     .map(item => String(item).trim())
     .filter(Boolean);
 
-  return { fileName, fullPath, source, blogId, date, tags: list(data.tags), knowledge: list(data.knowledge) };
+  return {
+    fileName,
+    fullPath,
+    source,
+    blogId,
+    date,
+    categories: list(data.categories),
+    tags: list(data.tags),
+    knowledge: list(data.knowledge)
+  };
 }
 
 function validateKnowledge(posts) {
@@ -46,11 +55,15 @@ function validateKnowledge(posts) {
 
   posts.forEach(post => {
     const isAiPost = post.tags.includes('AI安全');
+    const isPaperReading = post.tags.includes('论文研读');
     if (isAiPost && (post.tags.length < 2 || post.tags.length > 4)) {
       fail(`${post.fileName} must keep 2-4 public tags; found ${post.tags.length}`);
     }
-    if (isAiPost && !post.knowledge.length) {
-      fail(`${post.fileName} is an AI安全 article without a knowledge field`);
+    if (!post.knowledge.length) {
+      fail(`${post.fileName} does not declare knowledge metadata`);
+    }
+    if (isPaperReading && (!post.categories.includes('笔记') || !post.categories.includes('科研'))) {
+      fail(`${post.fileName} must belong to both 笔记 and 科研 categories`);
     }
     if (post.knowledge.includes('论文研读')) {
       fail(`${post.fileName} puts the article series 论文研读 into knowledge concepts`);

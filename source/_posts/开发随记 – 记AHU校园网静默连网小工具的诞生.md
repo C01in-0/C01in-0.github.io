@@ -5,6 +5,10 @@ tags:
   - 自动化
   - 校园网
   - 开发
+knowledge:
+  - Python
+  - 自动化
+  - 校园网
 categories: 开发
 abbrlink: 7e4bd3cb
 date: 2026-04-25 21:00:00
@@ -79,6 +83,7 @@ blog_id: 5
 
 代码在 GitHub 存了个档，各位师傅如果遇到 bug，欢迎来提 Issue。
 🔗 [项目地址：AHU_AutoLogin](https://github.com/C01in-0/AHU_AutoLogin)
+
 
 ## 尾声的尾声：666还有第二关
 
@@ -250,4 +255,3 @@ install.bat
 **唉，博客都快写成说明书了，也许我是天生牛马圣体吧**
 
 🔗 [项目地址：AHU_AutoLogin](https://github.com/C01in-0/AHU_AutoLogin)
-

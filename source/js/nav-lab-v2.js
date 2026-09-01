@@ -147,7 +147,6 @@
     menus.addEventListener('pointerleave', () => {
       menus.classList.remove('is-liquid-active');
       menus.classList.remove('is-liquid-pressed');
-      menus.style.setProperty('--ops-liquid-bend', '0px');
       scheduleLiquidReset();
     }, { passive: true });
 

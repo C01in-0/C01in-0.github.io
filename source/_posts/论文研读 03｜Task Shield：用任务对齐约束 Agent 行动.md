@@ -3,7 +3,8 @@ title: 论文研读 03 | Task Shield：用任务对齐约束 Agent 行动
 date: 2026-08-21 19:15:00
 blog_id: 12
 categories:
-  - 笔记
+  - [笔记]
+  - [科研]
 tags:
   - 论文研读
   - AI安全

@@ -6,6 +6,8 @@ tags:
   - Pwn
   - CTF
   - 学习笔记
+knowledge:
+  - Pwn
 categories: 笔记
 abbrlink: pwn-refined-01
 description: 本博文为CTFshow中Pwn系列的做题笔记和知识总结,用于记录本人摸索二进制世界的历程

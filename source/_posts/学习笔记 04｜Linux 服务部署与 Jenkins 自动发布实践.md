@@ -7,6 +7,13 @@ tags:
   - Nginx
   - Jenkins
   - 学习笔记
+knowledge:
+  - Linux
+  - 计算机网络
+  - MySQL
+  - Nginx
+  - Jenkins
+  - 自动化
 categories: 笔记
 description: 从网络基础概念出发，记录一次 Linux 服务配置、数据库权限实验与 Jenkins 自动发布实践。
 abbrlink: cb98cbc5

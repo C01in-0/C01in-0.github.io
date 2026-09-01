@@ -52,7 +52,10 @@ async function inspect(page) {
         height: Number(rect.height.toFixed(1)),
         background: style.background,
         borderColor: style.borderColor,
+        borderTopWidth: style.borderTopWidth,
+        borderBottomWidth: style.borderBottomWidth,
         borderRadius: style.borderRadius,
+        backgroundImage: style.backgroundImage,
         backgroundColor: style.backgroundColor,
         color: style.color,
         boxShadow: style.boxShadow,
@@ -78,6 +81,7 @@ async function inspect(page) {
       glossaryCollections: document.querySelectorAll('[data-glossary-collection]').length,
       pagination: {
         count: paginationItems.length,
+        container: styleOf(document.querySelector('#pagination .pagination')),
         regular: styleOf(paginationItems.find(item => !item.classList.contains('current'))),
         current: styleOf(document.querySelector('#pagination .page-number.current'))
       }
@@ -125,6 +129,36 @@ async function inspectKnowledgeAtlas(page, viewportName) {
   const response = await page.goto(`${baseUrl}/knowledge/`, { waitUntil: 'networkidle' });
   await page.waitForSelector('.atlas-v2.is-ready');
   const compact = viewportName === 'mobile';
+  const overview = await page.evaluate(() => {
+    const nodeSelector = matchMedia('(max-width: 900px)').matches ? '.atlas-v2__mobile-node' : '.atlas-v2__node';
+    const nodes = [...document.querySelectorAll(nodeSelector)].map(node => ({
+      tag: node.dataset.tag,
+      count: Number((node.querySelector('.atlas-v2__count') || node.querySelector('b'))?.textContent.trim() || 0),
+      box: node.getBoundingClientRect().toJSON()
+    }));
+    const overlaps = [];
+    if (!matchMedia('(max-width: 900px)').matches) {
+      for (let left = 0; left < nodes.length; left += 1) {
+        for (let right = left + 1; right < nodes.length; right += 1) {
+          const a = nodes[left].box;
+          const b = nodes[right].box;
+          const overlapX = Math.min(a.right, b.right) - Math.max(a.left, b.left);
+          const overlapY = Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top);
+          if (overlapX > 2 && overlapY > 2) overlaps.push(`${nodes[left].tag}/${nodes[right].tag}`);
+        }
+      }
+    }
+    return { nodes, overlaps };
+  });
+  if (!compact) {
+    const overviewCanvas = page.locator('.atlas-v2__canvas');
+    await overviewCanvas.screenshot({ path: path.join(outputDir, 'atlas-overview-light.png') });
+    await page.evaluate(() => document.documentElement.setAttribute('data-theme', 'dark'));
+    await page.waitForTimeout(180);
+    await overviewCanvas.screenshot({ path: path.join(outputDir, 'atlas-overview-dark.png') });
+    await page.evaluate(() => document.documentElement.setAttribute('data-theme', 'light'));
+    await page.waitForTimeout(180);
+  }
   const selector = compact
     ? '.atlas-v2__mobile-node[data-tag="ai-security"]'
     : '.atlas-v2__node[data-tag="ai-security"]';
@@ -160,6 +194,9 @@ async function inspectKnowledgeAtlas(page, viewportName) {
   });
   result.httpStatus = response ? response.status() : null;
   result.viewport = viewportName;
+  result.overview = overview.nodes;
+  result.overviewOverlaps = overview.overlaps;
+  result.zeroCountRoots = overview.nodes.filter(node => node.count === 0).map(node => node.tag);
 
   if (!compact) {
     const canvas = page.locator('.atlas-v2__canvas');
@@ -175,20 +212,57 @@ async function inspectLiquidNavExit(page) {
   await page.goto(`${baseUrl}/`, { waitUntil: 'networkidle' });
   const menus = page.locator('#nav #menus');
   const box = await menus.boundingBox();
-  await page.mouse.move(box.x + 48, box.y + box.height / 2);
-  await page.waitForTimeout(120);
   const read = () => menus.evaluate(element => ({
     x: element.style.getPropertyValue('--ops-liquid-x'),
+    bend: element.style.getPropertyValue('--ops-liquid-bend'),
     active: element.classList.contains('is-liquid-active'),
-    opacity: Number(getComputedStyle(element, '::after').opacity)
+    opacity: Number(getComputedStyle(element, '::after').opacity),
+    backgroundImage: getComputedStyle(element).backgroundImage
   }));
+  const idle = await read();
+  await page.mouse.move(box.x + 48, box.y + box.height / 2);
+  await page.waitForTimeout(120);
   const inside = await read();
+  await menus.screenshot({ path: path.join(outputDir, 'liquid-nav-active-left.png') });
   await page.mouse.move(box.x - 30, box.y + box.height + 80);
   await page.waitForTimeout(80);
   const fading = await read();
   await page.waitForTimeout(220);
   const hidden = await read();
-  return { inside, fading, hidden };
+  await menus.screenshot({ path: path.join(outputDir, 'liquid-nav-idle-after-left.png') });
+  return { idle, inside, fading, hidden };
+}
+
+async function inspectStickyTitleExit(page) {
+  await page.goto(`${baseUrl}/posts/ef9d0362.html`, { waitUntil: 'networkidle' });
+  const read = label => page.evaluate(label => {
+    const title = document.querySelector('#nav .nav-page-title > .site-name:first-child');
+    const info = document.querySelector('#nav #blog-info');
+    const titleStyle = getComputedStyle(title);
+    const titleBox = title.getBoundingClientRect();
+    const infoBox = info.getBoundingClientRect();
+    return {
+      label,
+      headerClasses: document.querySelector('#page-header').className,
+      titleWidth: Number(titleBox.width.toFixed(2)),
+      titleHeight: Number(titleBox.height.toFixed(2)),
+      infoWidth: Number(infoBox.width.toFixed(2)),
+      fontSize: titleStyle.fontSize,
+      lineHeight: titleStyle.lineHeight
+    };
+  }, label);
+
+  await page.evaluate(() => scrollTo(0, 180));
+  await page.waitForTimeout(360);
+  await page.evaluate(() => scrollTo(0, 80));
+  await page.waitForTimeout(360);
+  const fixed = await read('fixed-80');
+  await page.locator('#nav').screenshot({ path: path.join(outputDir, 'sticky-title-fixed.png') });
+  await page.evaluate(() => scrollTo(0, 40));
+  await page.waitForTimeout(360);
+  const nearTop = await read('near-top-40');
+  await page.locator('#nav').screenshot({ path: path.join(outputDir, 'sticky-title-near-top.png') });
+  return { fixed, nearTop };
 }
 
 async function main() {
@@ -221,6 +295,12 @@ async function main() {
         if (result.pagination.regular && result.pagination.regular.boxShadow !== 'none') {
           report.failures.push(`${viewport.name} ${targetPath} pagination reverted to detached shadows`);
         }
+        if (result.pagination.container && (result.pagination.container.backgroundImage !== 'none'
+          || result.pagination.container.borderTopWidth !== '0px'
+          || result.pagination.container.borderBottomWidth !== '0px'
+          || result.pagination.container.backdropFilter !== 'none')) {
+          report.failures.push(`${viewport.name} ${targetPath} pagination reverted to a visible carrier band`);
+        }
       }
 
       const knowledge = await inspectKnowledgeAtlas(page, viewport.name);
@@ -230,8 +310,10 @@ async function main() {
       if (knowledge.httpStatus !== 200 || knowledge.status !== 'ready') report.failures.push(`${viewport.name} knowledge atlas failed to load`);
       if (knowledge.horizontalOverflow) report.failures.push(`${viewport.name} knowledge atlas has horizontal overflow`);
       if (knowledge.overlaps.length) report.failures.push(`${viewport.name} knowledge atlas overlaps ${knowledge.overlaps.join(', ')}`);
+      if (knowledge.overviewOverlaps.length) report.failures.push(`${viewport.name} knowledge overview overlaps ${knowledge.overviewOverlaps.join(', ')}`);
       if (missingAxes.length) report.failures.push(`${viewport.name} knowledge atlas misses ${missingAxes.join(', ')}`);
       if (knowledge.missingTitles.length) report.failures.push(`${viewport.name} knowledge nodes miss full labels: ${knowledge.missingTitles.join(', ')}`);
+      if (knowledge.zeroCountRoots.length) report.failures.push(`${viewport.name} knowledge overview shows zero-count roots: ${knowledge.zeroCountRoots.join(', ')}`);
 
       await capturePagination(page, viewport.name, 'light');
       await capturePagination(page, viewport.name, 'dark');
@@ -264,8 +346,24 @@ async function main() {
     if (report.liquidNavExit.inside.x !== report.liquidNavExit.fading.x) {
       report.failures.push(`Liquid lens moved during fade: ${report.liquidNavExit.inside.x} -> ${report.liquidNavExit.fading.x}`);
     }
+    if (report.liquidNavExit.inside.bend !== report.liquidNavExit.fading.bend) {
+      report.failures.push(`Liquid lens bend snapped during fade: ${report.liquidNavExit.inside.bend} -> ${report.liquidNavExit.fading.bend}`);
+    }
     if (report.liquidNavExit.hidden.x !== '50%') {
       report.failures.push(`Liquid lens did not reset while hidden: ${report.liquidNavExit.hidden.x}`);
+    }
+    if (report.liquidNavExit.idle.backgroundImage !== report.liquidNavExit.inside.backgroundImage
+      || report.liquidNavExit.idle.backgroundImage !== report.liquidNavExit.hidden.backgroundImage) {
+      report.failures.push('Liquid nav base glow still follows the pointer and visibly recenters');
+    }
+    report.stickyTitleExit = await inspectStickyTitleExit(navPage);
+    const fixedSize = report.stickyTitleExit.fixed;
+    const nearTopSize = report.stickyTitleExit.nearTop;
+    if (Math.abs(fixedSize.infoWidth - nearTopSize.infoWidth) > 1
+      || Math.abs(fixedSize.titleWidth - nearTopSize.titleWidth) > 1
+      || fixedSize.fontSize !== nearTopSize.fontSize
+      || fixedSize.lineHeight !== nearTopSize.lineHeight) {
+      report.failures.push(`Sticky article title changes geometry before exit: ${fixedSize.infoWidth}/${fixedSize.fontSize} -> ${nearTopSize.infoWidth}/${nearTopSize.fontSize}`);
     }
     await navContext.close();
   } finally {

@@ -3,7 +3,8 @@ title: 论文研读 02 | Detect & Remove：间接提示词注入的检测与移�
 date: 2026-08-12 19:05:00
 blog_id: 11
 categories:
-  - 笔记
+  - [笔记]
+  - [科研]
 tags:
   - 论文研读
   - AI安全

@@ -3,7 +3,8 @@ title: 论文研读 04 | RENNERVATE：基于 Attention 的 Token 级注入清洗
 date: 2026-08-28 19:25:00
 blog_id: 13
 categories:
-  - 笔记
+  - [笔记]
+  - [科研]
 tags:
   - 论文研读
   - AI安全
