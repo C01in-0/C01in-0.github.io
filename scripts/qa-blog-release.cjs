@@ -16,6 +16,15 @@ const articlePaths = [
   '/posts/ef9d0362.html'
 ];
 
+function listAllArticlePaths() {
+  const postsDir = path.join(process.cwd(), 'public', 'posts');
+  if (!fsSync.existsSync(postsDir)) return [];
+  return fsSync.readdirSync(postsDir)
+    .filter(name => name.endsWith('.html'))
+    .sort()
+    .map(name => `/posts/${name}`);
+}
+
 const viewports = [
   { name: 'desktop', width: 1440, height: 1000 },
   { name: 'mobile', width: 390, height: 844 }
@@ -204,6 +213,16 @@ async function inspectKnowledgeAtlas(page, viewportName) {
     await page.evaluate(() => document.documentElement.setAttribute('data-theme', 'dark'));
     await page.waitForTimeout(180);
     await canvas.screenshot({ path: path.join(outputDir, 'atlas-ai-four-axis-dark.png') });
+    const hoverNode = page.locator('.atlas-v2__node[data-tag="ai-systems"]');
+    if (await hoverNode.count()) {
+      await hoverNode.hover();
+      await page.waitForTimeout(140);
+      result.emphasizedEdgesOnHover = await page.locator('.atlas-v2__edge.is-emphasized').count();
+      const canvasBox = await canvas.boundingBox();
+      await page.mouse.move(canvasBox.x + 8, canvasBox.y + 8);
+      await page.waitForTimeout(190);
+      result.emphasizedEdgesAfterLeave = await page.locator('.atlas-v2__edge.is-emphasized').count();
+    }
   }
   return result;
 }
@@ -256,7 +275,9 @@ async function inspectStickyTitleExit(page) {
       titleHeight: Number(titleBox.height.toFixed(2)),
       infoWidth: Number(infoBox.width.toFixed(2)),
       fontSize: titleStyle.fontSize,
-      lineHeight: titleStyle.lineHeight
+      lineHeight: titleStyle.lineHeight,
+      titleShadow: titleStyle.textShadow,
+      titleShadowLayers: (titleStyle.textShadow.match(/rgba?\(/g) || []).length
     };
   }, label);
 
@@ -301,6 +322,104 @@ async function inspectStickyTitleExit(page) {
     arrivalObserved: exitFrames.some(frame => frame.rootClasses.includes('ops-nav-arriving')),
     settled
   };
+}
+
+async function inspectArticleSurfaceOpacity(page) {
+  await page.goto(`${baseUrl}/posts/ef9d0362.html`, { waitUntil: 'networkidle' });
+  await settle(page);
+  const read = () => page.locator('#post').evaluate(element => {
+    const color = getComputedStyle(element).backgroundColor;
+    const match = color.match(/^rgba?\(([^)]+)\)$/);
+    const parts = match ? match[1].split(',').map(value => Number(value.trim())) : [];
+    const paragraph = element.querySelector('p') || element;
+    const selectionStyle = getComputedStyle(paragraph, '::selection');
+    return {
+      color,
+      alpha: parts.length === 4 ? parts[3] : 1,
+      selectionBackground: selectionStyle.backgroundColor,
+      selectionColor: selectionStyle.color
+    };
+  });
+  const light = await read();
+  await page.evaluate(() => document.documentElement.setAttribute('data-theme', 'dark'));
+  await page.waitForTimeout(100);
+  const dark = await read();
+  return { light, dark };
+}
+
+async function inspectDarkArticleImage(page) {
+  await page.goto(`${baseUrl}/posts/ef9d0362.html`, { waitUntil: 'networkidle' });
+  await settle(page);
+  await page.evaluate(() => document.documentElement.setAttribute('data-theme', 'dark'));
+  const image = page.locator('#article-container img[src*="paper-figure-3-pooling"]');
+  await image.scrollIntoViewIfNeeded();
+  await page.waitForTimeout(620);
+  const read = () => image.evaluate(element => {
+    const style = getComputedStyle(element);
+    const brightness = Number(style.filter.match(/brightness\(([^)]+)\)/)?.[1] || 1);
+    return { filter: style.filter, brightness, transform: style.transform, boxShadow: style.boxShadow };
+  });
+  const resting = await read();
+  await image.screenshot({ path: path.join(outputDir, 'article-white-figure-dark-rest.png') });
+  await image.hover();
+  await page.waitForTimeout(620);
+  const hovering = await read();
+  await image.screenshot({ path: path.join(outputDir, 'article-white-figure-dark-hover.png') });
+  return { resting, hovering };
+}
+
+async function inspectAllArticleTocAlignment(page) {
+  const results = [];
+  for (const targetPath of listAllArticlePaths()) {
+    const response = await page.goto(`${baseUrl}${targetPath}`, { waitUntil: 'networkidle' });
+    await settle(page);
+    const structure = await page.evaluate(() => {
+      const headings = [...document.querySelectorAll('#article-container h1,#article-container h2,#article-container h3,#article-container h4,#article-container h5,#article-container h6')]
+        .filter(heading => heading.id)
+        .map((heading, index) => ({ id: heading.id, text: heading.textContent.trim(), index }));
+      const links = [...document.querySelectorAll('#card-toc .toc-link')].map((link, index) => ({
+        href: decodeURI(link.getAttribute('href') || '').replace(/^#/, ''),
+        text: link.textContent.trim(),
+        index
+      }));
+      return { headings, links };
+    });
+    const structureMismatches = structure.headings
+      .filter((heading, index) => structure.links[index]?.href !== heading.id)
+      .map(heading => heading.text);
+    const activeMismatches = [];
+    for (const heading of structure.headings) {
+      const state = await page.evaluate(id => {
+        const headings = [...document.querySelectorAll('#article-container h1,#article-container h2,#article-container h3,#article-container h4,#article-container h5,#article-container h6')]
+          .filter(node => node.id)
+          .map(node => ({ node, top: node.getBoundingClientRect().top + scrollY }));
+        const target = headings.find(item => item.node.id === id);
+        scrollTo(0, Math.max(1, target.top - 20));
+        return true;
+      }, heading.id);
+      if (!state) continue;
+      await page.waitForTimeout(180);
+      const alignment = await page.evaluate(() => {
+        const currentTop = scrollY;
+        const headings = [...document.querySelectorAll('#article-container h1,#article-container h2,#article-container h3,#article-container h4,#article-container h5,#article-container h6')]
+          .filter(node => node.id)
+          .map(node => ({ id: node.id, top: node.getBoundingClientRect().top + currentTop }));
+        const expected = headings.filter(item => currentTop > item.top - 80).at(-1)?.id || '';
+        const active = decodeURI(document.querySelector('#card-toc .toc-link.active')?.getAttribute('href') || '').replace(/^#/, '');
+        return { expected, active, scrollY: currentTop };
+      });
+      if (alignment.expected !== alignment.active) activeMismatches.push({ heading: heading.text, ...alignment });
+    }
+    results.push({
+      path: targetPath,
+      status: response ? response.status() : null,
+      headingCount: structure.headings.length,
+      tocCount: structure.links.length,
+      structureMismatches,
+      activeMismatches
+    });
+  }
+  return results;
 }
 
 async function inspectArticleCategoryIcons(page) {
@@ -366,6 +485,9 @@ async function main() {
       if (missingAxes.length) report.failures.push(`${viewport.name} knowledge atlas misses ${missingAxes.join(', ')}`);
       if (knowledge.missingTitles.length) report.failures.push(`${viewport.name} knowledge nodes miss full labels: ${knowledge.missingTitles.join(', ')}`);
       if (knowledge.zeroCountRoots.length) report.failures.push(`${viewport.name} knowledge overview shows zero-count roots: ${knowledge.zeroCountRoots.join(', ')}`);
+      if (viewport.name === 'desktop' && knowledge.emphasizedEdgesOnHover > 0 && knowledge.emphasizedEdgesAfterLeave !== 0) {
+        report.failures.push(`${viewport.name} knowledge atlas keeps ${knowledge.emphasizedEdgesAfterLeave} emphasized edges after pointer leave`);
+      }
 
       await capturePagination(page, viewport.name, 'light');
       await capturePagination(page, viewport.name, 'dark');
@@ -426,6 +548,9 @@ async function main() {
     if (report.stickyTitleExit.arrivalObserved) {
       report.failures.push('Sticky article title replays the nav arrival animation while exiting at the page top');
     }
+    if (report.stickyTitleExit.fixed.titleShadowLayers > 1) {
+      report.failures.push(`Sticky article title uses ${report.stickyTitleExit.fixed.titleShadowLayers} stacked shadows: ${report.stickyTitleExit.fixed.titleShadow}`);
+    }
     if (report.stickyTitleExit.settled.headerClasses.includes('nav-fixed')) {
       report.failures.push(`Sticky article title did not settle at the page top: ${report.stickyTitleExit.settled.headerClasses}`);
     }
@@ -433,6 +558,38 @@ async function main() {
     const missingCategoryIcons = report.articleCategoryIcons.filter(item => !item.iconClass || !item.iconCategory);
     if (missingCategoryIcons.length) {
       report.failures.push(`Article categories miss individual icons: ${missingCategoryIcons.map(item => item.category).join(', ')}`);
+    }
+    report.articleSurfaceOpacity = await inspectArticleSurfaceOpacity(navPage);
+    if (report.articleSurfaceOpacity.light.alpha < 0.72 || report.articleSurfaceOpacity.dark.alpha < 0.7) {
+      report.failures.push(`Article surface opacity is below the reading target: ${report.articleSurfaceOpacity.light.color} / ${report.articleSurfaceOpacity.dark.color}`);
+    }
+    if (report.articleSurfaceOpacity.dark.selectionBackground === 'rgb(0, 196, 182)') {
+      report.failures.push(`Dark article selection still uses the glaring theme cyan: ${report.articleSurfaceOpacity.dark.selectionBackground}`);
+    }
+    report.darkArticleImage = await inspectDarkArticleImage(navPage);
+    if (report.darkArticleImage.resting.brightness > 0.84) {
+      report.failures.push(`Dark article white figure is too bright: ${report.darkArticleImage.resting.filter}`);
+    }
+    if (Math.abs(report.darkArticleImage.hovering.brightness - report.darkArticleImage.resting.brightness) > 0.005) {
+      report.failures.push(`Dark article figure changes brightness on hover: ${report.darkArticleImage.resting.filter} -> ${report.darkArticleImage.hovering.filter}`);
+    }
+    report.allArticleTocAlignment = await inspectAllArticleTocAlignment(navPage);
+    report.allArticleTocAlignment.forEach(result => {
+      if (result.status !== 200) report.failures.push(`${result.path} returned ${result.status} during TOC audit`);
+      if (result.headingCount !== result.tocCount || result.structureMismatches.length) {
+        report.failures.push(`${result.path} TOC structure is misaligned: ${result.headingCount} headings / ${result.tocCount} links; ${result.structureMismatches.join(', ')}`);
+      }
+      if (result.activeMismatches.length) {
+        report.failures.push(`${result.path} TOC active state drifted at ${result.activeMismatches.map(item => item.heading).join(', ')}`);
+      }
+    });
+    report.redundantBlogBuilding = {
+      tagPageExists: fsSync.existsSync(path.join(process.cwd(), 'public', 'tags', '博客搭建', 'index.html')),
+      taxonomyContainsConcept: fsSync.readFileSync(path.join(process.cwd(), 'public', 'data', 'knowledge-taxonomy-v2.json'), 'utf8').includes('博客搭建'),
+      indexContainsConcept: fsSync.readFileSync(path.join(process.cwd(), 'public', 'data', 'knowledge-index-v1.json'), 'utf8').includes('博客搭建')
+    };
+    if (Object.values(report.redundantBlogBuilding).some(Boolean)) {
+      report.failures.push(`Redundant 博客搭建 taxonomy remains: ${JSON.stringify(report.redundantBlogBuilding)}`);
     }
     await navContext.close();
   } finally {
@@ -446,7 +603,9 @@ async function main() {
   console.log(`QA passed: ${report.cases.length} page/viewport cases; report at ${path.join(outputDir, 'report.json')}`);
 }
 
-main().catch(error => {
-  console.error(error);
-  process.exitCode = 1;
-});
+if (require.main === module) {
+  main().catch(error => {
+    console.error(error);
+    process.exitCode = 1;
+  });
+}

@@ -132,8 +132,7 @@
       "slug": "blog-engineering",
       "children": [
         { "name": "Hexo", "slug": "hexo" },
-        { "name": "Butterfly", "slug": "butterfly" },
-        { "name": "博客搭建", "slug": "blog-building" }
+        { "name": "Butterfly", "slug": "butterfly" }
       ]
     },
     {

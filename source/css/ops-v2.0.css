@@ -60,7 +60,7 @@
   --ops-liquid-lens-press-x: 0.985;
   --ops-liquid-lens-press-y: 0.96;
   /* R10.2 article reading contract. Scoped consumers live near the final cascade. */
-  --ops-reading-main-surface: rgba(248, 250, 251, 0.68);
+  --ops-reading-main-surface: rgba(248, 250, 251, 0.73);
   --ops-reading-main-border: rgba(255, 255, 255, 0.46);
   --ops-reading-main-shadow: 0 16px 38px rgba(31, 54, 68, 0.09);
   --ops-reading-aside-surface: rgba(238, 244, 247, 0.79);
@@ -125,7 +125,7 @@
     inset 0 -1px 0 rgba(0, 0, 0, 0.18),
     0 28px 76px rgba(0, 0, 0, 0.46);
   --ops-material-footer-wash: linear-gradient(180deg, transparent, rgba(12, 14, 16, 0.12) 48%, rgba(10, 12, 14, 0.2));
-  --ops-reading-main-surface: rgba(21, 22, 23, 0.66);
+  --ops-reading-main-surface: rgba(21, 22, 23, 0.71);
   --ops-reading-main-border: rgba(184, 201, 209, 0.09);
   --ops-reading-main-shadow: 0 18px 42px rgba(0, 0, 0, 0.3);
   --ops-reading-aside-surface: rgba(21, 23, 24, 0.82);
@@ -322,7 +322,7 @@ html.ops-nav-scrolled[data-ops-nav-mode] #page-header.nav-fixed #nav .nav-page-t
   font-size: clamp(0.84rem, 1.15vw, 0.96rem);
   font-weight: 620;
   letter-spacing: 0.004em;
-  text-shadow: 0 1px 3px rgba(7, 27, 38, 0.42), 0 4px 15px rgba(7, 27, 38, 0.16) !important;
+  text-shadow: 0 1px 5px rgba(7, 27, 38, 0.28) !important;
 }
 
 html[data-ops-nav-mode] #nav #blog-info::before {
@@ -2399,6 +2399,17 @@ html:has(#post) #article-container > p {
 
 html:has(#post) #article-container :is(h1, h2, h3, h4, h5, h6) {
   text-wrap: balance;
+}
+
+[data-theme='dark']:has(#post) *::selection {
+  background: rgba(76, 105, 121, 0.68) !important;
+  color: #edf2f4 !important;
+  text-shadow: none !important;
+}
+
+[data-theme='dark']:has(#post) #article-container img:not(.no-lightbox),
+[data-theme='dark']:has(#post) #article-container img:not(.no-lightbox):hover {
+  filter: brightness(0.82) contrast(0.94);
 }
 
 html:has(#post) #article-container blockquote {

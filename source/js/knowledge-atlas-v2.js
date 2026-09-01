@@ -971,10 +971,21 @@
         }, 72);
       };
       const cancelRelatedIntent = () => clearTimeout(node._atlasHoverTimer);
+      const hideRelated = () => {
+        cancelRelatedIntent();
+        const tag = node.dataset.tag;
+        if (hoverTag !== tag) return;
+        hoverTag = '';
+        root.querySelectorAll('.atlas-v2__edge').forEach(edge => edge.classList.remove('is-emphasized', 'is-muted'));
+        renderResults(root, graph, graph.articles);
+      };
       node.addEventListener('mouseenter', showRelated);
       node.addEventListener('focus', showRelated);
-      node.addEventListener('mouseleave', cancelRelatedIntent);
-      node.addEventListener('blur', cancelRelatedIntent);
+      node.addEventListener('mouseleave', () => {
+        if (node.matches(':focus-visible')) cancelRelatedIntent();
+        else hideRelated();
+      });
+      node.addEventListener('blur', hideRelated);
     });
   }
 

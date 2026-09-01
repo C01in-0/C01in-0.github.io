@@ -15,7 +15,6 @@
     { "source": "Nginx", "target": "计算机网络", "weight": 2, "kind": "infrastructure" },
     { "source": "MySQL", "target": "Linux", "weight": 1, "kind": "platform" },
     { "source": "CRC32", "target": "ZIP", "weight": 2, "kind": "file-analysis" },
-    { "source": "Hexo", "target": "博客搭建", "weight": 3, "kind": "toolchain" },
     { "source": "Butterfly", "target": "Hexo", "weight": 3, "kind": "toolchain" }
   ]
 }
