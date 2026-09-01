@@ -93,7 +93,7 @@ git diff --check
 - Butterfly 的 `nav-fixed` 与自定义 `ops-nav-scrolled` 退出阈值不同。文章固定标题的宽度、字号和行高必须只跟随 `nav-fixed`，否则上滑临近顶部时会先放大，再在 0px 收回。
 - `annotateArticleCategories()` 不能用分类父容器作为“已处理”标记；一篇文章有多个独立分类时必须逐链接标记，否则只会渲染第一个分类图标。
 - 文章页回顶时不能重播 `ops-nav-arriving`。它会与 Butterfly 约 300ms 的固定导航退出节流叠加，造成标题先闪现一次再被隐藏；入场动效只保留给非文章页面。
-- Hexo 会自动载入仓库 `scripts/` 下的 JavaScript。可直接执行的 QA 脚本必须用 `require.main === module` 保护入口，并将依赖生成目录的读取延迟到入口内，否则 `hexo clean/build` 会误执行 QA，甚至在 `public/` 尚未生成时失败。
+- Hexo 会自动载入仓库 `scripts/` 下的 JavaScript。可直接执行的 QA 脚本必须用 `require.main === module` 保护入口；Playwright 等仅供 QA 使用的可选依赖，以及依赖生成目录的读取，都必须延迟到入口内，否则未安装开发依赖的正式工作树会在 `hexo clean/build` 扫描阶段报错。
 - Butterfly 的目录激活线约在视口顶部 80px。逐标题 QA 必须把目标标题滚过激活线后再断言，不能在边界外侧取样，否则会把正常保留上一章节误判为错位。
 - 知识图谱悬停连线在离场时既要取消延迟计时器，也要清除已经落到节点和边上的强调/弱化类；只清计时器无法撤销已生效的状态。
 - 暗色文章图片的悬停规则不能覆盖静态暗化滤镜；静态与悬停必须保持相同亮度，仅用位移和阴影表达浮动。
@@ -118,6 +118,7 @@ git diff --check
 - 2026-09-02 调整文章阅读态：主内容面板在明暗模式均提高约 5% 不透明度；固定标题合并为单层窄阴影；暗色论文图片降亮且悬停不再增亮；暗色文字选区改为低饱和蓝灰。
 - 修复知识图谱连线悬停离场后残留；删除与“博客工程”重复的“博客搭建”公开标签、知识概念及关系边。
 - 修复 QA 脚本被 Hexo 自动载入的问题，并把目录对齐检查扩展到全部 13 篇文章、共 175 个标题。最终契约检查、Hexo 构建和 12 个页面/视口回归全部通过，目录错位为 0，知识连线离场残留为 0。
+- 2026-09-02 发布前复核发现正式 `source` 工作树未安装 Playwright 时，Hexo 扫描 QA 脚本仍会触发顶层依赖加载；已将 Playwright 改为仅在直接运行 QA 时加载，保持普通构建不依赖浏览器测试环境。
 
 ## 9. 回滚位置
 
@@ -126,6 +127,7 @@ git diff --check
 - 本轮视觉修复与全站知识元数据备份：`D:\Hacking_world\myblog-backups\20260901-ui-repair-atlas-metadata-r2`
 - 本轮分类图标、标题退出与应用栏底材备份：`D:\Hacking_world\myblog-backups\20260901-category-title-nav-clean-r3`
 - 本轮阅读态、知识连线与全站目录审计备份：`D:\Hacking_world\myblog-backups\20260901-title-shadow-article-opacity-r4`
+- 本轮 QA 可选依赖延迟加载备份：`D:\Hacking_world\myblog-backups\20260902-qa-lazy-playwright-r5`
 - Butterfly 原嵌套 Git 元数据：上述备份内 `theme-butterfly-dotgit`
 - 旧 BIPIA 草稿隔离：`D:\Hacking_world\myblog-isolated\20260901-old-bipia`
 - 当前功能工作树：`D:\Hacking_world\myblog-worktrees\paper-migration-20260901`

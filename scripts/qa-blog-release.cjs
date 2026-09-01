@@ -3,7 +3,6 @@
 const fs = require('fs/promises');
 const fsSync = require('fs');
 const path = require('path');
-const { chromium } = require('playwright');
 
 const baseUrl = process.env.BLOG_QA_URL || 'http://127.0.0.1:4032';
 const outputDir = process.env.BLOG_QA_OUTPUT || path.join(process.cwd(), 'qa', 'release');
@@ -437,6 +436,7 @@ async function inspectArticleCategoryIcons(page) {
 }
 
 async function main() {
+  const { chromium } = require('playwright');
   await fs.mkdir(outputDir, { recursive: true });
   const launchOptions = { headless: true };
   if (chromePath && fsSync.existsSync(chromePath)) launchOptions.executablePath = chromePath;
