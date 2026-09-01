@@ -15,7 +15,7 @@ function fail(message) {
 function readPost(fileName) {
   const fullPath = path.join(postsDir, fileName);
   const source = fs.readFileSync(fullPath, 'utf8');
-  const data = frontMatter.parse(source);
+  const data = frontMatter.parse(source.replace(/\r\n?/g, '\n'));
   const blogId = Number(data.blog_id);
   const date = new Date(data.date);
 

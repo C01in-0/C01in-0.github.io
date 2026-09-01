@@ -84,7 +84,7 @@ git diff --check
 
 ## 7. 已知风险与踩坑
 
-- Windows 下混用 CRLF 与 LF 会让 Hexo front matter 解析失败，表现为标题、日期和 `blog_id` 全部失效。修改 Markdown 后保持 UTF-8 无 BOM、LF，并重新构建。
+- Windows 下不同工作树可能因 Git 的 `core.autocrlf` 检出 CRLF。文章源文件仍应保持 UTF-8 无 BOM、LF；构建期契约解析会先把读取内容规范化为 LF，避免合法的标题、日期和 `blog_id` 被误判为缺失。
 - Butterfly 主题曾含嵌套 Git 元数据；已隔离备份。不要把主题再次变成 gitlink，否则源站提交无法完整恢复主题源码。
 - `main` 是生成站点，`source` 才是可维护源站；二者不能混用或在同一工作目录直接覆盖。
 - Butterfly 原目录逻辑只在初始化与窗口缩放时缓存标题坐标；文章图片延迟加载会使目录高亮提前。目录坐标必须监听文章容器尺寸变化，并在 PJAX 重建时清理旧观察器。
@@ -119,6 +119,7 @@ git diff --check
 - 修复知识图谱连线悬停离场后残留；删除与“博客工程”重复的“博客搭建”公开标签、知识概念及关系边。
 - 修复 QA 脚本被 Hexo 自动载入的问题，并把目录对齐检查扩展到全部 13 篇文章、共 175 个标题。最终契约检查、Hexo 构建和 12 个页面/视口回归全部通过，目录错位为 0，知识连线离场残留为 0。
 - 2026-09-02 发布前复核发现正式 `source` 工作树未安装 Playwright 时，Hexo 扫描 QA 脚本仍会触发顶层依赖加载；已将 Playwright 改为仅在直接运行 QA 时加载，保持普通构建不依赖浏览器测试环境。
+- 2026-09-02 正式 `source` 工作树受全局 `core.autocrlf=true` 影响，将 Markdown 检出为 CRLF；契约检查现会在解析 front matter 前规范化换行，源文件无需批量重写，LF 与 CRLF 工作树都可重复构建。
 
 ## 9. 回滚位置
 
@@ -128,6 +129,7 @@ git diff --check
 - 本轮分类图标、标题退出与应用栏底材备份：`D:\Hacking_world\myblog-backups\20260901-category-title-nav-clean-r3`
 - 本轮阅读态、知识连线与全站目录审计备份：`D:\Hacking_world\myblog-backups\20260901-title-shadow-article-opacity-r4`
 - 本轮 QA 可选依赖延迟加载备份：`D:\Hacking_world\myblog-backups\20260902-qa-lazy-playwright-r5`
+- 本轮文章契约 CRLF 兼容备份：`D:\Hacking_world\myblog-backups\20260902-contract-crlf-r6`
 - Butterfly 原嵌套 Git 元数据：上述备份内 `theme-butterfly-dotgit`
 - 旧 BIPIA 草稿隔离：`D:\Hacking_world\myblog-isolated\20260901-old-bipia`
 - 当前功能工作树：`D:\Hacking_world\myblog-worktrees\paper-migration-20260901`
