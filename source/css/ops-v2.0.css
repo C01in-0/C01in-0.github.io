@@ -1265,6 +1265,15 @@ html[data-ops-nav-mode='dock'].ops-page-todo #nav a[href^='/todo/'] {
   transition: fill 150ms ease;
 }
 
+.atlas-v2__node .atlas-v2__node-more {
+  fill: var(--ops-v2-accent);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 8px;
+  font-weight: 650;
+  letter-spacing: 0.05em;
+  opacity: 0.72;
+}
+
 .atlas-v2__node-motion,
 .atlas-v2__node-label {
   transform-box: fill-box;
@@ -1579,6 +1588,15 @@ html[data-ops-nav-mode='dock'].ops-page-todo #nav a[href^='/todo/'] {
 .atlas-v2__mobile-node > span {
   display: grid;
   min-width: 0;
+}
+
+.atlas-v2__mobile-node strong {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow-wrap: anywhere;
 }
 
 .atlas-v2__mobile-node small {
@@ -2333,6 +2351,10 @@ html[data-ops-nav-mode='liquid'] #nav #menus::after {
   transition: left 320ms cubic-bezier(.16,1,.3,1), opacity 200ms ease, transform 240ms cubic-bezier(.16,1,.3,1), filter 220ms ease;
 }
 
+html[data-ops-nav-mode='liquid'] #nav #menus.is-liquid-resetting::after {
+  transition: none;
+}
+
 html[data-ops-nav-mode='liquid'] #nav #menus.is-liquid-active::after,
 html[data-ops-nav-mode='liquid'] #nav #menus:focus-within::after {
   opacity: var(--ops-liquid-lens-opacity);
@@ -2479,39 +2501,84 @@ html.ops-nav-scrolled[data-ops-nav-mode]:has(#post) #page-header.nav-fixed #nav 
   }
 }
 
-/* R10.4 Pagination material: quiet glass controls on the same surface hierarchy. */
+/* R10.5 Pagination: one quiet reading rail instead of detached glass tiles. */
 #pagination .pagination {
-  margin-top: 22px;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: auto;
+  min-height: 42px;
+  margin-top: 24px;
+  padding: 3px 13px;
+  border-block: 1px solid color-mix(in srgb, var(--ops-pagination-border) 78%, transparent);
+  background: linear-gradient(90deg, transparent, var(--ops-pagination-surface) 18%, var(--ops-pagination-surface) 82%, transparent);
+  box-shadow: none;
+  -webkit-backdrop-filter: blur(10px) saturate(108%);
+  backdrop-filter: blur(10px) saturate(108%);
 }
 
 #pagination .pagination > *:not(.space) {
-  width: 44px;
-  height: 44px;
-  margin: 0 5px;
-  border: 1px solid var(--ops-pagination-border);
-  border-radius: 11px;
-  background: var(--ops-pagination-surface);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  min-width: 30px;
+  height: 34px;
+  margin: 0 2px;
+  padding: 0 7px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
   color: var(--ops-pagination-ink);
-  line-height: 42px;
-  box-shadow: var(--ops-pagination-shadow);
-  -webkit-backdrop-filter: blur(12px) saturate(112%);
-  backdrop-filter: blur(12px) saturate(112%);
+  font: 650 12px/1 ui-monospace, SFMono-Regular, Consolas, monospace;
+  letter-spacing: 0.05em;
+  line-height: 34px;
+  box-shadow: none;
   transform: translateY(0);
-  transition: transform 180ms cubic-bezier(.2,.78,.2,1), background 180ms ease, border-color 180ms ease, color 180ms ease, box-shadow 180ms ease;
+  transition: transform 180ms cubic-bezier(.2,.78,.2,1), background-color 180ms ease, color 180ms ease;
 }
 
 #pagination .pagination > *:not(.space):hover {
-  border-color: color-mix(in srgb, var(--ops-pagination-border) 72%, var(--ops-v2-accent) 28%);
-  background: var(--ops-pagination-surface-hover);
+  background: color-mix(in srgb, var(--ops-pagination-surface-hover) 68%, transparent);
   color: var(--ops-v2-ink);
   transform: translateY(-1px);
 }
 
 #pagination .pagination .page-number.current {
-  border-color: var(--ops-pagination-active-border);
-  background: var(--ops-pagination-active-surface);
+  background: transparent;
   color: var(--ops-pagination-active-ink);
-  box-shadow: var(--ops-pagination-shadow), inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  font-weight: 760;
+  box-shadow: none;
+}
+
+#pagination .pagination .page-number.current::after {
+  content: '';
+  position: absolute;
+  right: 8px;
+  bottom: 2px;
+  left: 8px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.72;
+}
+
+#pagination .pagination .page-number + .page-number::before {
+  content: '/';
+  position: absolute;
+  left: -4px;
+  color: var(--ops-pagination-ink);
+  font-weight: 450;
+  opacity: 0.4;
+}
+
+#pagination .pagination .extend {
+  gap: 7px;
+  min-width: 64px;
+}
+
+#pagination .pagination .extend i {
+  font-size: 10px;
 }
 
 #pagination .pagination > a:focus-visible {
@@ -2520,12 +2587,24 @@ html.ops-nav-scrolled[data-ops-nav-mode]:has(#post) #page-header.nav-fixed #nav 
 }
 
 @media (max-width: 768px) {
+  #pagination .pagination {
+    min-height: 40px;
+    padding-inline: 9px;
+  }
+
   #pagination .pagination > *:not(.space) {
-    width: 40px;
-    height: 40px;
-    margin: 0 4px;
-    border-radius: 10px;
-    line-height: 38px;
+    min-width: 28px;
+    height: 32px;
+    padding-inline: 6px;
+    line-height: 32px;
+  }
+
+  #pagination .pagination .extend {
+    min-width: 54px;
+  }
+
+  #pagination .pagination .ops-pagination-label {
+    font-size: 10px;
   }
 }
 

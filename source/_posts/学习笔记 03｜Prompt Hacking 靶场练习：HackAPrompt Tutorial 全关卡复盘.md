@@ -6,6 +6,7 @@ tags:
   - AI安全
   - HackAPrompt
   - 学习笔记
+knowledge:
   - 提示词注入
 categories: 笔记
 abbrlink: hackaprompt-tutorial

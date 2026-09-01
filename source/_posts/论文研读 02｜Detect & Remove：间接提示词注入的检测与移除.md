@@ -6,6 +6,9 @@ categories:
   - 笔记
 tags:
   - 论文研读
+  - AI安全
+  - 间接提示词注入
+knowledge:
   - 间接提示词注入
   - 注入检测
   - 输入清洗

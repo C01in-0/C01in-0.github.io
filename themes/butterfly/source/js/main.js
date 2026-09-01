@@ -1,6 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
   let headerContentWidth, $nav
   let mobileSidebarOpen = false
+  let tocResizeObserver
+  let tocHeaderFrame = 0
 
   const adjustMenu = init => {
     const getAllWidth = ele => Array.from(ele).reduce((width, i) => width + i.offsetWidth, 0)
@@ -506,6 +508,11 @@ document.addEventListener('DOMContentLoaded', () => {
   * toc,anchor
   */
   const scrollFnToDo = () => {
+    tocResizeObserver?.disconnect()
+    tocResizeObserver = undefined
+    cancelAnimationFrame(tocHeaderFrame)
+    tocHeaderFrame = 0
+
     const isToc = GLOBAL_CONFIG_SITE.isToc
     const isAnchor = GLOBAL_CONFIG.isAnchor
     const $article = document.getElementById('article-container')
@@ -567,7 +574,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     updateHeaderPositions()
-    btf.addEventListenerPjax(window, 'resize', btf.throttle(updateHeaderPositions, 200))
 
     const findHeadPosition = top => {
       if (top === 0) return false
@@ -610,6 +616,26 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
     }
+
+    const refreshHeaderPositions = () => {
+      if (tocHeaderFrame) return
+      tocHeaderFrame = requestAnimationFrame(() => {
+        tocHeaderFrame = 0
+        updateHeaderPositions()
+        findHeadPosition(window.scrollY || document.documentElement.scrollTop)
+      })
+    }
+
+    btf.addEventListenerPjax(window, 'resize', btf.throttle(refreshHeaderPositions, 200))
+    if ('ResizeObserver' in window) {
+      tocResizeObserver = new ResizeObserver(refreshHeaderPositions)
+      tocResizeObserver.observe($article)
+    } else {
+      $article.querySelectorAll('img').forEach(image => {
+        if (!image.complete) btf.addEventListenerPjax(image, 'load', refreshHeaderPositions, { once: true })
+      })
+    }
+    document.fonts?.ready.then(refreshHeaderPositions)
 
     // main of scroll
     const tocScrollFn = btf.throttle(() => {

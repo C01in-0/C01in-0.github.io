@@ -1,8 +1,8 @@
 if page.total !== 1
   -
     var options = {
-      prev_text: '<i class="fas fa-chevron-left fa-fw"></i>',
-      next_text: '<i class="fas fa-chevron-right fa-fw"></i>',
+      prev_text: '<i class="fas fa-arrow-left" aria-hidden="true"></i><span class="ops-pagination-label">PREV</span>',
+      next_text: '<span class="ops-pagination-label">NEXT</span><i class="fas fa-arrow-right" aria-hidden="true"></i>',
       mid_size: 1,
       escape: false
     }
@@ -32,7 +32,7 @@ if page.total !== 1
                   .info-item-1!=getPostDesc
   else
     nav#pagination
-      .pagination
+      .pagination(data-current=page.current data-total=page.total aria-label=`第 ${page.current} 页，共 ${page.total} 页`)
         if globalPageType === 'home'
           - options.format = 'page/%d/#content-inner'
         !=paginator(options)

@@ -47,48 +47,68 @@
       ]
     },
     {
-      "name": "AI 与 Agent 安全",
-      "slug": "ai-agent-security",
+      "name": "AI 安全",
+      "slug": "ai-security",
+      "aliases": ["AI安全", "AI 与 Agent 安全"],
       "children": [
         {
-          "name": "提示词注入",
-          "slug": "prompt-injection",
+          "name": "威胁",
+          "slug": "ai-threats",
           "children": [
-            { "name": "HackAPrompt", "slug": "hackaprompt" },
             {
-              "name": "间接提示词注入",
-              "slug": "indirect-prompt-injection",
+              "name": "提示词注入",
+              "slug": "prompt-injection",
               "children": [
-                { "name": "基准评测", "slug": "benchmarking" },
-                { "name": "对抗式微调", "slug": "adversarial-finetuning" },
-                { "name": "注入检测", "slug": "injection-detection" },
-                { "name": "输入清洗", "slug": "input-sanitization" }
+                { "name": "间接提示词注入", "slug": "indirect-prompt-injection" }
               ]
             }
           ]
         },
         {
-          "name": "LLM",
-          "slug": "llm",
+          "name": "防御",
+          "slug": "ai-defenses",
+          "children": [
+            {
+              "name": "评测与训练",
+              "slug": "evaluation-training",
+              "children": [
+                { "name": "基准评测", "slug": "benchmarking" },
+                { "name": "对抗式微调", "slug": "adversarial-finetuning" }
+              ]
+            },
+            {
+              "name": "运行时防御",
+              "slug": "runtime-defense",
+              "children": [
+                { "name": "注入检测", "slug": "injection-detection" },
+                { "name": "输入清洗", "slug": "input-sanitization" },
+                { "name": "任务对齐", "slug": "task-alignment" },
+                { "name": "工具调用安全", "slug": "tool-use-security" }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "系统对象",
+          "slug": "ai-systems",
+          "children": [
+            { "name": "LLM", "slug": "llm" },
+            { "name": "LLM Agent", "slug": "llm-agent", "aliases": ["Agent"] },
+            {
+              "name": "移动端",
+              "slug": "mobile",
+              "children": [
+                { "name": "Android", "slug": "android" }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "技术机制",
+          "slug": "ai-mechanisms",
           "children": [
             { "name": "Attention", "slug": "attention" },
             { "name": "Token 分类", "slug": "token-classification" }
-          ]
-        },
-        {
-          "name": "LLM Agent",
-          "slug": "llm-agent",
-          "aliases": ["Agent"],
-          "children": [
-            { "name": "任务对齐", "slug": "task-alignment" },
-            { "name": "工具调用安全", "slug": "tool-use-security" }
-          ]
-        },
-        {
-          "name": "移动端",
-          "slug": "mobile",
-          "children": [
-            { "name": "Android", "slug": "android" }
           ]
         }
       ]

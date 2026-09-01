@@ -6,9 +6,13 @@ categories:
   - 笔记
 tags:
   - 论文研读
+  - AI安全
+  - 间接提示词注入
+knowledge:
   - 间接提示词注入
   - Attention
   - Token 分类
+  - 注入检测
   - 输入清洗
 abbrlink: ef9d0362
 description: 从 token、embedding、attention 与两步池化讲清 RENNERVATE 的 token 级检测和清洗，并核对其白盒前提、效用与自适应攻击结果。

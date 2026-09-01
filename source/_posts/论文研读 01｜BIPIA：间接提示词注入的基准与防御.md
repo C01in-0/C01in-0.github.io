@@ -6,6 +6,9 @@ categories:
   - 笔记
 tags:
   - 论文研读
+  - AI安全
+  - 间接提示词注入
+knowledge:
   - 间接提示词注入
   - 基准评测
   - 对抗式微调

@@ -10,6 +10,7 @@
   let railDragOffset = 0;
   let liquidFrame = 0;
   let liquidPointerX = 0;
+  let liquidResetTimer = 0;
   let arrivalTimer = 0;
   let wasScrolled = window.scrollY > 52;
 
@@ -91,6 +92,29 @@
     if (!menus || menus.dataset.opsLiquidReady === 'true') return;
     menus.dataset.opsLiquidReady = 'true';
 
+    const cancelLiquidReset = () => {
+      window.clearTimeout(liquidResetTimer);
+      liquidResetTimer = 0;
+    };
+
+    const placeLiquidWithoutMotion = callback => {
+      menus.classList.add('is-liquid-resetting');
+      callback();
+      requestAnimationFrame(() => menus.classList.remove('is-liquid-resetting'));
+    };
+
+    const scheduleLiquidReset = () => {
+      cancelLiquidReset();
+      if (menus.matches(':focus-within')) return;
+      liquidResetTimer = window.setTimeout(() => {
+        placeLiquidWithoutMotion(() => {
+          menus.style.setProperty('--ops-liquid-x', '50%');
+          menus.style.setProperty('--ops-liquid-bend', '0px');
+        });
+        liquidResetTimer = 0;
+      }, 230);
+    };
+
     function paintLiquidPosition() {
       liquidFrame = 0;
       const bounds = menus.getBoundingClientRect();
@@ -107,9 +131,10 @@
 
     menus.addEventListener('pointerenter', event => {
       if (event.pointerType === 'touch') return;
+      cancelLiquidReset();
       liquidPointerX = event.clientX;
-      menus.classList.add('is-liquid-active');
-      paintLiquidPosition();
+      placeLiquidWithoutMotion(() => paintLiquidPosition());
+      requestAnimationFrame(() => menus.classList.add('is-liquid-active'));
     }, { passive: true });
 
     menus.addEventListener('pointermove', event => {
@@ -122,9 +147,11 @@
     menus.addEventListener('pointerleave', () => {
       menus.classList.remove('is-liquid-active');
       menus.classList.remove('is-liquid-pressed');
-      menus.style.setProperty('--ops-liquid-x', '50%');
       menus.style.setProperty('--ops-liquid-bend', '0px');
+      scheduleLiquidReset();
     }, { passive: true });
+
+    menus.addEventListener('focusout', scheduleLiquidReset);
 
     menus.addEventListener('pointerdown', event => {
       if (event.pointerType === 'touch' || root.dataset.opsNavMode !== 'liquid') return;

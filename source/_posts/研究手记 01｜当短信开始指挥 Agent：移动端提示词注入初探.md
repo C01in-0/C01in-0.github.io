@@ -1,10 +1,14 @@
 ---
 title: 研究手记 01｜当短信开始指挥 Agent：移动端提示词注入初探
 tags:
-  - LLM
-  - Android
   - AI安全
   - 提示词注入
+  - 移动端
+knowledge:
+  - 提示词注入
+  - LLM
+  - 移动端
+  - Android
 categories: 科研
 description: 记录一次 Android 移动 Agent 间接提示词注入的轻量先导实验。
 abbrlink: aee4c81c

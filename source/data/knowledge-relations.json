@@ -1,10 +1,15 @@
 {
   "version": "2.0",
-  "aliases": {
-    "AI安全": "AI 与 Agent 安全"
-  },
+  "aliases": {},
   "links": [
-    { "source": "提示词注入", "target": "LLM", "weight": 3, "kind": "concept" },
+    { "source": "间接提示词注入", "target": "注入检测", "weight": 3, "kind": "defense" },
+    { "source": "间接提示词注入", "target": "输入清洗", "weight": 3, "kind": "defense" },
+    { "source": "间接提示词注入", "target": "任务对齐", "weight": 2, "kind": "defense" },
+    { "source": "注入检测", "target": "Token 分类", "weight": 2, "kind": "mechanism" },
+    { "source": "输入清洗", "target": "Attention", "weight": 2, "kind": "mechanism" },
+    { "source": "任务对齐", "target": "LLM Agent", "weight": 3, "kind": "system" },
+    { "source": "工具调用安全", "target": "LLM Agent", "weight": 3, "kind": "system" },
+    { "source": "移动端", "target": "LLM Agent", "weight": 2, "kind": "deployment" },
     { "source": "Jenkins", "target": "自动化", "weight": 3, "kind": "toolchain" },
     { "source": "Jenkins", "target": "Linux", "weight": 2, "kind": "platform" },
     { "source": "Nginx", "target": "计算机网络", "weight": 2, "kind": "infrastructure" },

@@ -119,20 +119,21 @@
     });
   }
 
-  function parseSearchXml(xmlText) {
-    const doc = new DOMParser().parseFromString(xmlText, 'application/xml');
-    const entries = [...doc.querySelectorAll('entry')];
-    return entries.map((entry, index) => {
-      const readAll = selector => [...entry.querySelectorAll(selector)]
-        .map(node => compactText(node.textContent))
-        .filter(Boolean);
-      const title = compactText(entry.querySelector('title')?.textContent);
-      const url = compactText(entry.querySelector('url')?.textContent);
-      const content = compactText(entry.querySelector('content')?.textContent);
-      const categories = [...new Set([...readAll('category'), ...readAll('categories > *')])];
-      const tags = [...new Set([...readAll('tag'), ...readAll('tags > *')])];
-      const conceptSlugs = [...new Set(tags.map(tag => aliasMap.get(normalize(tag))).filter(Boolean))];
-      return { id: `post-${index + 1}`, title, url, content, categories, tags, conceptSlugs };
+  function parseKnowledgeIndex(payload) {
+    if (!payload || payload.version !== 1 || !Array.isArray(payload.posts)) {
+      throw new Error('知识文章索引格式无效');
+    }
+    return payload.posts.map((entry, index) => {
+      const title = compactText(entry.title);
+      const url = compactText(entry.url);
+      const content = compactText(entry.content);
+      const categories = [...new Set((entry.categories || []).map(compactText).filter(Boolean))];
+      const tags = [...new Set((entry.tags || []).map(compactText).filter(Boolean))];
+      const knowledge = [...new Set((entry.knowledge || []).map(compactText).filter(Boolean))];
+      const unknown = knowledge.filter(term => !aliasMap.has(normalize(term)));
+      if (unknown.length) throw new Error(`${title || url} 含未知知识概念：${unknown.join('、')}`);
+      const conceptSlugs = [...new Set(knowledge.map(term => aliasMap.get(normalize(term))))];
+      return { id: `post-${index + 1}`, title, url, content, categories, tags, knowledge, conceptSlugs };
     }).filter(post => post.title && post.url);
   }
 
@@ -169,7 +170,7 @@
       if (!facetValue || !post.tags.some(value => normalize(value) === normalize(facetValue.name))) return false;
     }
     if (state.query) {
-      const haystack = normalize([post.title, post.content, ...post.categories, ...post.tags].join(' '));
+      const haystack = normalize([post.title, post.content, ...post.categories, ...post.tags, ...post.knowledge].join(' '));
       if (!haystack.includes(normalize(state.query))) return false;
     }
     return true;
@@ -301,7 +302,7 @@
 
     const directPosts = postsForConcept(state.tag, sourcePosts);
     const ancestorSlugs = ancestors(state.tag);
-    const descendantItems = descendants(state.tag, 2);
+    const descendantItems = descendants(state.tag, 1);
     const hierarchySlugs = new Set([state.tag, ...ancestorSlugs, ...descendantItems.map(item => item.slug)]);
     const relatedItems = relatedCandidates(state.tag, sourcePosts, hierarchySlugs);
     const nodes = [
@@ -463,6 +464,11 @@
     return Math.max(86, Math.min(170, 38 + (data?.name.length || 0) * 18 + String(count).length * 9));
   }
 
+  function nodeLabel(name, limit = 11) {
+    const glyphs = Array.from(String(name || ''));
+    return glyphs.length > limit ? `${glyphs.slice(0, limit).join('')}…` : glyphs.join('');
+  }
+
   function relaxCollisions(graph, positions, fixedSlugs = new Set()) {
     const anchors = new Map([...positions].map(([slug, point]) => [slug, { ...point }]));
     const nodes = graph.nodes.filter(node => positions.has(node.slug));
@@ -600,7 +606,8 @@
 
   function mobileNodeMarkup(item, meta) {
     const data = concepts.get(item.slug);
-    return `<button type="button" class="atlas-v2__mobile-node atlas-v2__mobile-node--${item.role} atlas-v2__mobile-node--hop-${item.hop ?? 1} ${item.slug === state.tag ? 'is-active' : ''}" data-tag="${item.slug}"><span><strong>${escapeHtml(data.name)}</strong><small>${escapeHtml(meta)}</small></span><b>${conceptUsage(item.slug)}</b></button>`;
+    const more = data.children.length ? ` · 更多 ${data.children.length}` : '';
+    return `<button type="button" class="atlas-v2__mobile-node atlas-v2__mobile-node--${item.role} atlas-v2__mobile-node--hop-${item.hop ?? 1} ${item.slug === state.tag ? 'is-active' : ''}" data-tag="${item.slug}" title="${escapeHtml(data.name)}"><span><strong>${escapeHtml(data.name)}</strong><small>${escapeHtml(meta + more)}</small></span><b>${conceptUsage(item.slug)}</b></button>`;
   }
 
   function mobileSection(label, items, describe) {
@@ -628,7 +635,7 @@
     const dx = to.x - from.x;
     const dy = to.y - from.y;
     const halfWidth = labelWidth(slug) / 2 + padding;
-    const halfHeight = 22 + padding;
+    const halfHeight = 24 + padding;
     const scale = 1 / Math.max(Math.abs(dx) / halfWidth, Math.abs(dy) / halfHeight, 0.001);
     return { x: from.x + dx * scale, y: from.y + dy * scale };
   }
@@ -826,6 +833,8 @@
       const point = positions.get(item.slug);
       if (!data || !point) return;
       const count = conceptUsage(item.slug);
+      const visibleChildren = graph.nodes.filter(node => concepts.get(node.slug)?.parent === item.slug).length;
+      const hiddenChildren = Math.max(0, data.children.length - visibleChildren);
       const group = svgElement('g', {
         class: `atlas-v2__node atlas-v2__node--${item.role} atlas-v2__node--hop-${item.hop ?? 1} atlas-v2__node--level-${Math.abs(item.level ?? item.hop ?? 1)} ${item.slug === state.tag ? 'is-selected' : ''}`,
         transform: `translate(${point.x} ${point.y})`,
@@ -833,7 +842,7 @@
         'data-x': point.x,
         'data-y': point.y,
         tabindex: '0', role: 'button',
-        'aria-label': `${data.name}，${count} 篇文章`
+        'aria-label': `${data.name}，${count} 篇文章${hiddenChildren ? `，可继续展开 ${hiddenChildren} 项` : ''}`
       });
       group.style.setProperty('--node-delay', `${Math.min(index * 40, 360)}ms`);
       const previous = previousPositions.get(item.slug) || (item.slug === state.tag ? focusOrigin : null);
@@ -843,7 +852,7 @@
         group.style.setProperty('--node-shift-y', `${previous.y - point.y}px`);
       }
       const width = labelWidth(item.slug);
-      group.innerHTML = `<g class="atlas-v2__node-motion"><rect x="${-width / 2}" y="-22" width="${width}" height="44" rx="20"/><g class="atlas-v2__node-label"><text text-anchor="middle" y="5"><tspan>${escapeHtml(data.name)}</tspan><tspan class="atlas-v2__count"> ${count}</tspan></text></g></g>`;
+      group.innerHTML = `<title>${escapeHtml(data.name)}</title><g class="atlas-v2__node-motion"><rect x="${-width / 2}" y="-24" width="${width}" height="48" rx="20"/><g class="atlas-v2__node-label"><text text-anchor="middle" y="${hiddenChildren ? -2 : 5}"><tspan>${escapeHtml(nodeLabel(data.name))}</tspan><tspan class="atlas-v2__count"> ${count}</tspan></text>${hiddenChildren ? `<text class="atlas-v2__node-more" text-anchor="middle" y="15">更多 ${hiddenChildren}</text>` : ''}</g></g>`;
       nodesGroup.appendChild(group);
     });
     viewport.appendChild(nodesGroup);
@@ -1101,18 +1110,18 @@
     host.loader.textContent = '正在整理知识坐标…';
 
     try {
-      const [taxonomyResponse, relationResponse, searchResponse] = await Promise.all([
+      const [taxonomyResponse, relationResponse, indexResponse] = await Promise.all([
         fetch('/data/knowledge-taxonomy-v2.json', { cache: 'no-store' }),
         fetch('/data/knowledge-relations.json', { cache: 'no-store' }),
-        fetch('/search.xml', { cache: 'no-store' })
+        fetch('/data/knowledge-index-v1.json', { cache: 'no-store' })
       ]);
-      if (!taxonomyResponse.ok || !relationResponse.ok || !searchResponse.ok) {
+      if (!taxonomyResponse.ok || !relationResponse.ok || !indexResponse.ok) {
         throw new Error('索引数据加载失败');
       }
       taxonomy = await taxonomyResponse.json();
       relationConfig = await relationResponse.json();
       flattenTaxonomy();
-      posts = parseSearchXml(await searchResponse.text());
+      posts = parseKnowledgeIndex(await indexResponse.json());
       parseUrlState();
       const root = buildShell(host);
       lifecycleController?.abort();

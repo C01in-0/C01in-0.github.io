@@ -6,6 +6,7 @@ const frontMatter = require('hexo-front-matter');
 
 const postsDir = path.join(hexo.base_dir, 'source', '_posts');
 const imagesDir = path.join(hexo.base_dir, 'source', 'images');
+const taxonomyPath = path.join(hexo.base_dir, 'source', 'data', 'knowledge-taxonomy-v2.json');
 
 function fail(message) {
   throw new Error(`[blog-contract] ${message}`);
@@ -25,7 +26,41 @@ function readPost(fileName) {
     fail(`${fileName} has an invalid date`);
   }
 
-  return { fileName, fullPath, source, blogId, date };
+  const list = value => (Array.isArray(value) ? value : value ? [value] : [])
+    .map(item => String(item).trim())
+    .filter(Boolean);
+
+  return { fileName, fullPath, source, blogId, date, tags: list(data.tags), knowledge: list(data.knowledge) };
+}
+
+function validateKnowledge(posts) {
+  const taxonomy = JSON.parse(fs.readFileSync(taxonomyPath, 'utf8'));
+  const knownTerms = new Set();
+  const visit = node => {
+    [node.name, node.slug, ...(node.aliases || [])]
+      .filter(Boolean)
+      .forEach(term => knownTerms.add(String(term).trim().toLowerCase()));
+    (node.children || []).forEach(visit);
+  };
+  (taxonomy.roots || []).forEach(visit);
+
+  posts.forEach(post => {
+    const isAiPost = post.tags.includes('AI安全');
+    if (isAiPost && (post.tags.length < 2 || post.tags.length > 4)) {
+      fail(`${post.fileName} must keep 2-4 public tags; found ${post.tags.length}`);
+    }
+    if (isAiPost && !post.knowledge.length) {
+      fail(`${post.fileName} is an AI安全 article without a knowledge field`);
+    }
+    if (post.knowledge.includes('论文研读')) {
+      fail(`${post.fileName} puts the article series 论文研读 into knowledge concepts`);
+    }
+    post.knowledge.forEach(term => {
+      if (!knownTerms.has(term.toLowerCase())) {
+        fail(`${post.fileName} uses unknown knowledge concept ${term}`);
+      }
+    });
+  });
 }
 
 function validateIds(posts) {
@@ -84,5 +119,6 @@ hexo.extend.filter.register('before_generate', () => {
 
   validateIds(posts);
   validateImages(posts);
-  hexo.log.info(`[blog-contract] verified ${posts.length} chronological blog IDs and image paths`);
+  validateKnowledge(posts);
+  hexo.log.info(`[blog-contract] verified ${posts.length} chronological blog IDs, image paths, and knowledge metadata`);
 });

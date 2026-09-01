@@ -6,10 +6,14 @@ categories:
   - 笔记
 tags:
   - 论文研读
+  - AI安全
+  - Agent安全
+  - 间接提示词注入
+knowledge:
+  - 间接提示词注入
   - LLM Agent
   - 任务对齐
   - 工具调用安全
-  - 间接提示词注入
 abbrlink: f4b0bc56
 description: 从任务对齐视角理解 Task Shield 如何检查工具输出、assistant 内容与工具调用，并核对 AgentDojo 中的安全、效用、时延与部署边界。
 ---
