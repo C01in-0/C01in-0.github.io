@@ -1,0 +1,42 @@
+title: 直到未竟之事，成为已行之路
+quote: 余虽不敏，亦望卒有所获
+groups:
+  - name: 博客建设
+    code: BLOG
+    items:
+      - text: 为博客增添评论区功能
+        done: false
+      - text: 完善分类与标签索引页
+        done: false
+      - text: 设置友链
+        done: true
+      - text: 分“从零到一”和“从一到无穷大”撰写关于个人博客搭建与迭代的拙见
+        done: false
+  - name: 学术创新
+    code: LAB
+    items:
+      - text: 刷完 ctfshow 上的基础 Misc 题
+        done: false
+      - text: 刷完 ctfshow 上的基础 Pwn 题
+        done: false
+      - text: 绩点达到专业前三
+        done: true
+      - text: 参与数学竞赛并获奖
+        done: false
+      - text: CTF 赛事拿到国家级奖项
+        done: true
+      - text: 开发一款独立游戏
+        done: false
+  - name: 生活碎片
+    code: LIFE
+    items:
+      - text: 登顶黄山
+        done: true
+      - text: 游览西湖
+        done: true
+      - text: 勇闯魔都
+        done: false
+      - text: 观摩南京德基广场的豪华厕所（？）
+        done: true
+      - text: 参（ru）观（qin）中科大
+        done: false

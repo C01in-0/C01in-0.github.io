@@ -1,0 +1,29 @@
+# 第一组：个人其它空间
+- class_name: 个人空间
+  class_desc: 记录学习笔记与生活碎片的其它阵地
+  link_list:
+    - name: Colin (CSDN)
+      link: https://blog.csdn.net/A_Cleaner
+      avatar: /images/logo.png
+      descr: 欢迎各位师傅指教
+
+# 第二组：友情链接
+- class_name: 友情链接
+  class_desc: 与君相逢，实属荣幸
+  link_list:
+    - name: Himekawa
+      link: https://himekawa.top/
+      avatar: https://himekawa.top/img/himekawa.jpg
+      descr: Never Settle
+
+    - name: 一只枷锁
+      link: https://blog.csdn.net/2402_84408069
+      avatar: /images/jiasuo.jpg
+      descr: 麒麟安全讲师 渗透高手
+
+    - name: Asutaka
+      link: https://www.asutaka.ink
+      avatar: https://www.asutaka.ink/image/head.png
+      descr: 飞蛾总是飞向有光的地方
+      
+  

@@ -1,0 +1,403 @@
+/* Personal Ops UI v1.7: tonal consistency, atlas interactions and peer links. */
+
+/* Keep the approved light button, restore the quieter dark treatment. */
+[data-theme='dark'] #aside-content .card-info #card-info-btn,
+[data-theme='dark'] #aside-content .card-info #card-info-btn:visited {
+  color: #cedbe1 !important;
+  background: #344954 !important;
+  box-shadow: inset 0 0 0 1px rgba(153, 187, 204, 0.12) !important;
+}
+
+[data-theme='dark'] #aside-content .card-info #card-info-btn:hover,
+[data-theme='dark'] #aside-content .card-info #card-info-btn:focus-visible {
+  color: #e5eef2 !important;
+  background: #3a515d !important;
+  box-shadow: inset 0 0 0 1px rgba(164, 197, 211, 0.15), 0 7px 17px rgba(0, 0, 0, 0.14) !important;
+}
+
+/* Home articles and sidebar widgets share one neutral dark material. */
+[data-theme='dark'] #recent-posts > .recent-post-items > .recent-post-item,
+[data-theme='dark'] #aside-content .card-widget {
+  border-color: rgba(151, 176, 189, 0.14) !important;
+  background: rgba(21, 23, 24, 0.89) !important;
+  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.22) !important;
+  backdrop-filter: blur(18px) saturate(108%);
+}
+
+/* The milestone flag leans forward without adding another symbol. */
+.ops-article-category-icon[data-ops-category='milestone'],
+.ops-category-icon[data-ops-category='milestone'],
+.ops-atlas-category-icon .fa-flag-checkered {
+  transform: rotate(-11deg);
+  transform-origin: 28% 78%;
+}
+
+.ops-atlas-category:hover .ops-atlas-category-icon .fa-flag-checkered,
+.ops-atlas-category:focus-visible .ops-atlas-category-icon .fa-flag-checkered {
+  animation: ops-flag-wave 560ms var(--ops-ease) both;
+}
+
+@keyframes ops-flag-wave {
+  0%, 100% { transform: rotate(-11deg); }
+  42% { transform: rotate(5deg) scale(1.04); }
+  72% { transform: rotate(-16deg); }
+}
+
+/* Completed quests stay in their lane and settle below the active work. */
+.ops-quest-lane li.is-first-complete {
+  margin-top: 0.48rem;
+  padding-top: 0.82rem;
+  border-top: 1px solid var(--ops-line);
+}
+
+.ops-quest-lane li.is-complete .ops-quest-text {
+  opacity: 0.66;
+}
+
+/* Atlas spacing and richer interaction. */
+.ops-atlas-category {
+  grid-template-columns: 2rem minmax(0, 1fr) 1.45rem;
+  column-gap: 0.66rem;
+}
+
+.ops-atlas-category-count {
+  min-width: 1.45rem;
+  text-align: right;
+}
+
+.ops-atlas-category-copy {
+  min-width: 0;
+}
+
+.ops-atlas-category-copy strong,
+.ops-atlas-category-copy small {
+  display: block;
+  padding-right: 0.15rem;
+  overflow: visible;
+  text-overflow: clip;
+  white-space: normal;
+}
+
+.ops-atlas-category-copy strong {
+  line-height: 1.12;
+}
+
+.ops-atlas-category[data-category='Hello World'] .ops-atlas-category-copy strong {
+  font-size: 0.78rem;
+}
+
+.ops-atlas-core {
+  gap: 0.48rem;
+  padding: 0.7rem;
+}
+
+.ops-atlas-core small {
+  max-width: 6.4rem;
+  margin: 0 auto;
+  line-height: 1.16;
+}
+
+.ops-atlas-core strong {
+  line-height: 1.25;
+}
+
+.ops-atlas-map::after {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  content: '';
+  pointer-events: none;
+  background: radial-gradient(circle 8rem at var(--atlas-pointer-x, 50%) var(--atlas-pointer-y, 50%), rgba(44, 145, 195, 0.11), transparent 72%);
+  opacity: 0;
+  transition: opacity 220ms ease;
+}
+
+.ops-atlas-map.is-pointer-active::after {
+  opacity: 1;
+}
+
+.ops-atlas-map.is-exploring .ops-atlas-node:not(.is-context):not(.is-active) {
+  opacity: 0.3;
+  filter: saturate(0.58);
+}
+
+.ops-atlas-map.is-map-ready .ops-atlas-node.is-context {
+  z-index: 6;
+  color: var(--ops-ink);
+  border-color: color-mix(in srgb, var(--ops-accent) 66%, transparent);
+  background: var(--ops-panel-solid);
+  box-shadow: 0 9px 24px rgba(27, 83, 113, 0.16), 0 0 0 3px var(--ops-accent-soft);
+  transform: translate(-50%, -50%) scale(1.07);
+}
+
+.ops-atlas-map.is-exploring .ops-atlas-lines line:not(.is-related) {
+  opacity: 0.045;
+}
+
+.ops-atlas-map.is-exploring .ops-atlas-core {
+  border-color: color-mix(in srgb, var(--ops-accent) 52%, transparent);
+  box-shadow: 0 0 0 0.75rem rgba(44, 145, 195, 0.055), 0 14px 32px rgba(31, 86, 116, 0.17);
+}
+
+/* Light atlas gets stronger structure without imitating the dark palette. */
+html:not([data-theme='dark']) .ops-atlas {
+  border-color: rgba(76, 125, 151, 0.24);
+  background: rgba(239, 246, 249, 0.93);
+  box-shadow: 0 22px 58px rgba(43, 82, 103, 0.16);
+}
+
+html:not([data-theme='dark']) .ops-atlas-header {
+  background: linear-gradient(110deg, rgba(245, 250, 252, 0.94), rgba(230, 241, 246, 0.88));
+}
+
+html:not([data-theme='dark']) .ops-atlas-map {
+  background:
+    radial-gradient(circle at center, rgba(82, 167, 207, 0.16) 0, transparent 25%),
+    radial-gradient(circle at center, transparent 43%, rgba(66, 122, 151, 0.2) 43.2%, transparent 43.65%),
+    radial-gradient(circle at center, transparent 29%, rgba(66, 122, 151, 0.17) 29.2%, transparent 29.65%),
+    linear-gradient(rgba(255, 255, 255, 0.26), rgba(229, 240, 245, 0.34));
+}
+
+html:not([data-theme='dark']) .ops-atlas-node {
+  color: #526f81;
+  border-color: rgba(68, 123, 153, 0.24);
+  background: rgba(247, 251, 252, 0.88);
+  box-shadow: 0 4px 11px rgba(48, 96, 121, 0.07);
+}
+
+html:not([data-theme='dark']) .ops-atlas-lines line {
+  opacity: 0.25;
+}
+
+html:not([data-theme='dark']) .ops-atlas-category:not(.is-active) {
+  color: #587184;
+}
+
+/* Friend links become a compact peer network, using the existing link data. */
+.ops-page-link #article-container {
+  overflow: visible;
+}
+
+@media (min-width: 901px) {
+  .ops-page-link #content-inner.layout {
+    display: block;
+    max-width: 1120px;
+  }
+
+  .ops-page-link #page {
+    width: 100% !important;
+    max-width: none !important;
+  }
+
+  .ops-page-link #aside-content {
+    display: none;
+  }
+}
+
+.ops-peer-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 1rem;
+  margin-bottom: 1.2rem;
+  padding: 1.5rem 1.65rem 1.25rem;
+  border: 1px solid var(--ops-line);
+  border-radius: 8px;
+  color: var(--ops-ink);
+  background: var(--ops-panel);
+  box-shadow: var(--ops-shadow);
+  backdrop-filter: blur(20px) saturate(116%);
+}
+
+.ops-peer-kicker,
+.ops-peer-stat span,
+.ops-peer-seq,
+.ops-peer-host {
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  letter-spacing: 0.08em;
+}
+
+.ops-peer-kicker {
+  color: var(--ops-accent);
+  font-size: 0.66rem;
+  font-weight: 750;
+}
+
+.ops-peer-hero h2 {
+  margin: 0.48rem 0 0;
+  color: var(--ops-ink);
+  font-size: clamp(1.45rem, 2.45vw, 2.15rem);
+  line-height: 1.18;
+  letter-spacing: 0;
+}
+
+.ops-peer-stat {
+  display: grid;
+  min-width: 4.8rem;
+  justify-items: end;
+}
+
+.ops-peer-stat strong {
+  color: var(--ops-ink);
+  font: 650 1.75rem/1 ui-monospace, SFMono-Regular, Consolas, monospace;
+}
+
+.ops-peer-stat span {
+  margin-top: 0.35rem;
+  color: var(--ops-muted);
+  font-size: 0.58rem;
+}
+
+.ops-page-link .flink {
+  margin-bottom: 1.15rem;
+  padding: 1.35rem;
+  border: 1px solid var(--ops-line);
+  border-radius: 8px;
+  background: var(--ops-panel);
+  box-shadow: var(--ops-shadow);
+  backdrop-filter: blur(20px) saturate(116%);
+}
+
+.ops-page-link .flink > h2 {
+  margin: 0 0 1rem;
+  color: var(--ops-ink);
+  font-size: 1rem;
+  letter-spacing: 0;
+}
+
+.ops-page-link .flink .flink-desc {
+  display: none;
+}
+
+.ops-page-link .flink-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.78rem;
+  margin: 0 !important;
+}
+
+.ops-page-link .flink-list > .flink-list-item {
+  width: auto !important;
+  margin: 0 !important;
+  border: 1px solid var(--ops-line);
+  border-radius: 7px;
+  background:
+    radial-gradient(circle 10rem at var(--peer-x, 50%) var(--peer-y, 50%), var(--ops-accent-soft), transparent 72%),
+    color-mix(in srgb, var(--ops-panel-solid) 74%, transparent);
+  opacity: 0;
+  transform: translateY(9px);
+  transition: opacity 300ms ease calc(var(--peer-index) * 45ms), transform 450ms var(--ops-ease) calc(var(--peer-index) * 45ms), border-color 180ms ease, box-shadow 220ms ease;
+}
+
+.ops-page-link .flink-list > .flink-list-item.is-peer-ready {
+  opacity: 1;
+  transform: none;
+}
+
+.ops-page-link .flink-list > .flink-list-item:hover,
+.ops-page-link .flink-list > .flink-list-item:focus-within {
+  border-color: color-mix(in srgb, var(--ops-accent) 48%, transparent);
+  box-shadow: 0 12px 26px rgba(31, 86, 116, 0.13);
+  transform: translateY(-2px);
+}
+
+.ops-page-link .flink-list-item > a {
+  position: relative;
+  display: grid !important;
+  min-height: 7rem;
+  grid-template-columns: 3.7rem minmax(0, 1fr);
+  align-items: center;
+  gap: 0.9rem;
+  padding: 1rem !important;
+  color: var(--ops-ink) !important;
+}
+
+.ops-page-link .flink-item-icon {
+  width: 3.55rem !important;
+  height: 3.55rem !important;
+  margin: 0 !important;
+}
+
+.ops-page-link .flink-item-icon img {
+  width: 100% !important;
+  height: 100% !important;
+  border: 1px solid var(--ops-line);
+  border-radius: 50% !important;
+  object-fit: cover;
+  transition: transform 420ms var(--ops-ease), box-shadow 220ms ease;
+}
+
+.ops-page-link .flink-list-item:hover .flink-item-icon img {
+  box-shadow: 0 0 0 4px var(--ops-accent-soft);
+  transform: scale(1.04);
+}
+
+.ops-page-link .flink-item-name,
+.ops-page-link .flink-item-desc {
+  width: auto !important;
+  padding: 0 !important;
+  text-align: left !important;
+}
+
+.ops-page-link .flink-item-name {
+  padding-right: 3.1rem !important;
+  color: var(--ops-ink) !important;
+  font-size: 0.98rem !important;
+  font-weight: 700;
+}
+
+.ops-page-link .flink-item-desc {
+  display: -webkit-box;
+  margin-top: 0.35rem;
+  overflow: hidden;
+  color: var(--ops-muted) !important;
+  font-size: 0.76rem !important;
+  line-height: 1.5;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.ops-peer-meta {
+  position: absolute;
+  top: 0.82rem;
+  right: 0.9rem;
+  display: grid;
+  justify-items: end;
+  gap: 0.2rem;
+}
+
+.ops-peer-seq {
+  color: var(--ops-accent);
+  font-size: 0.58rem;
+  font-weight: 750;
+}
+
+.ops-peer-host {
+  max-width: 8rem;
+  overflow: hidden;
+  color: var(--ops-muted);
+  font-size: 0.5rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 760px) {
+  .ops-page-link .flink-list {
+    grid-template-columns: 1fr;
+  }
+
+  .ops-peer-hero {
+    padding: 1.25rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ops-page-link .flink-list > .flink-list-item {
+    opacity: 1;
+    transform: none;
+  }
+
+  .ops-atlas-map::after {
+    display: none;
+  }
+}
