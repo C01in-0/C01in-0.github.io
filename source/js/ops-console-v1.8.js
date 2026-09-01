@@ -105,13 +105,6 @@
     }
   }
 
-  function annotateEntries() {
-    var cards = document.querySelectorAll('#recent-posts > .recent-post-items > .recent-post-item');
-    cards.forEach(function (card, index) {
-      card.setAttribute('data-ops-index', String(cards.length - index).padStart(2, '0'));
-    });
-  }
-
   function annotateCategories() {
     document.querySelectorAll('.card-category-list-link, .category-list-link').forEach(function (link) {
       if (link.dataset.opsCategory) return;
@@ -341,7 +334,6 @@
   function initialize() {
     createPalette();
     annotatePage();
-    annotateEntries();
     annotateCategories();
     annotateArticleCategories();
     annotatePostTags();

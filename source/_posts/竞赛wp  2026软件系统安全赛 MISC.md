@@ -11,6 +11,7 @@ tags:
   - 零宽字符
 abbrlink: fd2c60d3
 date: 2026-03-15 22:00:00
+blog_id: 1
 ---
 
 ## 题目信息
@@ -26,15 +27,15 @@ date: 2026-03-15 22:00:00
 
 下载附件得到一个无后缀文件，使用 010 Editor 打开，发现文件头部有干扰字符，删除后得到一张正常的 PNG 图片（不是你没加载上来，这图就长这样）。
 
-![010editor删除干扰字符](/images/step1.png)
+![010editor删除干扰字符](/images/blog1/step1.png)
 
 ### 2. LSB隐写分析
 
 使用 Kali 的 zsteg 功能扫描，发现文件里藏了一个名为"flag.zip"的压缩包。
-![zsteg扫描结果](/images/step2.png)
+![zsteg扫描结果](/images/blog1/step2.png)
 并且在第 118 行之后会报错，说明它身高造假，在 010 Editor 中对其进行修复（把第二个 00 00 04 00 改为 00 00 00 76）
 
-![修改PNG高度](/images/step3.png)
+![修改PNG高度](/images/blog1/step3.png)
 
 ### 3. 提取隐藏数据
 使用指令提取压缩包：
@@ -42,7 +43,7 @@ date: 2026-03-15 22:00:00
 zsteg -E "b1,rgb,lsb,xy" 2.png > flag.zip
 ```
 对压缩包进行剥离，发现里面还嵌套了六个小压缩包。
-![压缩包结构](/images/step4.png)
+![压缩包结构](/images/blog1/step4.png)
 "inner.zip"压缩包是需要密码的，毋庸置疑，密码应该分布在六个"pass*.zip"中。
 
 ### 4. 分析压缩包结构并爆破
@@ -93,7 +94,7 @@ else:
 依次拼合六个密码，得到：
 flag is c1!xxtLf%fXYPkaA
 用它打开"inner.zip"得到"flag.txt"，发现只有孤零零一行。
-![零宽字符隐写](/images/step5.png)
+![零宽字符隐写](/images/blog1/step5.png)
 
 ### 5.零宽字符解码
 还在套娃？不过很显然是零宽字符隐写，解码得到 flag：

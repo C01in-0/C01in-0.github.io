@@ -54,10 +54,36 @@
           "name": "提示词注入",
           "slug": "prompt-injection",
           "children": [
-            { "name": "HackAPrompt", "slug": "hackaprompt" }
+            { "name": "HackAPrompt", "slug": "hackaprompt" },
+            {
+              "name": "间接提示词注入",
+              "slug": "indirect-prompt-injection",
+              "children": [
+                { "name": "基准评测", "slug": "benchmarking" },
+                { "name": "对抗式微调", "slug": "adversarial-finetuning" },
+                { "name": "注入检测", "slug": "injection-detection" },
+                { "name": "输入清洗", "slug": "input-sanitization" }
+              ]
+            }
           ]
         },
-        { "name": "LLM", "slug": "llm" },
+        {
+          "name": "LLM",
+          "slug": "llm",
+          "children": [
+            { "name": "Attention", "slug": "attention" },
+            { "name": "Token 分类", "slug": "token-classification" }
+          ]
+        },
+        {
+          "name": "LLM Agent",
+          "slug": "llm-agent",
+          "aliases": ["Agent"],
+          "children": [
+            { "name": "任务对齐", "slug": "task-alignment" },
+            { "name": "工具调用安全", "slug": "tool-use-security" }
+          ]
+        },
         {
           "name": "移动端",
           "slug": "mobile",

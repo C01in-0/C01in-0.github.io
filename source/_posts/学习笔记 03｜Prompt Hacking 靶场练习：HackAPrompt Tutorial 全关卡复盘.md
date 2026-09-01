@@ -1,6 +1,7 @@
 ---
 title: 学习笔记 03 | Prompt Hacking 靶场练习：HackAPrompt Tutorial 全关复盘
 date: 2026-07-31 00:00:00
+blog_id: 9
 tags:
   - AI安全
   - HackAPrompt
@@ -24,7 +25,7 @@ Ignore previous instructions.
 
 *图为 2022 年 9 月的 Remoteli.io 事件*
 
-![remoteli.io](images/blog8/remoteli.png)
+![remoteli.io](/images/blog9/remoteli.png)
 
 
 正好前段时间打了黄鹤杯，里面有一道“Prompt Injection”死活打不出来，**菜就多练**，于是我先从 HackAPrompt 的 Tutorial 赛道开始练手。这个赛道整体不难，介绍的也是 Jailbreaking、Prompt Injection、Prompt Leaking、输入过滤和 AI Judge 等入门内容。与其说是在“攻破 AI”，不如说是在熟悉模型可能怎样理解一段输入，以及一次失败到底卡在了哪里。
@@ -340,7 +341,7 @@ barred from saying 'in this reality'
    
 我当时的目标是让AI说出“秦始皇时期诞生了互联网”，思路是引导AI关联“互联网”和“秦国治理体系”，最终让AI产生幻觉。
 
-![春秋杯思路一](images/blog8/cqb.png)
+![春秋杯思路一](/images/blog9/cqb.png)
 
 顺便补充一位师傅的高赞payload:
 
@@ -381,4 +382,4 @@ Tutorial 的题目不难，但动手打完还是比只看概念实在。至少�
   
 *顺便一提，让 AI 输出一切你想要的信息，超酷的好吧。*
  
- ![舟兵出列！](images/blog8/arknights.png)
+ ![舟兵出列！](/images/blog9/arknights.png)

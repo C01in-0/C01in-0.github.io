@@ -10,6 +10,7 @@ tags:
   - 成长
 abbrlink: 5501a000
 date: 2026-03-17 21:30:00
+blog_id: 2
 ---
 
 ## 前言
@@ -34,7 +35,7 @@ date: 2026-03-17 21:30:00
 
 ### 2026.3.15
 
-![3月15日版本](/images/blogweb1.png)
+![3月15日版本](/images/blog2/blogweb1.png)
 <small>(此时的网站还叫 https://c01in-0.github.io/)</small>
 
 1. 依托GitHub Pages 和 Hexo，搭建了该网站的框架；
@@ -43,7 +44,7 @@ date: 2026-03-17 21:30:00
 
 ### 2026.3.16
 
-![3月16日版本](/images/blogweb2.png)
+![3月16日版本](/images/blog2/blogweb2.png)
 <small>(换了一个 30MB 的壁纸，然后给我卡爆了（)</small>
 
 1. 在Namesilo上购置了新域名（c01in.com）；
@@ -55,7 +56,7 @@ date: 2026-03-17 21:30:00
 
 ### 2026.3.17
 
-![3月17日版本](/images/blogweb3.png)
+![3月17日版本](/images/blog2/blogweb3.png)
 <small>(看上去清爽多了)</small>
 
 1. 优化了Cloudflare的部分设置，一定程度上提高了网页的加载速度；
@@ -162,7 +163,7 @@ colin 非常感激的一位师傅，明明只是萍水相逢，却愿意无微�
 ### 2. Himekawa
 本人很敬佩的一位学长，如果没有他新生赛时期的肯定，我可能会放弃 CTF 这条路，学长只大一届却像全知全能的神，本博客也是模仿其网站搭建，总之，感谢学长昔日的鼓舞和如今的榜样引领。
 
-![也许学长本人都没意识到着两个字的力量](/images/questiontohimekawa.jpg)
+![也许学长本人都没意识到着两个字的力量](/images/blog2/questiontohimekawa.jpg)
 <small>(也许学长本人都没意识到着两个字的力量)</small>
 
 ### 3. Gemini

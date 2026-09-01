@@ -1,0 +1,248 @@
+/* BIPIA glossary demo — isolated article annotations for the UI lab. */
+
+:root {
+  --glossary-ink: var(--ops-v2-ink, #253b4b);
+  --glossary-muted: var(--ops-v2-muted, #60798b);
+  --glossary-accent: var(--ops-v2-accent, #258fc2);
+  --glossary-accent-soft: var(--ops-v2-accent-soft, rgba(37, 143, 194, 0.12));
+  --glossary-line: var(--ops-v2-line, rgba(47, 104, 137, 0.22));
+  --glossary-paper: rgba(248, 251, 252, 0.985);
+  --glossary-shadow: 0 14px 34px rgba(31, 63, 81, 0.16);
+}
+
+[data-theme='dark'] {
+  --glossary-paper: rgba(24, 27, 30, 0.985);
+  --glossary-shadow: 0 16px 38px rgba(0, 0, 0, 0.36);
+}
+
+#article-container .glossary-term {
+  margin: 0 0.02em;
+  padding: 0 0.04em 0.06em;
+  border-bottom: 1px dashed rgba(37, 143, 194, 0.58);
+  border-bottom-color: color-mix(in srgb, var(--glossary-accent) 72%, transparent);
+  color: inherit;
+  cursor: help;
+  text-decoration: none;
+  text-underline-offset: 0.16em;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  transition: color 140ms ease, background-color 140ms ease, border-color 140ms ease;
+}
+
+#article-container .glossary-term:hover,
+#article-container .glossary-term:focus-visible,
+#article-container .glossary-term[aria-expanded='true'] {
+  border-bottom-color: var(--glossary-accent);
+  background: var(--glossary-accent-soft);
+  color: var(--glossary-accent);
+  outline: none;
+}
+
+#article-container .glossary-term:focus-visible {
+  box-shadow: 0 0 0 3px var(--glossary-accent-soft);
+}
+
+.article-glossary-tooltip {
+  position: fixed;
+  top: -9999px;
+  left: -9999px;
+  z-index: 10050;
+  width: min(320px, calc(100vw - 24px));
+  padding: 13px 15px 14px;
+  border: 1px solid var(--glossary-line);
+  border-top: 2px solid var(--glossary-accent);
+  border-radius: 6px;
+  background: var(--glossary-paper);
+  box-shadow: var(--glossary-shadow);
+  color: var(--glossary-ink);
+  font-family: var(--ops-v2-ui-font, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
+  line-height: 1.62;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(4px);
+  transition: opacity 130ms ease, transform 130ms ease, visibility 130ms ease;
+}
+
+.article-glossary-tooltip.is-visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.article-glossary-tooltip::before {
+  position: absolute;
+  left: var(--glossary-arrow-left, 24px);
+  width: 8px;
+  height: 8px;
+  border: solid var(--glossary-line);
+  background: var(--glossary-paper);
+  content: '';
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.article-glossary-tooltip[data-placement='top']::before {
+  bottom: -5px;
+  border-width: 0 1px 1px 0;
+}
+
+.article-glossary-tooltip[data-placement='bottom']::before {
+  top: -5px;
+  border-width: 1px 0 0 1px;
+}
+
+.article-glossary-tooltip__head {
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+  margin-bottom: 6px;
+}
+
+.article-glossary-tooltip__kicker {
+  flex: 0 0 auto;
+  color: var(--glossary-accent);
+  font-family: 'Fira Code', Consolas, monospace;
+  font-size: 0.67rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+}
+
+.article-glossary-tooltip__title {
+  color: var(--glossary-ink);
+  font-size: 0.98rem;
+  font-weight: 650;
+  letter-spacing: 0.01em;
+}
+
+.article-glossary-tooltip__definition,
+.article-glossary-tooltip__context {
+  margin: 0;
+  font-size: 0.87rem;
+}
+
+.article-glossary-tooltip__definition {
+  color: var(--glossary-ink);
+}
+
+.article-glossary-tooltip__context {
+  margin-top: 8px;
+  padding-top: 7px;
+  border-top: 1px solid var(--glossary-line);
+  color: var(--glossary-muted);
+}
+
+#article-container .article-glossary-index {
+  margin: 1.1rem 0 1.8rem;
+  border-top: 1px solid var(--glossary-line);
+  border-bottom: 1px solid var(--glossary-line);
+}
+
+#article-container .article-glossary-index__hint {
+  margin: 0 0 0.75rem;
+  color: var(--glossary-muted);
+  font-size: 0.88rem;
+}
+
+#article-container .article-glossary-list {
+  margin: 0;
+}
+
+#article-container .article-glossary-list__item {
+  display: grid;
+  grid-template-columns: minmax(118px, 0.34fr) minmax(0, 1fr);
+  gap: 18px;
+  margin: 0;
+  padding: 13px 2px;
+  border-bottom: 1px solid var(--glossary-line);
+}
+
+#article-container .article-glossary-list__item:last-child {
+  border-bottom: 0;
+}
+
+#article-container .article-glossary-list dt,
+#article-container .article-glossary-list dd {
+  margin: 0;
+}
+
+#article-container .article-glossary-list dt {
+  color: var(--glossary-ink);
+  font-family: var(--ops-v2-ui-font, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
+  font-size: 0.9rem;
+  font-weight: 650;
+}
+
+#article-container .article-glossary-list dd {
+  color: var(--glossary-muted);
+  font-size: 0.9rem;
+  line-height: 1.72;
+}
+
+#article-container .article-glossary-list__context {
+  display: block;
+  margin-top: 3px;
+  color: color-mix(in srgb, var(--glossary-muted) 86%, transparent);
+  font-size: 0.82rem;
+}
+
+#article-container .article-glossary-index__status {
+  margin: 0;
+  padding: 13px 2px;
+  color: var(--glossary-muted);
+  font-size: 0.88rem;
+}
+
+@media (max-width: 640px) {
+  #article-container .article-glossary-list__item {
+    grid-template-columns: 1fr;
+    gap: 4px;
+    padding: 12px 0;
+  }
+
+  .article-glossary-tooltip {
+    padding: 12px 13px 13px;
+  }
+}
+
+@media (hover: none) {
+  #article-container .glossary-term {
+    cursor: pointer;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #article-container .glossary-term,
+  .article-glossary-tooltip {
+    transition: none;
+  }
+}
+
+@media print {
+  #article-container .glossary-term {
+    border-bottom: 0;
+    background: transparent;
+    color: inherit;
+  }
+
+  .article-glossary-tooltip {
+    display: none !important;
+  }
+}
+
+/* r2: paper/source links carried by the evidence-aware glossary data. */
+.article-glossary-tooltip__links {
+  margin-top: 0.55rem;
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.article-glossary-tooltip__links:empty {
+  display: none;
+}
+
+#article-container .article-glossary-list__links {
+  display: block;
+  margin-top: 0.35rem;
+  font-size: 0.86em;
+}

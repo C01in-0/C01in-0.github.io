@@ -4,7 +4,8 @@ mixin indexPostUI()
   #recent-posts.recent-posts.nc(class=masonryLayoutClass)
     .recent-post-items
       each article, index in page.posts.data
-        .recent-post-item
+        - const opsIndex = Number(article.blog_id)
+        .recent-post-item(data-ops-index=Number.isInteger(opsIndex) && opsIndex > 0 ? String(opsIndex).padStart(2, '0') : null)
           - const link = article.link || article.path
           - const title = article.title || _p('no_title')
           - const leftOrRight = indexLayout === 3 ? (index % 2 === 0 ? 'left' : 'right') : (indexLayout === 2 ? 'right' : '')

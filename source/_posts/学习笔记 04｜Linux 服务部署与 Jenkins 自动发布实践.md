@@ -11,6 +11,7 @@ categories: 笔记
 description: 从网络基础概念出发，记录一次 Linux 服务配置、数据库权限实验与 Jenkins 自动发布实践。
 abbrlink: cb98cbc5
 date: 2026-08-05 18:00:00
+blog_id: 10
 ---
 
 # 前言
@@ -240,7 +241,7 @@ MySQL 返回：
 ERROR 1142: DELETE command denied
 ```
 
-![只读账号查询成功而删除被拒绝](images/blog9/01-mysql-readonly-permission-denied.png)
+![只读账号查询成功而删除被拒绝](/images/blog10/01-mysql-readonly-permission-denied.png)
 
 这次红色 `ERROR` 不是失败现场，而是实验结果：账号身份有效，查询位于授权范围内，删除操作则被权限系统拦下。
 
@@ -361,7 +362,7 @@ git push     将提交发送到远程仓库
 
 `commit` 成功不代表 GitHub 已经更新。只有完成 `push`，远程仓库和 Jenkins 才能看到该版本。
 
-![GitHub 仓库中的首次提交](images/blog9/02-github-repository-and-first-commit.png)
+![GitHub 仓库中的首次提交](/images/blog10/02-github-repository-and-first-commit.png)
 
 为了复现发布过程，后续又创建 `replay` 分支，对网页内容进行修改并推送。这样可以在不改动主分支的情况下重复验证整条部署链路。
 
@@ -385,13 +386,13 @@ Jenkins 不是另一个 GitHub，也不负责保存代码历史。它更像一�
 在源码管理中填写仓库地址，并指定 `replay` 分支：
 *（这里打错字了，指定分支里应该是“replay”，这也当时导致 Jenkins 无法找到目标分支）
 
-![Jenkins 配置 GitHub 仓库与 replay 分支](images/blog9/04-jenkins-source-and-replay-branch.png)
+![Jenkins 配置 GitHub 仓库与 replay 分支](/images/blog10/04-jenkins-source-and-replay-branch.png)
 
 本次实验启用了 Jenkins 的 **Poll SCM**。Jenkins 会按照设定的时间表检查代码仓库是否出现新的提交；检测到目标分支发生变化后，才会触发后续的构建与部署。
 
 图中的 `H/5 * * * *` 是 Jenkins 使用的定时表达式，表示大约每 5 分钟检查一次。实际使用时，可以根据项目的更新频率和服务器负载修改该表达式，自定义检查周期。
 
-![Jenkins 使用 Poll SCM 定期检查仓库](images/blog9/05-jenkins-poll-scm-trigger.png)
+![Jenkins 使用 Poll SCM 定期检查仓库](/images/blog10/05-jenkins-poll-scm-trigger.png)
 
 > **补充：** Poll SCM 会定期询问仓库是否出现新提交，没有变化时不会无意义地重复部署。Webhook 则由 GitHub 在提交发生后主动通知 Jenkins，两者触发方向不同。
 
@@ -403,7 +404,7 @@ Windows 端为 Jenkins 创建独立 SSH 密钥对：私钥保存在 Jenkins 所�
 
 Jenkins 中的 Publish Over SSH 任务配置如下：
 
-![Jenkins 的 Publish Over SSH 文件与远程命令配置](images/blog9/07-publish-over-ssh-job-config.png)
+![Jenkins 的 Publish Over SSH 文件与远程命令配置](/images/blog10/07-publish-over-ssh-job-config.png)
 
 Jenkins 建立 SSH 会话后，通过 SFTP 上传网页，再执行权限检查等远程命令。
 
@@ -423,7 +424,7 @@ Jenkins 建立 SSH 会话后，通过 SFTP 上传网页，再执行权限检查�
 
 服务器内部使用 `curl` 得到新版内容后，再通过 SSH 隧道从 Windows 浏览器访问最终页面：
 
-![通过 Jenkins 发布并由 Nginx 返回的测试页面](images/blog9/08-final-deployed-page.png)
+![通过 Jenkins 发布并由 Nginx 返回的测试页面](/images/blog10/08-final-deployed-page.png)
 
 
 # 故障回看：踩坑血泪史
@@ -460,7 +461,7 @@ NoSuchMethodError
 
 异常指向插件接口不兼容，而不是 SSH 密钥或服务器网络。更换兼容版本并重启 Jenkins 后恢复正常。
 
-![Publish Over SSH 插件版本调整](images/blog9/06-publish-over-ssh-plugin-version.png)
+![Publish Over SSH 插件版本调整](/images/blog10/06-publish-over-ssh-plugin-version.png)
 
 这次故障说明：错误页面通常只负责告诉用户“出事了”，真正解释怎么出的事，还得去日志里找。
 

@@ -1,6 +1,7 @@
 ---
 title: 学习笔记 02 | CTFshow_Pwn知识精炼(长期更新)
 date: 2026-04-12 19:15:00
+blog_id: 4
 tags:
   - Pwn
   - CTF
@@ -68,7 +69,7 @@ _start:
 ```
 
 总结：
-![chart_1](/images/blog4(ctfshow_pwn)/image1.png)
+![chart_1](/images/blog4/image1.png)
 
 
 ### 1. 寄存器（CPU 的贴身口袋）
@@ -315,7 +316,7 @@ p.sendline(payload2)
 p.interactive()
 ```
 
-![Glibc](/images/blog4(ctfshow_pwn)/image2.png)
+![Glibc](/images/blog4/image2.png)
 通过 `strings ./pwn | grep Ubuntu` 确定 `GCC: (Ubuntu 7.5.0-3ubuntu1~18.04)`。
 
 - 18.04 对应 GLIBC 2.27。

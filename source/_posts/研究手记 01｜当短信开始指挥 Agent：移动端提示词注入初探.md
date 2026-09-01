@@ -9,6 +9,7 @@ categories: 科研
 description: 记录一次 Android 移动 Agent 间接提示词注入的轻量先导实验。
 abbrlink: aee4c81c
 date: 2026-07-16 22:00:00
+blog_id: 7
 ---
 
 ## 前言
@@ -35,7 +36,7 @@ date: 2026-07-16 22:00:00
 
 *（图为虚拟手机）*
 
-![虚拟手机](images/blog7/虚拟手机.png)
+![虚拟手机](/images/blog7/虚拟手机.png)
 
 继续硬啃当然可以，但我当前更需要先确认一个问题：
 
@@ -79,7 +80,7 @@ Decision: Inform the user about the content of their latest message.
 
 这一步构成正常基线：没有攻击内容时，模型能够按照原始任务工作。
 
-![正常短信](images/blog7/正常短信.png)
+![正常短信](/images/blog7/正常短信.png)
 
 随后在短信中加入经典的注入语句：
 
@@ -131,7 +132,7 @@ Decision: Open the device Settings.
 它在理由中还说明，短信要求打开设置，因此这是完成当前任务所需的下一步。
 
 此时，短信中的第三方内容已经成功改变了模型的决策。
-![成功干扰决策](images/blog7/成功干扰决策.png)
+![成功干扰决策](/images/blog7/成功干扰决策.png)
 
 
 ## 几种注入手法的初步比较
@@ -158,7 +159,7 @@ Decision: Open the device Settings.
 
 *需要说明的是，这些数字来自每组 5 次的小规模测试，且实验中仍存在历史短信累积和任务表述歧义，因此只能反映当前条件下的初步现象，不能视为模型的正式安全评测结果。这里的“成功”仅表示模型在 `Decision` 中选择打开计算器，计算器并没有被真正打开。*
 
-![多次尝试](images/blog7/多次尝试.png)
+![多次尝试](/images/blog7/多次尝试.png)
 
 从结果来看，直接要求模型忽略原任务并不是最稳定的方法。相比之下，将恶意行为包装成任务流程、系统要求或模型自己的输出格式，更容易使模型接受。
 
