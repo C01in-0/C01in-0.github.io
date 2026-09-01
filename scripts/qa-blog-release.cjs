@@ -217,7 +217,11 @@ async function inspectLiquidNavExit(page) {
     bend: element.style.getPropertyValue('--ops-liquid-bend'),
     active: element.classList.contains('is-liquid-active'),
     opacity: Number(getComputedStyle(element, '::after').opacity),
-    backgroundImage: getComputedStyle(element).backgroundImage
+    backgroundImage: getComputedStyle(element).backgroundImage,
+    backgroundColor: getComputedStyle(element).backgroundColor,
+    borderColor: getComputedStyle(element).borderColor,
+    boxShadow: getComputedStyle(element).boxShadow,
+    topLightOpacity: Number(getComputedStyle(element, '::before').opacity)
   }));
   const idle = await read();
   await page.mouse.move(box.x + 48, box.y + box.height / 2);
@@ -230,7 +234,11 @@ async function inspectLiquidNavExit(page) {
   await page.waitForTimeout(220);
   const hidden = await read();
   await menus.screenshot({ path: path.join(outputDir, 'liquid-nav-idle-after-left.png') });
-  return { idle, inside, fading, hidden };
+  await page.evaluate(() => document.documentElement.setAttribute('data-theme', 'dark'));
+  await page.waitForTimeout(120);
+  const dark = await read();
+  await menus.screenshot({ path: path.join(outputDir, 'liquid-nav-idle-dark.png') });
+  return { idle, inside, fading, hidden, dark };
 }
 
 async function inspectStickyTitleExit(page) {
@@ -258,11 +266,55 @@ async function inspectStickyTitleExit(page) {
   await page.waitForTimeout(360);
   const fixed = await read('fixed-80');
   await page.locator('#nav').screenshot({ path: path.join(outputDir, 'sticky-title-fixed.png') });
-  await page.evaluate(() => scrollTo(0, 40));
-  await page.waitForTimeout(360);
+  const exitFrames = await page.evaluate(async () => {
+    const frames = [];
+    const startedAt = performance.now();
+    await new Promise(resolve => {
+      const sample = () => {
+        const title = document.querySelector('#nav .nav-page-title');
+        const titleStyle = getComputedStyle(title);
+        frames.push({
+          elapsed: Number((performance.now() - startedAt).toFixed(1)),
+          scrollY,
+          rootClasses: document.documentElement.className,
+          headerClasses: document.querySelector('#page-header').className,
+          titleDisplay: titleStyle.display,
+          titleOpacity: titleStyle.opacity
+        });
+        if (performance.now() - startedAt < 420) requestAnimationFrame(sample);
+        else resolve();
+      };
+      scrollTo(0, 40);
+      requestAnimationFrame(sample);
+    });
+    return frames;
+  });
   const nearTop = await read('near-top-40');
   await page.locator('#nav').screenshot({ path: path.join(outputDir, 'sticky-title-near-top.png') });
-  return { fixed, nearTop };
+  await page.evaluate(() => scrollTo(0, 0));
+  await page.waitForTimeout(360);
+  const settled = await read('settled-top');
+  return {
+    fixed,
+    nearTop,
+    exitFrames,
+    arrivalObserved: exitFrames.some(frame => frame.rootClasses.includes('ops-nav-arriving')),
+    settled
+  };
+}
+
+async function inspectArticleCategoryIcons(page) {
+  await page.goto(`${baseUrl}/posts/ef9d0362.html`, { waitUntil: 'networkidle' });
+  await settle(page);
+  await page.locator('#post-meta .meta-firstline').screenshot({ path: path.join(outputDir, 'article-dual-category-icons.png') });
+  return page.evaluate(() => [...document.querySelectorAll('#post-info a.post-meta-categories')].map(link => {
+    const icon = link.previousElementSibling;
+    return {
+      category: link.textContent.trim(),
+      iconClass: icon && icon.classList.contains('ops-article-category-icon') ? icon.className : '',
+      iconCategory: icon && icon.dataset ? icon.dataset.opsCategory || '' : ''
+    };
+  }));
 }
 
 async function main() {
@@ -356,6 +408,12 @@ async function main() {
       || report.liquidNavExit.idle.backgroundImage !== report.liquidNavExit.hidden.backgroundImage) {
       report.failures.push('Liquid nav base glow still follows the pointer and visibly recenters');
     }
+    if (report.liquidNavExit.idle.backgroundImage !== 'none' || report.liquidNavExit.dark.backgroundImage !== 'none') {
+      report.failures.push('Liquid nav base reverted to layered gradients');
+    }
+    if (report.liquidNavExit.idle.topLightOpacity > 0.2 || report.liquidNavExit.dark.topLightOpacity > 0.2) {
+      report.failures.push('Liquid nav frame top light is too prominent');
+    }
     report.stickyTitleExit = await inspectStickyTitleExit(navPage);
     const fixedSize = report.stickyTitleExit.fixed;
     const nearTopSize = report.stickyTitleExit.nearTop;
@@ -364,6 +422,17 @@ async function main() {
       || fixedSize.fontSize !== nearTopSize.fontSize
       || fixedSize.lineHeight !== nearTopSize.lineHeight) {
       report.failures.push(`Sticky article title changes geometry before exit: ${fixedSize.infoWidth}/${fixedSize.fontSize} -> ${nearTopSize.infoWidth}/${nearTopSize.fontSize}`);
+    }
+    if (report.stickyTitleExit.arrivalObserved) {
+      report.failures.push('Sticky article title replays the nav arrival animation while exiting at the page top');
+    }
+    if (report.stickyTitleExit.settled.headerClasses.includes('nav-fixed')) {
+      report.failures.push(`Sticky article title did not settle at the page top: ${report.stickyTitleExit.settled.headerClasses}`);
+    }
+    report.articleCategoryIcons = await inspectArticleCategoryIcons(navPage);
+    const missingCategoryIcons = report.articleCategoryIcons.filter(item => !item.iconClass || !item.iconCategory);
+    if (missingCategoryIcons.length) {
+      report.failures.push(`Article categories miss individual icons: ${missingCategoryIcons.map(item => item.category).join(', ')}`);
     }
     await navContext.close();
   } finally {

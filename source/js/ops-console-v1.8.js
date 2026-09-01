@@ -124,17 +124,18 @@
     document.querySelectorAll('.article-meta__categories, a.post-meta-categories').forEach(function (link) {
       var config = categoryConfig(link.textContent);
       var parent = link.closest('.article-meta') || link.parentElement;
-      if (!config || !parent || parent.dataset.opsCategoryReady === 'true') return;
-      parent.dataset.opsCategoryReady = 'true';
-      parent.querySelectorAll(':scope > .fa-inbox, :scope > .ops-article-category-icon').forEach(function (icon) {
-        icon.remove();
-      });
+      if (!config || !parent || link.dataset.opsCategoryReady === 'true') return;
+      var precedingIcon = link.previousElementSibling;
+      if (precedingIcon && (precedingIcon.classList.contains('fa-inbox') || precedingIcon.classList.contains('ops-article-category-icon'))) {
+        precedingIcon.remove();
+      }
       var icon = document.createElement('i');
       icon.className = 'fas ' + config.icon + ' fa-fw post-meta-icon ops-article-category-icon';
       icon.dataset.opsCategory = config.key;
       icon.setAttribute('aria-hidden', 'true');
       parent.insertBefore(icon, link);
       link.dataset.opsCategory = config.key;
+      link.dataset.opsCategoryReady = 'true';
     });
   }
 

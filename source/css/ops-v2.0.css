@@ -32,16 +32,15 @@
     inset 0 -1px 0 rgba(13, 35, 48, 0.12),
     0 8px 23px rgba(14, 40, 55, 0.085);
   --ops-material-nav-scrolled-filter: blur(17px) saturate(116%);
-  --ops-material-nav-filter: blur(20px) saturate(132%) contrast(104%);
-  --ops-material-nav-border: rgba(240, 249, 252, 0.25);
-  --ops-material-nav-highlight: rgba(255, 255, 255, 0.38);
+  --ops-material-nav-filter: blur(18px) saturate(118%);
+  --ops-material-nav-border: rgba(240, 249, 252, 0.21);
+  --ops-material-nav-highlight: rgba(255, 255, 255, 0.22);
   --ops-material-liquid-glow: rgba(255, 255, 255, 0.34);
-  --ops-material-liquid-layer: linear-gradient(180deg, rgba(247, 252, 253, 0.18), rgba(177, 214, 229, 0.045) 62%, rgba(35, 73, 91, 0.08));
-  --ops-material-liquid-color: rgba(22, 46, 59, 0.1);
+  --ops-material-liquid-layer: none;
+  --ops-material-liquid-color: rgba(32, 57, 69, 0.085);
   --ops-material-liquid-shadow:
     inset 0 1px 0 var(--ops-material-nav-highlight),
-    inset 0 -1px 0 rgba(16, 50, 67, 0.13),
-    0 10px 30px rgba(10, 38, 52, 0.09);
+    0 7px 22px rgba(10, 38, 52, 0.065);
   --ops-material-search-filter: blur(30px) saturate(126%);
   --ops-material-search-border: rgba(245, 251, 253, 0.48);
   --ops-material-search-highlight: rgba(255, 255, 255, 0.78);
@@ -108,15 +107,14 @@
     radial-gradient(circle at 18% -22%, rgba(227, 238, 243, 0.11), transparent 43%),
     linear-gradient(135deg, rgba(224, 233, 237, 0.075), rgba(136, 158, 168, 0.02)),
     rgba(14, 18, 21, 0.62);
-  --ops-material-nav-border: rgba(181, 205, 216, 0.16);
-  --ops-material-nav-highlight: rgba(255, 255, 255, 0.09);
+  --ops-material-nav-border: rgba(181, 205, 216, 0.13);
+  --ops-material-nav-highlight: rgba(255, 255, 255, 0.065);
   --ops-material-liquid-glow: rgba(220, 237, 244, 0.14);
-  --ops-material-liquid-layer: linear-gradient(180deg, rgba(210, 228, 236, 0.075), rgba(112, 148, 164, 0.02) 62%, rgba(8, 17, 21, 0.1));
-  --ops-material-liquid-color: rgba(11, 16, 19, 0.42);
+  --ops-material-liquid-layer: none;
+  --ops-material-liquid-color: rgba(12, 17, 20, 0.34);
   --ops-material-liquid-shadow:
     inset 0 1px 0 var(--ops-material-nav-highlight),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.23),
-    0 10px 30px rgba(0, 0, 0, 0.18);
+    0 7px 22px rgba(0, 0, 0, 0.14);
   --ops-material-search-border: rgba(196, 210, 217, 0.13);
   --ops-material-search-highlight: rgba(255, 255, 255, 0.055);
   --ops-material-search-surface:
@@ -2319,9 +2317,7 @@ html[data-ops-nav-mode='liquid'] #nav #menus {
   --ops-liquid-bend: 0px;
   overflow: hidden;
   border-color: var(--ops-material-nav-border);
-  background:
-    var(--ops-material-liquid-layer),
-    var(--ops-material-liquid-color);
+  background: var(--ops-material-liquid-color);
   box-shadow: var(--ops-material-liquid-shadow);
   -webkit-backdrop-filter: var(--ops-material-nav-filter);
   backdrop-filter: var(--ops-material-nav-filter);
@@ -2329,10 +2325,10 @@ html[data-ops-nav-mode='liquid'] #nav #menus {
 }
 
 html[data-ops-nav-mode='liquid'] #nav #menus::before {
-  inset: 1px 9% auto;
+  inset: 1px 18% auto;
   height: 1px;
-  background: linear-gradient(90deg, rgba(255, 255, 255, 0.04), rgba(231, 247, 252, 0.2) 18%, rgba(231, 247, 252, 0.16) 82%, rgba(255, 255, 255, 0.04));
-  opacity: 0.52;
+  background: linear-gradient(90deg, transparent, rgba(231, 247, 252, 0.2), transparent);
+  opacity: 0.18;
 }
 
 html[data-ops-nav-mode='liquid'] #nav #menus::after {

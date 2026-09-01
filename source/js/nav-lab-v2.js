@@ -35,7 +35,8 @@
     scrollFrame = 0;
     const isScrolled = window.scrollY > 52;
     root.classList.toggle('ops-nav-scrolled', isScrolled);
-    if (wasScrolled && !isScrolled && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const isArticle = Boolean(document.querySelector('#post'));
+    if (wasScrolled && !isScrolled && !isArticle && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
       root.classList.remove('ops-nav-arriving');
       void root.offsetWidth;
       root.classList.add('ops-nav-arriving');
