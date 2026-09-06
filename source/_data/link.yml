@@ -19,11 +19,14 @@
     - name: 一只枷锁
       link: https://blog.csdn.net/2402_84408069
       avatar: /images/jiasuo.jpg
-      descr: 麒麟安全讲师 渗透高手
+      descr: 早期的引路人
 
     - name: Asutaka
       link: https://www.asutaka.ink
       avatar: https://www.asutaka.ink/image/head.png
       descr: 飞蛾总是飞向有光的地方
-      
-  
+
+    - name: DannisKing
+      link: https://dannisking.com
+      avatar: https://dannisking.com/blog/img/brand/dannisking-avatar.png
+      descr: Beyond the known. Into the unknown.

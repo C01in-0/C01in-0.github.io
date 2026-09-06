@@ -122,6 +122,22 @@ git diff --check
 - 2026-09-02 正式 `source` 工作树受全局 `core.autocrlf=true` 影响，将 Markdown 检出为 CRLF；契约检查现会在解析 front matter 前规范化换行，源文件无需批量重写，LF 与 CRLF 工作树都可重复构建。
 - 2026-09-02 Git 工作树发布链正式落地：功能分支与 `source` 均推送到远端，正式源站在独立 `source` 工作树生成 180 个文件；GitHub Pages `main` 部署提交为 `7a31536`。`https://c01in.com/`、RENNERVATE 文章页及 GitHub Pages 源地址均返回 200，并命中新版 `ops-v2.0.css?v=20260902-r9`。
 
+## 2026-09-06 友链更新
+
+- 在正式源站 `source/_data/link.yml` 的“友情链接”组末尾新增 DannisKing，地址为 `https://dannisking.com`，有效头像为 `https://dannisking.com/blog/img/brand/dannisking-avatar.png`，简介为 `Beyond the known. Into the unknown.`；保留其他友链、顺序及现有样式。
+- 初次添加完成 YAML 解析、条目唯一性、既有数据不变检查及 `flink.pug` 的 5 张卡片内存渲染；当时未构建或发布。Colin 随后明确要求“上推”，本轮授权仅覆盖友链更新及必要的发布修复。
+- 生效源为 `source/_data/link.yml`，主题读取 `site.data.link`；`source/data/link.yml` 是另一份旧文件，当前模板和友链增强脚本未引用，本次不重复写入或清理。
+- 修改前备份（包含友链文件和本维护记录）：`D:\Hacking_world\myblog-backups\20260906-add-dannisking`。恢复时仅选取这两个明确目标，不覆盖现有文章改动。
+
+### 发布验收与范围保护
+
+- 在独立源码工作树 `D:\Hacking_world\myblog-worktrees\add-dannisking-20260906` 验收，基于 `source` 的 `5c4e0ae`；复用现有依赖，不安装或升级依赖。未带入正式目录中 13 篇文章的未提交修改或未跟踪的 AGENTS.md。
+- 干净生成 180 个文件，13 篇文章编号/图片/知识契约通过；全站 QA 通过 12 个页面/视口用例及 13 篇文章的 175 个标题检查。修正头像地址后重建，并复测友链桌面/手机、浅色/暗色共 4 个用例，头像原图加载、横向溢出及悬停连线离场检查全部通过。
+- 原头像 `/img/brand/dannisking-avatar.png` 被浏览器和独立 HTTP 检查同时确认返回 404；对方首页资源使用 `/blog/` 前缀，同名 `/blog/img/brand/dannisking-avatar.png` 返回 200、`image/png`，浏览器实际加载宽度 1254px。仅补齐资源前缀，未更换头像素材。
+- 发布前实际远端 `main` 为 `cf3d0788f672e757de569d2f0756a4e4178d592a`，比旧维护记录更新；BIPIA 和 RENNERVATE 的线上部分标题与 `source` 基线不同。该不同步不在友链任务内修复，之后全站发布前需要单独核对，不能用旧源码覆盖线上文章。
+- 因此本次以现有 `main` 建立产物工作树 `D:\Hacking_world\myblog-worktrees\dannisking-pages-20260906`，仅复制本轮生成的 `link/index.html`，使用非强制 Git 快进推送；不运行会替换整站产物并强推的默认部署器。候选分支差异仅一页，其 SHA-256 与已验收生成页一致。
+- 发布前备份：`D:\Hacking_world\myblog-backups\20260906-dannisking-release`，含发布前维护记录、友链基线、原头像配置和原公网友链 HTML。实际推送结果及公网核验在完成后追加。
+
 ## 9. 回滚位置
 
 - 本轮源站备份：`D:\Hacking_world\myblog-backups\20260901-article-migration-log-pagination`
