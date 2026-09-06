@@ -137,6 +137,8 @@ git diff --check
 - 发布前实际远端 `main` 为 `cf3d0788f672e757de569d2f0756a4e4178d592a`，比旧维护记录更新；BIPIA 和 RENNERVATE 的线上部分标题与 `source` 基线不同。该不同步不在友链任务内修复，之后全站发布前需要单独核对，不能用旧源码覆盖线上文章。
 - 因此本次以现有 `main` 建立产物工作树 `D:\Hacking_world\myblog-worktrees\dannisking-pages-20260906`，仅复制本轮生成的 `link/index.html`，使用非强制 Git 快进推送；不运行会替换整站产物并强推的默认部署器。候选分支差异仅一页，其 SHA-256 与已验收生成页一致。
 - 发布前备份：`D:\Hacking_world\myblog-backups\20260906-dannisking-release`，含发布前维护记录、友链基线、原头像配置和原公网友链 HTML。实际推送结果及公网核验在完成后追加。
+- 2026-09-06 21:34（Asia/Shanghai）发布完成：友链源码提交 `fe1b740fb14e9faf9d9b1b31d543b2da34acb71a` 已推送 `source`；公网提交 `62d4bc1e778b9be9ebd988fa9c4767020ee67a9d` 已以非强制快进方式推送 `main`，相对 `cf3d078` 仅变更 `link/index.html`。`https://c01in.com/link/` 返回 200，实际页面包含 DannisKing、修正后的头像地址和原简介。
+- 发布后 13 篇已有文章及旧 `source/data/link.yml` 共 14 个文件的 SHA-256 与修改前一致；未跟踪的项目 AGENTS.md 未暂存或发布。后续如需回滚本次公网页，可对 `main` 的 `62d4bc1` 创建反向提交，不强推或整体回退其他文章。
 
 ## 9. 回滚位置
 
