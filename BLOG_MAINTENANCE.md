@@ -147,6 +147,8 @@ git diff --check
 - 产物工作树 `D:\Hacking_world\myblog-worktrees\miracle-pages-20260910` 基于远端 `main` 的 `62d4bc1`。完整生成页还会改变一条既有友链简介及随机标签顺序，故只从构建结果提取 miracle 卡片插入原公网页；去掉新增卡片后与原页面逐字节一致。发布差异只包含 `link/index.html` 的新增卡片，不替换整站或其他友链内容。
 - 修改前备份位于 `D:\Hacking_world\myblog-backups\20260910-miracle`，包含友链源码、维护记录、原公网友链 HTML 与原文件散列。13 篇未提交文章、旧 `source/data/link.yml` 和未跟踪 AGENTS.md 共 15 个文件保持不变。验收报告位于源码工作树 `qa/release/report.json` 与 `qa/friend/report.json`，新增卡片的范围校验位于备份目录 `page-scope.json`。
 
+- 2026-09-10 22:08（Asia/Shanghai）公网发布核验完成：源码提交 `e6ae523` 与公网页面提交 `6d5f877b1fccf4857d8c6c5c424329873e569216` 已原子、非强制推送至 `source` / `main`。`https://c01in.com/link/` 返回 200，miracle 名称、网址、原头像和简介均命中；线上桌面/手机 × 浅色/暗色 4 个用例再次通过，头像实际加载宽度均为 1080px，报告为源码工作树 `qa/friend-public/report.json`。发布后 15 个保护文件的 SHA-256 与修改前一致。回滚此公网页更新时，针对 `main` 上的 `6d5f877` 创建反向提交，勿整体回退其他页面。
+
 ## 9. 回滚位置
 
 - 本轮源站备份：`D:\Hacking_world\myblog-backups\20260901-article-migration-log-pagination`
