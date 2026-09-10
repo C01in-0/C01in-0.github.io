@@ -140,6 +140,13 @@ git diff --check
 - 2026-09-06 21:34（Asia/Shanghai）发布完成：友链源码提交 `fe1b740fb14e9faf9d9b1b31d543b2da34acb71a` 已推送 `source`；公网提交 `62d4bc1e778b9be9ebd988fa9c4767020ee67a9d` 已以非强制快进方式推送 `main`，相对 `cf3d078` 仅变更 `link/index.html`。`https://c01in.com/link/` 返回 200，实际页面包含 DannisKing、修正后的头像地址和原简介。
 - 发布后 13 篇已有文章及旧 `source/data/link.yml` 共 14 个文件的 SHA-256 与修改前一致；未跟踪的项目 AGENTS.md 未暂存或发布。后续如需回滚本次公网页，可对 `main` 的 `62d4bc1` 创建反向提交，不强推或整体回退其他文章。
 
+## 2026-09-10 miracle 友链更新
+
+- 按 Colin“帮我挂上友链”的要求，在 `source/_data/link.yml` 的友情链接组末尾新增 `miracle`，保留原字段：`https://s1r1us.top/`、`https://s1r1us.top/img/avatar.png`、`keep moving and moving`。网站及头像 HTTP 检查均返回 200，头像为 PNG；浏览器实际加载宽度 1080px。
+- 源码工作树 `D:\Hacking_world\myblog-worktrees\add-miracle-20260910` 基于远端 `source` 的 `aa13d26`；复用现有依赖与 Codex 自带 Playwright，不安装软件。干净构建生成 180 个文件，13 篇文章契约通过；完整 QA 通过 12 个页面/视口用例、13 篇文章共 175 个标题检查。最终候选公网友链页通过桌面/手机 × 浅色/暗色 4 个专项用例，卡片和页面无横向溢出、原头像正常、节点总数 6、悬停连线离场恢复正常。
+- 产物工作树 `D:\Hacking_world\myblog-worktrees\miracle-pages-20260910` 基于远端 `main` 的 `62d4bc1`。完整生成页还会改变一条既有友链简介及随机标签顺序，故只从构建结果提取 miracle 卡片插入原公网页；去掉新增卡片后与原页面逐字节一致。发布差异只包含 `link/index.html` 的新增卡片，不替换整站或其他友链内容。
+- 修改前备份位于 `D:\Hacking_world\myblog-backups\20260910-miracle`，包含友链源码、维护记录、原公网友链 HTML 与原文件散列。13 篇未提交文章、旧 `source/data/link.yml` 和未跟踪 AGENTS.md 共 15 个文件保持不变。验收报告位于源码工作树 `qa/release/report.json` 与 `qa/friend/report.json`，新增卡片的范围校验位于备份目录 `page-scope.json`。
+
 ## 9. 回滚位置
 
 - 本轮源站备份：`D:\Hacking_world\myblog-backups\20260901-article-migration-log-pagination`
