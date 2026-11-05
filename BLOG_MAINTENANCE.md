@@ -37,6 +37,7 @@
 | 11 | 2026-08-12 | Detect & Remove |
 | 12 | 2026-08-21 | Task Shield |
 | 13 | 2026-08-28 | RENNERVATE |
+| 14 | 2026-10-22 | 0xGame2026 AI 题解与学习记录 |
 
 新增文章时：按时间插入后重新检查所有 `blog_id` 的连续性，并同步对应图片目录。不得用当前页序号或渲染顺序临时生成 LOG。
 
@@ -148,6 +149,39 @@ git diff --check
 - 修改前备份位于 `D:\Hacking_world\myblog-backups\20260910-miracle`，包含友链源码、维护记录、原公网友链 HTML 与原文件散列。13 篇未提交文章、旧 `source/data/link.yml` 和未跟踪 AGENTS.md 共 15 个文件保持不变。验收报告位于源码工作树 `qa/release/report.json` 与 `qa/friend/report.json`，新增卡片的范围校验位于备份目录 `page-scope.json`。
 
 - 2026-09-10 22:08（Asia/Shanghai）公网发布核验完成：源码提交 `e6ae523` 与公网页面提交 `6d5f877b1fccf4857d8c6c5c424329873e569216` 已原子、非强制推送至 `source` / `main`。`https://c01in.com/link/` 返回 200，miracle 名称、网址、原头像和简介均命中；线上桌面/手机 × 浅色/暗色 4 个用例再次通过，头像实际加载宽度均为 1080px，报告为源码工作树 `qa/friend-public/report.json`。发布后 15 个保护文件的 SHA-256 与修改前一致。回滚此公网页更新时，针对 `main` 上的 `6d5f877` 创建反向提交，勿整体回退其他页面。
+
+## 2026-10-20 0xGame2026 AI 题解本地整理
+
+- 按 Colin 要求，在 Obsidian 可见的 `source/_posts/竞赛WP｜0xGame2026 AI 题解与学习记录.md` 新建持续更新文章，先完成「粗心的小x」一节。记录聊天与 `.env` 解码、Git 历史中的删除行、分页器和命令拼写踩坑，以及 Colin 提供的完整 flag；后续题目在同一篇继续追加。
+- 新文章使用 `blog_id: 14`、`abbrlink: 0xgame2026-ai`、UTF-8 无 BOM / LF；公开标签为 AI安全、CTF、学习笔记，knowledge 使用已有 CTF、Python 概念，不扩展 taxonomy。五张用户截图原样复制到 `source/images/blog14/`，Markdown 沿用 `images/blog14/...`。
+- 新文章和 `blog14` 目录原本不存在。本维护记录修改前已备份到 `D:\Hacking_world\myblog-backups\20261020-0xgame-ai-article\BLOG_MAINTENANCE.md`。已有 13 篇文章的内容散列与任务开始时一致，保留原有未提交修改。
+- 本地 `npm run build` 通过，14 篇文章编号及知识元数据契约通过；另行检查新文章的 5 个相对图片引用、原图与复制图/生成图字节一致性，以及编码和换行。生成页面的 5 个图片地址均为 `/images/blog14/...`，与 `public/images/blog14/` 产物对应。未进行浏览器多端视觉验收。
+- 本次仅本地写作与构建，无 Git 提交、推送或部署。全仓 `git diff --check` 仍报告既有文章中的行尾空白，不属于本次改动；本次新增文章和维护记录单独检查。
+- 同日按 Colin 提供的简短 WP 重写第一题，仅保留三步解题、三张关键截图与 flag；沿用当前文件名 `竞赛题解 02｜0xGame2026 AI 题解与学习记录.md`、元数据、开场及 Week 1 标题。修改前版本备份于 `myblog-backups/20261020-0xgame-ai-concise/`，另两张原图保留在素材目录。核对正文、图片路径和格式，未再次构建或上推。
+- 随后按要求在三步 WP 后补充 `git log -p -- chat.py` 的简便查法及简短 Git 命令说明，保留前文和图片；修改前备份于 `myblog-backups/20261020-0xgame-ai-git-notes/`。仅检查追加范围和 Markdown 格式，未构建或上推。
+- 再按 Colin 的口吻精简讲解，补上题目原文和两个原始附件，文件放在 `source/attachments/blog14/`，正文使用 `../attachments/blog14/...` 链接。原始 `chat_export.json` 含未转义引号，Hexo 默认 JSON 渲染会报错；在 `_config.yml` 的 `skip_render` 中仅加入这两个附件路径，使其原样输出。首次失败留下 Page 缓存，清理生成缓存后构建通过；两个附件在源目录、生成目录均与原件逐字节一致，生成页链接解析正确。文章、维护记录和配置的修改前备份位于 `myblog-backups/20261020-0xgame-ai-wording-attachments/`，未提交、上推或部署。
+- Colin 随后明确只需介绍附件：将下载链接替换为两个文件的简短说明，撤去源目录和生成目录中的附件副本及对应 `skip_render` 配置，保留其新增的 Week 1 / Week 2 复现地址和同期正文修改。修改前文件及附件副本已备份至 `myblog-backups/20261020-0xgame-attachment-description/`。本地构建通过，两个复现地址保留，生成页面不再含附件下载链接；未上推。
+
+### 同日追加 ez_pytorch
+
+- 在现有 `竞赛题解 02｜0xGame2026 AI 题解与学习记录.md` 末尾追加「02｜ez_pytorch」，保留原正文逐字节不变。按 Colin 实际过程记录 `torch.load` 报错、解压模型、`pickletools` 分析、CyberChef 恢复代码排版及运行 `solve.py` 得到结果，简要补充四段数据还原逻辑和 Pickle 的函数调用机制。
+- 使用 Colin 提供的 flag `0xGame{3z_p1ckl3_fOr_pyt0rch}`，将指令截图和终端结果图原样复制为 `source/images/blog14/06-pickle-disassembly.png`、`07-pytorch-flag.png`；只介绍附件，不增加附件下载。正文和本维护记录修改前备份于 `D:\Hacking_world\myblog-backups\20261020-ez-pytorch`，两张图片为新增文件。
+- 本地 `npm run build` 通过，14 篇文章契约检查通过；另行核对原正文保留、UTF-8 无 BOM / LF、代码块闭合及图片原件一致性。生成页包含新增章节和 flag，两张图片均转为 `/images/blog14/...` 并对应实际生成图。HTML 中花括号使用数字实体，验证时按解码后的文字核对。未执行附件中的 Pickle，未进行浏览器多端视觉验收；本次无 Git 提交、推送或部署。
+
+- Colin 随后提供裁剪后的记事本图，已替换 `06-pickle-disassembly.png`，去除原图中的无关标签页信息；含本地用户名路径的终端结果图已从源/生成目录移至备份，结果以 flag 文本保留。同步精简本节，删去环境专属路径、工具配置说明和重复解释。修改前版本与两张旧图备份在 `myblog-backups/20261020-ez-pytorch-concise/`。再次构建通过，核对新图原件/源图/生成图一致，原第一题正文保留，未提交或上推。后续题解截图先检查无关标签页、用户名及本地路径等脱敏项，正文以实际步骤和必要原理为主。
+
+## 2026-11-05 0xGame 题解行文精简
+
+- 按 Colin 确认的四点建议调整现有文章：将第一题的一行 Git 查法移到命令补充，删去提交输出中的作者和日期，改顺配置加载与 Git 历史的解释；第二题按“原脚本报错 → 简单解法 → 拆包分析”排列，删去重复引导语。保留原口吻、四段还原逻辑、Pickle 原理和 Office 格式的一句补充。
+- 修改前文章与维护记录备份于 `D:\Hacking_world\myblog-backups\20261105-0xgame-wording`。已查看精确差异，并核对元数据、flag 及分段、图片引用、UTF-8 无 BOM / LF 和代码块闭合。本次为局部文案调整，未重新构建、提交或上推。
+
+## 2026-11-06 0xGame 题解发布
+
+- Colin 明确要求“上推吧”，发布当前文章及实际引用的 `05-deleted-key.png`、已脱敏的 `06-pickle-disassembly.png`。保留后续题目占位和原文口吻；附件只作介绍，不上传 ZIP、模型、聊天记录或未引用截图。
+- 在 `myblog-worktrees/0xgame-source-20261105` 隔离构建，14 篇文章契约通过，干净生成 184 个文件。分页 QA 原来写死第二页 3 篇，现从生成页读取预期 LOG 编号，本次第二页为 04、03、02、01。
+- 产物以远端 `main` 的 `6d5f877` 为基线，结合旧源码与新增文章的构建差异合并，保留 13 篇线上旧文正文、既有搜索条目与知识索引内容；更新新文章、两张图片、首页、归档、分类/标签导航和公共侧栏。随机标签云与旧文推荐顺序沿用线上版本，保留已有友链。
+- 最终候选站点通过完整 QA：12 个页面/视口用例、14 篇文章共 188 个标题检查；新增文章桌面/手机 × 浅色/暗色 4 个用例通过，图片加载、flag 文字、无横向溢出及无附件下载链接均已核对。源码差异检查通过；生成 HTML 的主题空白行按产物规则检查。
+- 发布备份与范围核对记录位于 `D:\Hacking_world\myblog-backups\20261105-0xgame-release`，全站 QA 位于隔离源码工作树的 `qa/release/report.json`。提交仅包含本文、两张图片、必要的分页 QA 修正及维护记录；其他本地文章和配置修改保留。实际推送结果与公网核验随后追加。
 
 ## 9. 回滚位置
 

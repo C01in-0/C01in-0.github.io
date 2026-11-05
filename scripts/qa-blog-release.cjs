@@ -442,6 +442,8 @@ async function main() {
   if (chromePath && fsSync.existsSync(chromePath)) launchOptions.executablePath = chromePath;
   const browser = await chromium.launch(launchOptions);
   const report = { baseUrl, generatedAt: new Date().toISOString(), cases: [], knowledge: [], pjax: null, failures: [] };
+  const page2Html = fsSync.readFileSync(path.join(process.cwd(), 'public', 'page', '2', 'index.html'), 'utf8');
+  const expectedPage2Logs = [...page2Html.matchAll(/data-ops-index="(\d+)"/g)].map(match => match[1]);
 
   try {
     for (const viewport of viewports) {
@@ -499,9 +501,9 @@ async function main() {
     await page.goto(`${baseUrl}/`, { waitUntil: 'networkidle' });
     await settle(page);
     await page.locator('#pagination a.extend.next').click();
-    await page.waitForFunction(() => location.pathname === '/page/2/' && document.querySelectorAll('#recent-posts .recent-post-item').length === 3);
+    await page.waitForFunction(count => location.pathname === '/page/2/' && document.querySelectorAll('#recent-posts .recent-post-item').length === count, expectedPage2Logs.length);
     report.pjax = await inspect(page);
-    if (report.pjax.logs.join(',') !== '03,02,01') {
+    if (report.pjax.logs.join(',') !== expectedPage2Logs.join(',')) {
       report.failures.push(`PJAX page 2 logs are ${report.pjax.logs.join(',')}`);
     }
     await context.close();
