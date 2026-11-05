@@ -184,6 +184,11 @@ git diff --check
 - 发布备份与范围核对记录位于 `D:\Hacking_world\myblog-backups\20261105-0xgame-release`，全站 QA 位于隔离源码工作树的 `qa/release/report.json`。提交仅包含本文、两张图片、必要的分页 QA 修正及维护记录；其他本地文章和配置修改保留。实际推送结果与公网核验随后追加。
 - 发布完成：源码提交 `0138af6`、站点提交 `fd71cbf` 已分别快进推送至 `source` / `main`。首次原子推送遇到 GitHub `commit_refs_rules` 服务错误，确认远端未变后改为逐分支推送成功。公网 `https://c01in.com/posts/0xgame2026-ai.html` 返回 200（重定向至无扩展名地址），首页已出现新文章；两张 PNG 返回 200，内容散列与本地一致。公网桌面/手机 × 明暗 4 个用例通过，报告保存在备份目录 `qa-article-public/report.json`。发布前后 14 个本地文章文件散列一致。回滚站点时针对 `fd71cbf` 创建反向提交，不整体回退旧文。
 
+### 同日标题更新
+
+- Colin 改名为 `竞赛题解 02｜0xGame2026 AI 方向.md`，标题改为“竞赛题解 02 | 0xGame2026 AI 方向”，随后要求重新推送。正文和 `abbrlink` 未变；仅同步本文重命名，以及文章页、首页、归档、搜索和公共侧栏中的对应标题。产物提交 `f428b4f` 的 70 个文件经逐项核对，差异全部为精确标题替换。
+- 隔离构建通过 14 篇文章契约，生成 184 个文件；完整 12 个页面/视口 QA 及文章桌面/手机 × 明暗 4 个用例通过，源码和产物差异检查通过。备份及范围验证位于 `myblog-backups/20261106-0xgame-title`，全站报告位于 `myblog-worktrees/0xgame-title-source-20261106/qa/release/report.json`。
+
 ## 9. 回滚位置
 
 - 本轮源站备份：`D:\Hacking_world\myblog-backups\20260901-article-migration-log-pagination`
