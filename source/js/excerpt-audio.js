@@ -1,5 +1,5 @@
 (() => {
-  const article = document.currentScript.closest('.colin-excerpts');
+  const article = document.querySelector('.colin-excerpts');
   if (!article) return;
 
   const tracks = article.querySelectorAll('audio');
